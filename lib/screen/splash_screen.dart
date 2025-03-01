@@ -1,10 +1,55 @@
+import 'package:e_commerce_tech/controllers/theme_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+
+  final ThemeController themeController = Get.put(ThemeController());
+
+  @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      body: Stack(
+        children: [
+          Positioned(
+            top: -180,
+            left: -50,
+            child: Container(
+              width: MediaQuery.sizeOf(context).width / 1.5,
+              height: MediaQuery.sizeOf(context).width / 1.5,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(MediaQuery.sizeOf(context).width),
+                border: Border.all(width: 1, color: themeController.theme.primaryColor)
+              ),
+            ),
+          ),
+          Center(
+            child: Padding(
+              padding: EdgeInsets.all(MediaQuery.sizeOf(context).width / 4),
+              child: Image.asset("assets/images/logo.png"),
+            ),
+          ),
+          Positioned(
+            bottom: -MediaQuery.sizeOf(context).width / 2.5,
+            right: -MediaQuery.sizeOf(context).width / 1.5,
+            child: Container(
+              width: MediaQuery.sizeOf(context).width,
+              height: MediaQuery.sizeOf(context).width,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular( MediaQuery.sizeOf(context).width ),
+                  border: Border.all(width: 1, color: themeController.theme.primaryColor)
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
