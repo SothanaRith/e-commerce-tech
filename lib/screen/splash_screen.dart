@@ -1,4 +1,5 @@
 import 'package:e_commerce_tech/controllers/theme_controller.dart';
+import 'package:e_commerce_tech/main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,8 +11,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
-  final ThemeController themeController = Get.put(ThemeController());
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
               height: MediaQuery.sizeOf(context).width / 1.5,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(MediaQuery.sizeOf(context).width),
-                border: Border.all(width: 1, color: themeController.theme.primaryColor)
+                border: Border.all(width: 1, color: theme.primaryColor)
               ),
             ),
           ),
@@ -44,7 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
               height: MediaQuery.sizeOf(context).width,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular( MediaQuery.sizeOf(context).width ),
-                  border: Border.all(width: 1, color: themeController.theme.primaryColor)
+                  border: Border.all(width: 1, color: theme.primaryColor)
               ),
             ),
           ),

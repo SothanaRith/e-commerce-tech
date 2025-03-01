@@ -1,3 +1,4 @@
+import 'package:e_commerce_tech/controllers/theme_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:e_commerce_tech/controllers/language_controller.dart';
@@ -6,9 +7,14 @@ import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/app_route.dart';
 import 'package:e_commerce_tech/utils/messages.dart';
 
+// setup theme color and text
+final ThemeController themeController = Get.find<ThemeController>();
+ThemeData get theme => themeController.theme;
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   Map<String, Map<String, String>> _languages = await dep.init();
+  Get.put(ThemeController());
   runApp( MyApp(languages: _languages,));
 }
 
