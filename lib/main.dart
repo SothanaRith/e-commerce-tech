@@ -1,4 +1,5 @@
 import 'package:e_commerce_tech/controllers/theme_controller.dart';
+import 'package:e_commerce_tech/widgets/all_get_binding.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:e_commerce_tech/controllers/language_controller.dart';
@@ -11,7 +12,7 @@ import 'package:e_commerce_tech/utils/messages.dart';
 final ThemeController themeController = Get.find<ThemeController>();
 ThemeData get theme => themeController.theme;
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Map<String, Map<String, String>> _languages = await dep.init();
   Get.put(ThemeController());
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
               useMaterial3: true,
             ),
             locale: localizationController.locale,
+            initialBinding: AllBinding(),
             translations: Messages(languages: languages),
             fallbackLocale: Locale(AppConstants.language[0].languageCode,
                 AppConstants.language[0].countryCode

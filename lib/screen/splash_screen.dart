@@ -1,7 +1,7 @@
-import 'package:e_commerce_tech/controllers/theme_controller.dart';
 import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/screen/language_screen.dart';
+import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,6 +11,17 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    Future.delayed(const Duration(seconds: 3), () {
+      goOff(this, LanguageScreen());
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
