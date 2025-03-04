@@ -17,6 +17,8 @@ class CustomTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final bool isObscureText;
   final EdgeInsetsGeometry padding;
+  final Widget? leftIcon;
+  final Widget? rightIcon;
 
   const CustomTextField({
     super.key,
@@ -25,7 +27,7 @@ class CustomTextField extends StatelessWidget {
     this.borderColor = Colors.grey,
     this.textColor = Colors.black,
     this.labelColor = Colors.grey,
-    this.borderRadius = 15.0,
+    this.borderRadius = 100.0,
     this.borderWidth = 1.0,
     this.textStyle,
     this.labelStyle,
@@ -34,6 +36,8 @@ class CustomTextField extends StatelessWidget {
     this.title,
     this.subtitle,
     this.padding = const EdgeInsets.symmetric(horizontal: 16),
+    this.leftIcon,
+    this.rightIcon,
   });
 
   @override
@@ -42,7 +46,7 @@ class CustomTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (title != null) ...[
-          AppText.body2(title!),
+          AppText.title2(title!),
           SizedBox(height: 6.h),
         ],
         TextField(
@@ -57,6 +61,8 @@ class CustomTextField extends StatelessWidget {
           keyboardType: keyboardType,
           decoration: InputDecoration(
             contentPadding: padding,
+            prefixIcon: leftIcon,
+            suffixIcon: rightIcon,
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(borderRadius),
               borderSide: BorderSide(
@@ -64,15 +70,13 @@ class CustomTextField extends StatelessWidget {
                 width: borderWidth,
               ),
             ),
-            alignLabelWithHint: false,
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(borderRadius),
               borderSide: BorderSide(
                 color: borderColor,
-                width: borderWidth + 0.5, // Slightly thicker when focused
+                width: borderWidth + 0.5,
               ),
             ),
-            // labelText: label,
             hintText: label,
             hintStyle: labelStyle ??
                 TextStyle(

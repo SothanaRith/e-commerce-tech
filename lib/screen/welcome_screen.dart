@@ -1,5 +1,6 @@
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/language_screen.dart';
+import 'package:e_commerce_tech/screen/login_page/login_screen.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_button_widget.dart';
@@ -84,7 +85,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     AppText.title2("Already have an account? ", customStyle: TextStyle(color: theme.highlightColor),),
-                    AppText.title2('Sign in', customStyle: TextStyle(color: theme.primaryColor),)
+                    InkWell(
+                        onTap: () {
+                          goOff(this, LoginScreen());
+                        },
+                        child: AppText.title2('Sign in', customStyle: TextStyle(color: theme.primaryColor),))
                   ],
                 ),
               ),

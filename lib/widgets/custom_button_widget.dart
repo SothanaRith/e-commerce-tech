@@ -52,7 +52,7 @@ class CustomButtonWidget extends StatelessWidget {
             if (icon != null) ...[
               Icon(icon),
             ],
-            AppText.h4(title, customStyle: TextStyle(color: buttonStyle == BtnStyle.action ? theme.secondaryHeaderColor : buttonStyle == BtnStyle.normal ? theme.scaffoldBackgroundColor : theme.highlightColor),),
+            AppText.title(title, customStyle: TextStyle(color: buttonStyle == BtnStyle.action ? theme.secondaryHeaderColor : buttonStyle == BtnStyle.normal ? theme.scaffoldBackgroundColor : theme.highlightColor),),
           ],
         ),
       ),
