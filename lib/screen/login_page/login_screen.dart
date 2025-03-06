@@ -1,4 +1,5 @@
 import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/screen/location_page/location_screen.dart';
 import 'package:e_commerce_tech/screen/sign_up_page/sign_up_screen.dart';
 import 'package:e_commerce_tech/theme/divider.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
@@ -39,7 +40,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ],
             ),
             SizedBox(height: 30,),
-            CustomButtonWidget(title: "Login", action: (){}, buttonStyle: BtnStyle.action,),
+            CustomButtonWidget(title: "Login", action: (){
+              goOff(this, LocationScreen());
+            }, buttonStyle: BtnStyle.action,),
             SizedBox(height: 50,),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
