@@ -19,6 +19,8 @@ void main() async {
 
   Map<String, Map<String, String>> _languages = await dep.init();
 
+  Get.put(ThemeController());
+
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
     runApp(MyApp(

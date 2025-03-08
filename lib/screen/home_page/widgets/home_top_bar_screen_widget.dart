@@ -9,10 +9,12 @@ class HomeTopBarScreenWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppText.title2("Location"),
+            AppText.body(" Location", customStyle: TextStyle(color: theme.highlightColor),),
             Row(
               children: [
                 Icon(Icons.location_on),
@@ -21,15 +23,15 @@ class HomeTopBarScreenWidget extends StatelessWidget {
               ],
             ),
 
-           Container(
-             padding: EdgeInsets.all(8),
-             decoration: BoxDecoration(
-               borderRadius: BorderRadius.circular(100),
-               color: theme.highlightColor
-             ),
-             child: Icon(CupertinoIcons.mail),
-           )
           ],
+        ),
+        Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(100),
+              color: theme.highlightColor.withAlpha(40)
+          ),
+          child: Icon(CupertinoIcons.mail),
         )
       ],
     );

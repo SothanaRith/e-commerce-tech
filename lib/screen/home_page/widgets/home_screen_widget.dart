@@ -7,7 +7,7 @@ class HomeScreenWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ListView(),
+        // ListView(),
         // GridView(gridDelegate: gridDelegate),
       ],
     );
