@@ -1,4 +1,5 @@
 import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/grid_custom_widget.dart';
 import 'package:e_commerce_tech/widgets/item_card_widget.dart';
@@ -16,6 +17,7 @@ class _WishListScreenState extends State<WishListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: customAppBar(type: this, title: "Wish list", context: context, haveArrowBack: false),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -143,7 +145,8 @@ class _WishListScreenState extends State<WishListScreen> {
                 title: "Item",
                 price: "10\$",
               ),
-            ])
+            ]),
+            SizedBox(height: 130,)
           ],
         ),
       ),

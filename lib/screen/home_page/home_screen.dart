@@ -132,7 +132,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 title: "Item",
                 price: "10\$",
               ),
-            ])
+            ]),
+            SizedBox(height: 130,)
           ],
         ),
       ),

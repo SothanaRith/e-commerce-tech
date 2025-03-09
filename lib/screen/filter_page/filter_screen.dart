@@ -1,3 +1,4 @@
+import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/list_view_horizontal_widget.dart';
 import 'package:e_commerce_tech/widgets/range_slider_widget.dart';
@@ -15,6 +16,7 @@ class _FilterScreenState extends State<FilterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: customAppBar(type: this, title: "filter", context: context),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

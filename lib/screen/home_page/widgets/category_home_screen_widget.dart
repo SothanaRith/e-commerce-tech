@@ -1,4 +1,6 @@
 import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/screen/category_page/category_screen.dart';
+import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/list_view_horizontal_widget.dart';
 import 'package:flutter/material.dart';
@@ -22,20 +24,25 @@ class CategoryHomeScreenWidget extends StatelessWidget {
         ),
         SizedBox(height: 4,),
         ListViewHorizontalWidget(items: [
-          Column(
-            children: [
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100),
-                    color: theme.primaryColor.withAlpha(20)
+          GestureDetector(
+            onTap: (){
+              goTo(this, CategoryScreen());
+            },
+            child: Column(
+              children: [
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      color: theme.primaryColor.withAlpha(20)
+                  ),
+                  child: Icon(Icons.import_contacts, size: 35, color: theme.primaryColor,),
                 ),
-                child: Icon(Icons.import_contacts, size: 35, color: theme.primaryColor,),
-              ),
-              SizedBox(height: 5,),
-              AppText.body2("category")
-            ],
+                SizedBox(height: 5,),
+                AppText.body2("category")
+              ],
+            ),
           ),
           Column(
             children: [
