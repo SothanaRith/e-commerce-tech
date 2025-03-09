@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 PreferredSizeWidget customAppBar({
   required dynamic type,
   required String title,
+  List<Widget>? action,
   Color? titleColor,
   Color? backgroundColor,
   Color? surfaceTintColor,
@@ -17,6 +18,7 @@ PreferredSizeWidget customAppBar({
     leadingWidth: 0,
     backgroundColor: backgroundColor ?? theme.scaffoldBackgroundColor, // Fixed background color
     surfaceTintColor: surfaceTintColor ?? theme.scaffoldBackgroundColor,
+    actions: action ?? [],
     title: Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
