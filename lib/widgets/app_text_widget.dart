@@ -133,37 +133,37 @@ class AppText extends StatelessWidget {
     double baseFontSize;
     switch (type) {
       case AppTextType.h1:
-        baseFontSize = 32;
+        baseFontSize = 30;
         break;
       case AppTextType.h2:
-        baseFontSize = 28;
+        baseFontSize = 26;
         break;
       case AppTextType.h3:
-        baseFontSize = 24;
+        baseFontSize = 22;
         break;
       case AppTextType.h4:
-        baseFontSize = 20;
-        break;
-      case AppTextType.title:
         baseFontSize = 18;
         break;
-      case AppTextType.title1:
+      case AppTextType.title:
         baseFontSize = 16;
+        break;
+      case AppTextType.title1:
+        baseFontSize = 14;
         break;
       case AppTextType.title2:
-        baseFontSize = 14;
-        break;
-      case AppTextType.body:
-        baseFontSize = 16;
-        break;
-      case AppTextType.body1:
-        baseFontSize = 14;
-        break;
-      case AppTextType.body2:
         baseFontSize = 12;
         break;
-      case AppTextType.caption:
+      case AppTextType.body:
+        baseFontSize = 14;
+        break;
+      case AppTextType.body1:
+        baseFontSize = 12;
+        break;
+      case AppTextType.body2:
         baseFontSize = 10;
+        break;
+      case AppTextType.caption:
+        baseFontSize = 8;
         break;
     }
 

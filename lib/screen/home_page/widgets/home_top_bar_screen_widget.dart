@@ -19,7 +19,7 @@ class HomeTopBarScreenWidget extends StatelessWidget {
             AppText.body(" Location", customStyle: TextStyle(color: theme.highlightColor),),
             Row(
               children: [
-                Icon(Icons.location_on),
+                Icon(Icons.location_on, size: 16,),
                 SizedBox(width: 5,),
                 AppText.title2("Phnom Penh, Cambodia"),
               ],
@@ -32,12 +32,12 @@ class HomeTopBarScreenWidget extends StatelessWidget {
             goTo(this, NotificationScreen());
           },
           child: Container(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100),
                 color: theme.highlightColor.withAlpha(40)
             ),
-            child: Icon(CupertinoIcons.mail),
+            child: Icon(CupertinoIcons.mail, size: 18,),
           ),
         )
       ],

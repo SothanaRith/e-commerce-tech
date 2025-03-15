@@ -1,9 +1,7 @@
 import 'package:e_commerce_tech/main.dart';
-import 'package:e_commerce_tech/screen/check_out_page/check_out_screen.dart';
 import 'package:e_commerce_tech/screen/filter_page/filter_screen.dart';
 import 'package:e_commerce_tech/screen/home_page/widgets/category_home_screen_widget.dart';
 import 'package:e_commerce_tech/screen/home_page/widgets/home_top_bar_screen_widget.dart';
-import 'package:e_commerce_tech/screen/my_order_page/my_order_screen.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/custom_text_field_widget.dart';
 import 'package:e_commerce_tech/widgets/grid_custom_widget.dart';
