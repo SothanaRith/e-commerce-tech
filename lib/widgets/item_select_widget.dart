@@ -15,7 +15,8 @@ class ItemSelectWidget extends StatelessWidget {
     required this.imageUrl,
     required this.title,
     required this.prices,
-    this.count, required this.countNumber,
+    this.count,
+    required this.countNumber,
   });
 
   @override
@@ -28,8 +29,14 @@ class ItemSelectWidget extends StatelessWidget {
         children: [
           ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.network(imageUrl, width: 90.w, fit: BoxFit.cover,)),
-          SizedBox(width: 12,),
+              child: Image.network(
+                imageUrl,
+                width: 90.w,
+                fit: BoxFit.cover,
+              )),
+          SizedBox(
+            width: 12,
+          ),
           Flexible(
             child: Column(
               children: [
@@ -40,9 +47,13 @@ class ItemSelectWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AppText.title1(title),
-                        AppText.title1(prices, customStyle: TextStyle(color: theme.primaryColor),),
+                        AppText.title1(
+                          prices,
+                          customStyle: TextStyle(color: theme.primaryColor),
+                        ),
                         Container(
-                          padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 6, horizontal: 12),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
                             color: theme.primaryColor.withAlpha(60),
@@ -50,9 +61,8 @@ class ItemSelectWidget extends StatelessWidget {
                           child: AppText.caption(
                             "Free Delivery",
                             customStyle: TextStyle(
-                              color: theme.primaryColor,
-                              fontWeight: FontWeight.bold
-                            ),
+                                color: theme.primaryColor,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],
@@ -63,7 +73,8 @@ class ItemSelectWidget extends StatelessWidget {
                           GestureDetector(
                             onTap: () => count!(false), // Decrement
                             child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 14, vertical: 6),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(4),
                                 shape: BoxShape.rectangle,
@@ -78,28 +89,36 @@ class ItemSelectWidget extends StatelessWidget {
                           GestureDetector(
                             onTap: () => count!(true), // Increment
                             child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 6),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(4),
                                 shape: BoxShape.rectangle,
                                 color: theme.primaryColor,
                               ),
-                              child: AppText.title("+", customStyle: TextStyle(color: theme.secondaryHeaderColor),),
+                              child: AppText.title(
+                                "+",
+                                customStyle: TextStyle(
+                                    color: theme.secondaryHeaderColor),
+                              ),
                             ),
                           ),
                         ],
                       ),
-    ] else ...[
-      Container(
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(22),
-          color: theme.primaryColor
-        ),
-        child: AppText.caption(countNumber.toString(), customStyle: TextStyle(color: theme.secondaryHeaderColor),),
-      )
+                    ] else ...[
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            color: theme.primaryColor,
+                          shape: BoxShape.circle
+                        ),
+                        child: AppText.body1(
+                          countNumber.toString(),
+                          customStyle:
+                              TextStyle(color: theme.secondaryHeaderColor),
+                        ),
+                      )
                     ]
- 
                   ],
                 ),
                 SizedBox(height: 12),

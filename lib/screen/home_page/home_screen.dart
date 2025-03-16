@@ -1,3 +1,4 @@
+import 'package:e_commerce_tech/main.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_tech/screen/filter_page/filter_screen.dart';
 import 'package:e_commerce_tech/screen/home_page/widgets/category_home_screen_widget.dart';
@@ -7,6 +8,7 @@ import 'package:e_commerce_tech/widgets/custom_text_field_widget.dart';
 import 'package:e_commerce_tech/widgets/grid_custom_widget.dart';
 import 'package:e_commerce_tech/widgets/item_card_widget.dart';
 import 'package:e_commerce_tech/widgets/slider_custom_widget.dart';
+import 'package:flutter_svg/svg.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -78,9 +80,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   SizedBox(
                     width: MediaQuery.sizeOf(context).width - 80,
-                    child: const CustomTextField(
+                    child: CustomTextField(
                       label: "Search something...",
-                      leftIcon: Icon(Icons.search),
+                      leftIcon: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: SvgPicture.asset("assets/images/icons/search.svg"),
+                      ),
                     ),
                   ),
                   InkWell(
@@ -88,15 +93,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       goTo(this, const FilterScreen());
                     },
                     child: Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(100),
-                        color: Theme.of(context).primaryColor,
+                        color: theme.primaryColor,
                       ),
-                      child: Icon(
-                        Icons.menu_outlined,
-                        color: Theme.of(context).secondaryHeaderColor,
-                      ),
+                      child: SvgPicture.asset("assets/images/icons/filter.svg"),
                     ),
                   ),
                 ],
@@ -111,8 +113,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
               height: 200,
             ),
-
-
             const SizedBox(height: 12),
             const CategoryHomeScreenWidget(),
             const SizedBox(height: 12),

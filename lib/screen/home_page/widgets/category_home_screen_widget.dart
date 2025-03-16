@@ -28,7 +28,11 @@ class CategoryHomeScreenWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           AppText.title2("Category", customStyle: TextStyle(fontWeight: FontWeight.bold)),
-          AppText.body2("See All", customStyle: TextStyle(fontWeight: FontWeight.w600, color: theme.primaryColor)),
+          GestureDetector(
+              onTap: (){
+                goTo(this, CategoryScreen());
+              },
+              child: AppText.body2("See All", customStyle: TextStyle(fontWeight: FontWeight.w600, color: theme.primaryColor))),
         ],
       ),
     );
