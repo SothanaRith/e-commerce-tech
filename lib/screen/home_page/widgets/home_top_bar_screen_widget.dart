@@ -4,6 +4,7 @@ import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeTopBarScreenWidget extends StatelessWidget {
   const HomeTopBarScreenWidget({super.key});
@@ -19,7 +20,7 @@ class HomeTopBarScreenWidget extends StatelessWidget {
             AppText.body(" Location", customStyle: TextStyle(color: theme.highlightColor),),
             Row(
               children: [
-                Icon(Icons.location_on, size: 16,),
+                SvgPicture.asset("assets/images/icons/pin_notification.svg"),
                 SizedBox(width: 5,),
                 AppText.title2("Phnom Penh, Cambodia"),
               ],
@@ -37,7 +38,11 @@ class HomeTopBarScreenWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(100),
                 color: theme.highlightColor.withAlpha(40)
             ),
-            child: Icon(CupertinoIcons.mail, size: 18,),
+            child: SvgPicture.asset(
+              'assets/images/icons/notification.svg',
+              height: 20, // Adjust size
+              width: 20,
+            ),
           ),
         )
       ],

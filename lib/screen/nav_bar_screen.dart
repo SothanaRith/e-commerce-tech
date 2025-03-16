@@ -5,6 +5,7 @@ import 'package:e_commerce_tech/screen/profile_setting_page/profile_screen.dart'
 import 'package:e_commerce_tech/screen/wish_list_page/wish_list_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 class MainScreen extends StatefulWidget {
@@ -37,37 +38,41 @@ class _MainScreenState extends State<MainScreen> {
               children: pagesList,
             ),
             Positioned(
-              bottom: 40,
+              bottom: 20,
               left: 20,
               right: 20,
               child: Container(
                 padding: const EdgeInsets.all(10),
                 height: 70,
                 decoration: BoxDecoration(
-                  color: theme.highlightColor,
+                  color: theme.disabledColor,
                   borderRadius: BorderRadius.circular(35),
                 ),
                 child: GNav(
-                  color: Colors.black,
-                  activeColor: theme.highlightColor,
+                  color: theme.highlightColor,
+                  activeColor: theme.disabledColor,
                   tabBackgroundColor: theme.secondaryHeaderColor,
                   padding: const EdgeInsets.all(12),
                   gap: 8,
-                  tabs: const [
+                  tabs: [
                     GButton(
-                      icon: Icons.home,
+                      icon: Icons.h_mobiledata,
+                      leading: SvgPicture.asset("assets/images/icons/home.svg", width: 40, color: theme.highlightColor,),
                       text: '',
                     ),
                     GButton(
                       icon: Icons.store,
+                      leading: SvgPicture.asset("assets/images/icons/store.svg", width: 40, color: theme.highlightColor,),
                       text: '',
                     ),
                     GButton(
                       icon: CupertinoIcons.heart,
+                      leading: SvgPicture.asset("assets/images/icons/heart.svg", width: 40, color: theme.highlightColor,),
                       text: '',
                     ),
                     GButton(
                       icon: Icons.person,
+                      leading: SvgPicture.asset("assets/images/icons/profile.svg", width: 40, color: theme.highlightColor,),
                       text: '',
                     ),
                   ],

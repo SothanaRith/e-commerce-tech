@@ -174,6 +174,7 @@ class AppText extends StatelessWidget {
       style: style
           .copyWith(
             fontSize: fontSize,
+            fontFamily: 'Poppins',
             color: Colors.black,
           )
           .merge(customStyle), // Merge default and custom styles
