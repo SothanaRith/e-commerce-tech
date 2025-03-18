@@ -3,6 +3,7 @@ import 'package:e_commerce_tech/screen/product_details_page/product_details_scre
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ItemCardWidget extends StatelessWidget {
   final String imageUrl;
@@ -42,12 +43,12 @@ class ItemCardWidget extends StatelessWidget {
                   top: 8,
                   right: 8,
                   child: Container(
-                    padding: const EdgeInsets.all(4),
+                    padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(120),
-                      color: theme.primaryColor.withAlpha(20),
+                      color: Colors.white.withAlpha(90),
                     ),
-                    child: Icon(Icons.heart_broken, color: theme.primaryColor, size: 18),
+                    child: SvgPicture.asset("assets/images/icons/heart.svg", width: 20,),
                   ),
                 ),
               ],
@@ -73,7 +74,7 @@ class ItemCardWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(120),
                   color: theme.primaryColor.withAlpha(30),
                 ),
-                child: Icon(Icons.store, color: theme.primaryColor, size: 18),
+                child: SvgPicture.asset("assets/images/icons/add_store.svg", width: 20,),
               ),
             ],
           ),
