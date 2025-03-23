@@ -87,7 +87,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     AppText.title2("Already have an account? ", customStyle: TextStyle(color: theme.highlightColor),),
-                    InkWell(
+                    GestureDetector(
                         onTap: () {
                           goOff(this, LoginScreen());
                         },

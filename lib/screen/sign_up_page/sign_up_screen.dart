@@ -1,3 +1,4 @@
+import 'package:e_commerce_tech/controllers/auth_controller.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/location_page/location_screen.dart';
 import 'package:e_commerce_tech/screen/login_page/login_screen.dart';
@@ -6,6 +7,7 @@ import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_button_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_text_field_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -15,6 +17,15 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+
+  final AuthController authController = Get.put(AuthController());
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    authController.getUser();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +35,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AppText.h1("Sign Up"),
+          AppText.h1("Sign Up"),
             SizedBox(height: 10,),
             AppText.caption("Fill your information below or register \nwith your social account.", textAlign: TextAlign.center,),
             SizedBox(height: 50,),
@@ -45,7 +56,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
             SizedBox(height: 30,),
             CustomButtonWidget(title: "Sign Up", action: (){
-              goOff(this, LocationScreen());
+              authController.getUser().then((value) {
+              },);
+              // goOff(this, LocationScreen());
             }, buttonStyle: BtnStyle.action,),
             SizedBox(height: 50,),
             Row(

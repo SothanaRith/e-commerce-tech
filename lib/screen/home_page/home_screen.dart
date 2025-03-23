@@ -1,4 +1,6 @@
 import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/screen/search_page/search_screen.dart';
+import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_tech/screen/filter_page/filter_screen.dart';
 import 'package:e_commerce_tech/screen/home_page/widgets/category_home_screen_widget.dart';
@@ -78,14 +80,27 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(
-                    width: MediaQuery.sizeOf(context).width - 80,
-                    child: CustomTextField(
-                      label: "Search something...",
-                      leftIcon: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: SvgPicture.asset("assets/images/icons/search.svg"),
+                  GestureDetector(
+                    onTap: (){
+                      goTo(this, SearchScreen());
+                    },
+                    child: Container(
+                      width: MediaQuery.sizeOf(context).width - 80,
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        border: Border.all(width: 1, color: theme.primaryColor)
                       ),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: SvgPicture.asset("assets/images/icons/search.svg"),
+                          ),
+                          SizedBox(width: 12,),
+                          AppText.body1("Search something...")
+                        ],
+                      )
                     ),
                   ),
                   InkWell(
