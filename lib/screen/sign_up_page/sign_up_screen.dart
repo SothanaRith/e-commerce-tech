@@ -1,6 +1,5 @@
 import 'package:e_commerce_tech/controllers/auth_controller.dart';
 import 'package:e_commerce_tech/main.dart';
-import 'package:e_commerce_tech/screen/location_page/location_screen.dart';
 import 'package:e_commerce_tech/screen/login_page/login_screen.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
@@ -19,6 +18,11 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
 
   final AuthController authController = Get.put(AuthController());
+
+  TextEditingController nameTextField = TextEditingController();
+  TextEditingController emailTextField = TextEditingController();
+  TextEditingController passwordTextField = TextEditingController();
+  TextEditingController phoneNumberTextField = TextEditingController();
 
   @override
   void initState() {
@@ -39,11 +43,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
             SizedBox(height: 10,),
             AppText.caption("Fill your information below or register \nwith your social account.", textAlign: TextAlign.center,),
             SizedBox(height: 50,),
-            CustomTextField(label: "label", title: "Name",),
+            CustomTextField(label: "label", title: "Name", controller: nameTextField,),
             SizedBox(height: 12,),
-            CustomTextField(label: "label", title: "Email",),
+            CustomTextField(label: "label", title: "Email", controller: emailTextField,),
             SizedBox(height: 12,),
-            CustomTextField(label: "label", title: "Password",),
+            CustomTextField(label: "label", title: "Phone number", controller: phoneNumberTextField,),
+            SizedBox(height: 12,),
+            CustomTextField(label: "label", title: "Password", controller: passwordTextField,),
             SizedBox(height: 10,),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -56,7 +62,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
             SizedBox(height: 30,),
             CustomButtonWidget(title: "Sign Up", action: (){
-              authController.getUser().then((value) {
+              authController.signup(name: nameTextField.text, email: emailTextField.text, password: passwordTextField.text, phone: phoneNumberTextField.text, role: "buyer").then((value) {
               },);
               // goOff(this, LocationScreen());
             }, buttonStyle: BtnStyle.action,),

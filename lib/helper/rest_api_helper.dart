@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 
@@ -50,7 +52,7 @@ class ApiRepository {
   // Post (POST)
   Future<ApiResponse> postData(String url, {Map<String, dynamic>? body, Map<String, String>? headers}) async {
     return _handleRequest(
-          () => http.post(Uri.parse(url), headers: headers ?? {'Content-Type': 'application/json'}, body: body != null ? body.toString() : null),
+          () => http.post(Uri.parse(url), headers: headers ?? {'Content-Type': 'application/json'}, body: json.encode(body)),
       method: "POST",
       url: url,
       headers: headers,
@@ -61,7 +63,7 @@ class ApiRepository {
   // Put (PUT)
   Future<ApiResponse> putData(String url, {Map<String, dynamic>? body, Map<String, String>? headers}) async {
     return _handleRequest(
-          () => http.put(Uri.parse(url), headers: headers ?? {'Content-Type': 'application/json'}, body: body != null ? body.toString() : null),
+          () => http.put(Uri.parse(url), headers: headers ?? {'Content-Type': 'application/json'}, body: json.encode(body)),
       method: "PUT",
       url: url,
       headers: headers,

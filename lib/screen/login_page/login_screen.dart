@@ -1,5 +1,5 @@
+import 'package:e_commerce_tech/controllers/auth_controller.dart';
 import 'package:e_commerce_tech/main.dart';
-import 'package:e_commerce_tech/screen/location_page/location_screen.dart';
 import 'package:e_commerce_tech/screen/sign_up_page/sign_up_screen.dart';
 import 'package:e_commerce_tech/theme/divider.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
@@ -7,6 +7,7 @@ import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_button_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_text_field_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,6 +17,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final AuthController authController = Get.put(AuthController());
+
+  TextEditingController emailTextField = TextEditingController();
+  TextEditingController passwordTextField = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,24 +31,58 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             AppText.h1("Sign In"),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             AppText.caption("Hi welcome back, you’ve been Missed"),
-            SizedBox(height: 50,),
-            CustomTextField(label: "label", title: "Email",),
-            SizedBox(height: 12,),
-            CustomTextField(label: "label", title: "Password",),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 50,
+            ),
+            CustomTextField(
+              label: "label",
+              title: "Email",
+              controller: emailTextField,
+            ),
+            SizedBox(
+              height: 12,
+            ),
+            CustomTextField(
+              label: "label",
+              title: "Password",
+              controller: passwordTextField,
+            ),
+            SizedBox(
+              height: 10,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                AppText.caption("Forget password?", customStyle: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.w600, fontSize: 12, decoration: TextDecoration.underline, decorationColor: theme.primaryColor),),
+                AppText.caption(
+                  "Forget password?",
+                  customStyle: TextStyle(
+                      color: theme.primaryColor,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                      decoration: TextDecoration.underline,
+                      decorationColor: theme.primaryColor),
+                ),
               ],
             ),
-            SizedBox(height: 30,),
-            CustomButtonWidget(title: "Login", action: (){
-              goOff(this, LocationScreen());
-            }, buttonStyle: BtnStyle.action,),
-            SizedBox(height: 50,),
+            SizedBox(
+              height: 30,
+            ),
+            CustomButtonWidget(
+              title: "Login",
+              action: () {
+                authController.signIn(
+                    email: emailTextField.text,
+                    password: passwordTextField.text);
+              },
+              buttonStyle: BtnStyle.action,
+            ),
+            SizedBox(
+              height: 50,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -52,9 +91,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: 70,
                   color: theme.highlightColor,
                 ),
-                SizedBox(width: 8,),
+                SizedBox(
+                  width: 8,
+                ),
                 AppText.caption("Or sign in with"),
-                SizedBox(width: 8,),
+                SizedBox(
+                  width: 8,
+                ),
                 Container(
                   height: 0.2,
                   width: 70,
@@ -62,24 +105,35 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 30,),
+            SizedBox(
+              height: 30,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                socialBtn(icons: "assets/images/icons/apple.png", action: (){}),
-                SizedBox(width: 10,),
-                socialBtn(icons: "assets/images/icons/google.png", action: (){}),
-                SizedBox(width: 10,),
-                socialBtn(icons: "assets/images/icons/facebook.png", action: (){}),
+                socialBtn(
+                    icons: "assets/images/icons/apple.png", action: () {}),
+                SizedBox(
+                  width: 10,
+                ),
+                socialBtn(
+                    icons: "assets/images/icons/google.png", action: () {}),
+                SizedBox(
+                  width: 10,
+                ),
+                socialBtn(
+                    icons: "assets/images/icons/facebook.png", action: () {}),
               ],
             ),
-            SizedBox(height: 35,),
+            SizedBox(
+              height: 35,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 AppText.body2("Don’t have an Account? "),
                 GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       goOff(this, SignUpScreen());
                     },
                     child: AppText.title2("Sign Up")),
@@ -92,16 +146,20 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-Widget socialBtn({required String icons, required Function() action, double size = 35}) {
+Widget socialBtn(
+    {required String icons, required Function() action, double size = 35}) {
   return GestureDetector(
     onTap: action,
     child: Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(100),
-          border: Border.all(width: 0.5, color: theme.highlightColor)
+          border: Border.all(width: 0.5, color: theme.highlightColor)),
+      child: Image.asset(
+        icons,
+        width: size,
+        height: size,
       ),
-      child: Image.asset(icons, width: size, height: size,),
     ),
   );
 }
