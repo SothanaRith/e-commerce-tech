@@ -3,6 +3,7 @@ import 'package:e_commerce_tech/screen/forget_password_page/help_center.dart';
 import 'package:e_commerce_tech/screen/home_page/home_screen.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../forget_password_page/privacy.dart';
 
@@ -17,36 +18,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final List<MenuItem> menuItems = [
     MenuItem(
       title: 'Your profile',
-      icon: Icons.person,
+      iconName: "assets/images/icons/person.svg",
       screen: const HomeScreen(),
       hasSpecialAction: false,
     ),
     MenuItem(
       title: 'My Orders',
-      icon: Icons.shopping_bag,
+      iconName:"assets/images/icons/shopping_bag.svg",
       hasSpecialAction: false,
     ),
     MenuItem(
       title: 'Password Manager',
-      icon: Icons.lock,
+      iconName: 'assets/images/icons/key.svg',
       screen: const ForgetPasswordScreen(),
       hasSpecialAction: false,
     ),
     MenuItem(
       title: 'Help Center',
-      icon: Icons.help,
+      iconName: "assets/images/icons/warning.svg",
       screen: const HelpCenter(),
       hasSpecialAction: false,
     ),
     MenuItem(
       title: 'Privacy Policy',
-      icon: Icons.privacy_tip,
+      iconName: "assets/images/icons/lock.svg",
       screen: const PrivacyScreen(),
       hasSpecialAction: false,
     ),
     MenuItem(
       title: 'Log out',
-      icon: Icons.logout,
+      iconName: "assets/images/icons/logout.svg",
       hasSpecialAction: true, // Flag for special action (bottom sheet)
     ),
   ];
@@ -166,11 +167,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: CircleAvatar(
                           radius: 14,
                           backgroundColor: Colors.white,
-                          child: const Icon(
-                            Icons.edit,
-                            size: 12,
-                            color: Colors.green,
-                          ),
+                          child: SvgPicture.asset("assets/images/icons/edit-2.svg")
                         ),
                       ),
                     ],
@@ -195,18 +192,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 return Column(
                   children: [
                     ListTile(
-                      leading: Icon(
-                        menuItems[index].icon,
+                      leading: SvgPicture.asset(
+                        menuItems[index].iconName,
                         color: Colors.green,
                       ),
                       title: Text(
                         menuItems[index].title,
                         style: const TextStyle(fontSize: 16),
                       ),
-                      trailing: const Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.black,
-                        size: 16,
+                      trailing:  SvgPicture.asset(
+                      "assets/images/icons/arrow-down.svg"
                       ),
                       onTap: () {
                         if (menuItems[index].hasSpecialAction) {
@@ -241,13 +236,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 class MenuItem {
   final String title;
-  final IconData icon;
+  final String iconName;
   final dynamic screen;
   final bool hasSpecialAction; // Flag for special actions like bottom sheet
 
   MenuItem({
     required this.title,
-    required this.icon,
+    required this.iconName,
     this.screen,
     this.hasSpecialAction = false, // Default to false
   });
