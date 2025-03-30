@@ -16,11 +16,9 @@ ThemeData get theme => themeController.theme;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   Map<String, Map<String, String>> _languages = await dep.init();
-
+  await TokenStorage.loadToken();
   Get.put(ThemeController());
-
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
     runApp(MyApp(
