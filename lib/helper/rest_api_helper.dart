@@ -42,10 +42,10 @@ class ApiRepository {
   // Fetch (GET)
   Future<ApiResponse> fetchData(String url, {Map<String, String>? headers}) async {
     return _handleRequest(
-          () => http.get(Uri.parse(url), headers: headers),
+          () => http.get(Uri.parse(url), headers:  headers ?? {'Content-Type': 'application/json'}),
       method: "GET",
       url: url,
-      headers: headers,
+      headers:  headers ?? {'Content-Type': 'application/json'},
     );
   }
 
@@ -55,7 +55,7 @@ class ApiRepository {
           () => http.post(Uri.parse(url), headers: headers ?? {'Content-Type': 'application/json'}, body: json.encode(body ?? {})),
       method: "POST",
       url: url,
-      headers: headers,
+      headers:  headers ?? {'Content-Type': 'application/json'},
       body: body,
     );
   }
@@ -66,7 +66,7 @@ class ApiRepository {
           () => http.put(Uri.parse(url), headers: headers ?? {'Content-Type': 'application/json'}, body: json.encode(body ?? {})),
       method: "PUT",
       url: url,
-      headers: headers,
+      headers:  headers ?? {'Content-Type': 'application/json'},
       body: body,
     );
   }
@@ -74,10 +74,10 @@ class ApiRepository {
   // Delete (DELETE)
   Future<ApiResponse> deleteData(String url, {Map<String, String>? headers}) async {
     return _handleRequest(
-          () => http.delete(Uri.parse(url), headers: headers),
+          () => http.delete(Uri.parse(url), headers:  headers ?? {'Content-Type': 'application/json'}),
       method: "DELETE",
       url: url,
-      headers: headers,
+      headers:  headers ?? {'Content-Type': 'application/json'},
     );
   }
 }
