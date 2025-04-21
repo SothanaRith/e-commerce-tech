@@ -7,10 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 
-enum ScreenType { signup, signinPhoneNumber }
+ enum ScreenVerifyType { signup, signinPhoneNumber, forgetPassword }
 
 class OtpScreen extends StatefulWidget {
-  OtpScreen({super.key});
+  const OtpScreen({super.key, required this.type});
+
+  final ScreenVerifyType type;
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -25,11 +27,11 @@ class _OtpScreenState extends State<OtpScreen> {
   final AuthController authController = Get.put(AuthController());
 
   Future<void> submitOtp({required String otp}) async {
-    authController.verifyOTP(otp: otp);
+    authController.verifyOTP(otp: otp, type: widget.type, context: context);
   }
 
   Future<void> resendOtp() async {
-    authController.sendOTP();
+    authController.sendOTP(context: context);
   }
 
   @override
@@ -42,51 +44,53 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-              child: cardCustom(
-                padding: EdgeInsets.all(32),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    AppText.h2('Enter Verification Code', textAlign: TextAlign.center),
-                    SizedBox(height: 8),
-                    AppText.title2('We Are Automatically detecting a SMS Sent to your Number', textAlign: TextAlign.center, maxLines: 2),
-                    SizedBox(height: 40),
-                    Pinput(
-                      length: otpLength,
-                      controller: _otpController,
-                      keyboardType: TextInputType.number,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                    ),
-                    SizedBox(height: 40),
-                    CustomButtonWidget(
-                      action: (){
-                        submitOtp(otp: _otpController.text);
-                      },
-                      title: "Verify OTP",
-                    ),
-                    SizedBox(height: 12),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        AppText.body2("Don't receive the OTP? "),
-                        GestureDetector(
-                          onTap: () => resendOtp(),
-                          child: AppText.body2( "RESEND OTP", customStyle: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.w600)),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                  ],
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                child: cardCustom(
+                  padding: EdgeInsets.all(32),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AppText.h2('Enter Verification Code', textAlign: TextAlign.center),
+                      SizedBox(height: 8),
+                      AppText.title2('We Are Automatically detecting a SMS Sent to your Email', textAlign: TextAlign.center, maxLines: 2),
+                      SizedBox(height: 40),
+                      Pinput(
+                        length: otpLength,
+                        controller: _otpController,
+                        keyboardType: TextInputType.number,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                      ),
+                      SizedBox(height: 40),
+                      CustomButtonWidget(
+                        action: (){
+                          submitOtp(otp: _otpController.text);
+                        },
+                        title: "Verify OTP",
+                      ),
+                      SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AppText.body2("Don't receive the OTP? "),
+                          GestureDetector(
+                            onTap: () => resendOtp(),
+                            child: AppText.body2( "RESEND OTP", customStyle: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.w600)),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
