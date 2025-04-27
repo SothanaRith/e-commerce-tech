@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:e_commerce_tech/widgets/loading_widget.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 
@@ -15,7 +17,8 @@ class ApiResponse {
 class ApiRepository {
   Future<ApiResponse> _handleRequest(
       Future<http.Response> Function() request,
-      {String method = "", String url = "", Map<String, String>? headers, dynamic body}) async {
+      {String method = "", String url = "", required BuildContext context, Map<String, String>? headers, dynamic body}) async {
+    showLoadingDialog(context);
     try {
       // ✅ Log Request Details
       print("\n🔹 [DEBUG] HTTP Request - Method: $method, URL: $url");
@@ -29,55 +32,59 @@ class ApiRepository {
       print("🔹 [DEBUG] HTTP Response: ${response.statusCode} - ${response.body}");
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
+        hideLoadingDialog(context);
         return ApiResponse(data: response.body); // Keep JSON as string
       } else {
-        return ApiResponse(error: "Error: ${response.statusCode} - ${response.body}");
+        hideLoadingDialog(context);
+        return ApiResponse(error: response.body);
       }
     } catch (e) {
       print("❌ [ERROR] Exception: $e");
+      hideLoadingDialog(context);
       return ApiResponse(error: e.toString());
     }
+
   }
 
   // Fetch (GET)
-  Future<ApiResponse> fetchData(String url, {Map<String, String>? headers}) async {
+  Future<ApiResponse> fetchData(String url, {Map<String, String>? headers, required BuildContext context }) async {
     return _handleRequest(
           () => http.get(Uri.parse(url), headers: headers),
       method: "GET",
       url: url,
-      headers: headers,
+      headers: headers, context: context,
     );
   }
 
   // Post (POST)
-  Future<ApiResponse> postData(String url, {Map<String, dynamic>? body, Map<String, String>? headers}) async {
+  Future<ApiResponse> postData(String url, {Map<String, dynamic>? body, Map<String, String>? headers, required BuildContext context}) async {
     return _handleRequest(
           () => http.post(Uri.parse(url), headers: headers ?? {'Content-Type': 'application/json'}, body: json.encode(body ?? {})),
       method: "POST",
       url: url,
       headers: headers,
-      body: body,
+      body: body, context: context,
     );
   }
 
   // Put (PUT)
-  Future<ApiResponse> putData(String url, {Map<String, dynamic>? body, Map<String, String>? headers}) async {
+  Future<ApiResponse> putData(String url, {Map<String, dynamic>? body, Map<String, String>? headers, required BuildContext context}) async {
     return _handleRequest(
           () => http.put(Uri.parse(url), headers: headers ?? {'Content-Type': 'application/json'}, body: json.encode(body ?? {})),
       method: "PUT",
       url: url,
       headers: headers,
-      body: body,
+      body: body, context: context,
     );
   }
 
   // Delete (DELETE)
-  Future<ApiResponse> deleteData(String url, {Map<String, String>? headers}) async {
+  Future<ApiResponse> deleteData(String url, {Map<String, String>? headers, required BuildContext context}) async {
     return _handleRequest(
           () => http.delete(Uri.parse(url), headers: headers),
       method: "DELETE",
       url: url,
-      headers: headers,
+      headers: headers, context: context,
     );
   }
 }

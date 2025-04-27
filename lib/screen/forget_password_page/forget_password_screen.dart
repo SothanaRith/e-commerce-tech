@@ -1,12 +1,10 @@
-import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/controllers/auth_controller.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_text_field_widget.dart';
 import 'package:flutter/material.dart';
-
-import '../../utils/tap_routes.dart';
+import 'package:get/get.dart';
 import '../../widgets/custom_button_widget.dart';
-import '../profile_setting_page/profile_screen.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});
@@ -16,49 +14,50 @@ class ForgetPasswordScreen extends StatefulWidget {
 }
 
 class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
+
+  final AuthController authController = Get.put(AuthController());
+  String emailError = "";
+  TextEditingController emailTextField = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBar(type: GestureDetector(), title: "Password Manager" , haveArrowBack: true, context: context),
       body:
-
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: AppText.title1("Current Password"),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+          SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomTextField(label: "Current password", rightIcon: Icon(Icons.remove_red_eye_outlined),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: AppText.title1("Your Email"),
                     ),
-                    AppText.title2("Forget password?", customStyle: TextStyle(fontSize: 13, color: theme.primaryColor),),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        CustomTextField(label: "Your Email here", rightIcon: Icon(Icons.mail), controller: emailTextField,
+                          subtitle: emailError,
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 30),
+                      child: CustomButtonWidget(title: "Send OTP", action: (){
+                        if (emailTextField.text == "") {
+                          setState(() {
+                            emailError = "email is require";
+                          });
+                        } else {
+                          authController.checkMail(email: emailTextField.text, context: context);
+                        }
+                      }, buttonStyle: BtnStyle.action,),
+                    ),
                   ],
-                ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.05,),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: AppText.title1("Current Password"),
+                )
               ),
-              CustomTextField(label: "Current password", rightIcon: Icon(Icons.remove_red_eye_outlined)),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8, top: 8),
-                  child: AppText.title1("Current Password"),
-                ),
-                CustomTextField(label: "Current password", rightIcon: Icon(Icons.remove_red_eye_outlined)),
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  child: CustomButtonWidget(title: "Confirm", action: (){
-                    goOff(this, ProfileScreen());
-                  }, buttonStyle: BtnStyle.action,),
-                ),
-              ],
-            )
+            ),
           ),
     );
   }
