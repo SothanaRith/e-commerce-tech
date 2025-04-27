@@ -16,7 +16,6 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-
   final AuthController authController = Get.put(AuthController());
 
   TextEditingController nameTextField = TextEditingController();
@@ -24,11 +23,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController passwordTextField = TextEditingController();
   TextEditingController phoneNumberTextField = TextEditingController();
 
+  String emailErrorText = "";
+  String nameErrorText = "";
+  String phoneErrorText = "";
+  String passwordErrorText = "";
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,34 +44,128 @@ class _SignUpScreenState extends State<SignUpScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-              AppText.h1("Sign Up"),
-                SizedBox(height: 10,),
-                AppText.caption("Fill your information below or register \nwith your social account.", textAlign: TextAlign.center,),
-                SizedBox(height: 50,),
-                CustomTextField(label: "label", title: "Name", controller: nameTextField,),
-                SizedBox(height: 12,),
-                CustomTextField(label: "label", title: "Email", controller: emailTextField,),
-                SizedBox(height: 12,),
-                CustomTextField(label: "label", title: "Phone number", controller: phoneNumberTextField,),
-                SizedBox(height: 12,),
-                CustomTextField(label: "label", title: "Password", controller: passwordTextField,),
-                SizedBox(height: 10,),
+                AppText.h1("Sign Up"),
+                SizedBox(
+                  height: 10,
+                ),
+                AppText.caption(
+                  "Fill your information below or register \nwith your social account.",
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  height: 50,
+                ),
+                CustomTextField(
+                  label: "label",
+                  title: "Name",
+                  subtitle: nameErrorText,
+                  controller: nameTextField,
+                ),
+                SizedBox(
+                  height: 12,
+                ),
+                CustomTextField(
+                  label: "label",
+                  title: "Email",
+                  subtitle: emailErrorText,
+                  controller: emailTextField,
+                ),
+                SizedBox(
+                  height: 12,
+                ),
+                CustomTextField(
+                  label: "label",
+                  title: "Phone number",
+                  subtitle: phoneErrorText,
+                  controller: phoneNumberTextField,
+                ),
+                SizedBox(
+                  height: 12,
+                ),
+                CustomTextField(
+                  label: "label",
+                  title: "Password",
+                  subtitle: passwordErrorText,
+                  controller: passwordTextField,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Icon(Icons.check_box, color: theme.primaryColor,),
-                    SizedBox(width: 5,),
-                    AppText.caption("Agree with ", customStyle: TextStyle(color: theme.highlightColor, fontWeight: FontWeight.w600, fontSize: 12),),
-                    AppText.caption("Terms & Condition", customStyle: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.w600, fontSize: 12, decoration: TextDecoration.underline, decorationColor: theme.primaryColor),),
+                    Icon(
+                      Icons.check_box,
+                      color: theme.primaryColor,
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    AppText.caption(
+                      "Agree with ",
+                      customStyle: TextStyle(
+                          color: theme.highlightColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12),
+                    ),
+                    AppText.caption(
+                      "Terms & Condition",
+                      customStyle: TextStyle(
+                          color: theme.primaryColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                          decoration: TextDecoration.underline,
+                          decorationColor: theme.primaryColor),
+                    ),
                   ],
                 ),
-                SizedBox(height: 30,),
-                CustomButtonWidget(title: "Sign Up", action: (){
-                  authController.signup(name: nameTextField.text, email: emailTextField.text, password: passwordTextField.text, phone: phoneNumberTextField.text, role: "buyer", context: context).then((value) {
-                  },);
-                  // goOff(this, LocationScreen());
-                }, buttonStyle: BtnStyle.action,),
-                SizedBox(height: 50,),
+                SizedBox(
+                  height: 30,
+                ),
+                CustomButtonWidget(
+                  title: "Sign Up",
+                  action: () {
+                    nameErrorText = "";
+                    emailErrorText = "";
+                    passwordErrorText = "";
+                    phoneErrorText = "";
+                    if (nameTextField.text == "") {
+                      setState(() {
+                        nameErrorText = "name is require";
+                      });
+                    } else if (emailTextField.text == "") {
+                      setState(() {
+                        emailErrorText = "email is require";
+                      });
+                    } else if (passwordTextField.text == "") {
+                      setState(() {
+                        passwordErrorText = "password is require";
+                      });
+                    } else if (phoneNumberTextField.text == "") {
+                      setState(() {
+                        phoneErrorText = "phone is require";
+                      });
+                    } else {
+                      authController
+                          .signup(
+                          name: nameTextField.text,
+                          email: emailTextField.text,
+                          password: passwordTextField.text,
+                          phone: phoneNumberTextField.text,
+                          role: "buyer",
+                          context: context)
+                          .then(
+                            (value) {},
+                      );
+                    }
+
+                    // goOff(this, LocationScreen());
+                  },
+                  buttonStyle: BtnStyle.action,
+                ),
+                SizedBox(
+                  height: 50,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -76,9 +174,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       width: 70,
                       color: theme.highlightColor,
                     ),
-                    SizedBox(width: 8,),
+                    SizedBox(
+                      width: 8,
+                    ),
                     AppText.caption("Or sign in with"),
-                    SizedBox(width: 8,),
+                    SizedBox(
+                      width: 8,
+                    ),
                     Container(
                       height: 0.2,
                       width: 70,
@@ -86,24 +188,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 30,),
+                SizedBox(
+                  height: 30,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    socialBtn(icons: "assets/images/icons/apple.png", action: (){}),
-                    SizedBox(width: 10,),
-                    socialBtn(icons: "assets/images/icons/google.png", action: (){}),
-                    SizedBox(width: 10,),
-                    socialBtn(icons: "assets/images/icons/facebook.png", action: (){}),
+                    socialBtn(
+                        icons: "assets/images/icons/apple.png", action: () {}),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    socialBtn(
+                        icons: "assets/images/icons/google.png", action: () {}),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    socialBtn(
+                        icons: "assets/images/icons/facebook.png",
+                        action: () {}),
                   ],
                 ),
-                SizedBox(height: 35,),
+                SizedBox(
+                  height: 35,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     AppText.body2("Already have an Account? "),
                     GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           goOff(this, LoginScreen());
                         },
                         child: AppText.title2("Sign In")),

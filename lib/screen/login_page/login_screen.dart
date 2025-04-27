@@ -2,7 +2,6 @@ import 'package:e_commerce_tech/controllers/auth_controller.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/forget_password_page/forget_password_screen.dart';
 import 'package:e_commerce_tech/screen/sign_up_page/sign_up_screen.dart';
-import 'package:e_commerce_tech/theme/divider.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_button_widget.dart';
@@ -22,6 +21,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   TextEditingController emailTextField = TextEditingController();
   TextEditingController passwordTextField = TextEditingController();
+  String emailError = "";
+  String passwordError = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,12 +40,14 @@ class _LoginScreenState extends State<LoginScreen> {
               CustomTextField(
                 label: "Email",
                 title: "Email",
+                subtitle: emailError,
                 controller: emailTextField,
               ),
               SizedBox(height: 12),
               CustomTextField(
                 label: "Password",
                 title: "Password",
+                subtitle: passwordError,
                 controller: passwordTextField,
                 isObscureText: true,
               ),
@@ -72,11 +75,23 @@ class _LoginScreenState extends State<LoginScreen> {
               CustomButtonWidget(
                 title: "Login",
                 action: () {
-                  authController.signIn(
-                    email: emailTextField.text,
-                    password: passwordTextField.text,
-                    context: context,
-                  );
+                  emailError = "";
+                  passwordError = "";
+                  if (emailTextField.text == "") {
+                    setState(() {
+                      emailError = "email is require!";
+                    });
+                  } else if (passwordTextField.text == "") {
+                    setState(() {
+                      passwordError = "password is require!";
+                    });
+                  } else {
+                    authController.signIn(
+                      email: emailTextField.text,
+                      password: passwordTextField.text,
+                      context: context,
+                    );
+                  }
                 },
                 buttonStyle: BtnStyle.action,
               ),

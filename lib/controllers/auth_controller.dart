@@ -1,13 +1,17 @@
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/helper/rest_api_helper.dart';
+import 'package:e_commerce_tech/screen/forget_password_page/reset_password_screen.dart';
+import 'package:e_commerce_tech/screen/home_page/home_screen.dart';
 import 'package:e_commerce_tech/screen/location_page/location_screen.dart';
+import 'package:e_commerce_tech/screen/login_page/login_screen.dart';
 import 'package:e_commerce_tech/screen/verify_code_page/verify_code_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController extends GetxController {
   late final ApiRepository apiRepository;
@@ -106,10 +110,11 @@ class AuthController extends GetxController {
         },
       );
     } else {
+      var jsonData = jsonDecode(response.error!);
       showCustomDialog(
           context: context,
           type: DialogType.error,
-          title: "Error: ${response.error}");
+          title: "${jsonData["message"]}");
     }
   }
 
@@ -122,6 +127,10 @@ class AuthController extends GetxController {
     );
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
+      print(jsonData["accessToken"]);
+      if (jsonData["accessToken"] == "") {
+
+      }
       TokenStorage.saveToken(jsonData["accessToken"]).then(
         (value) {
           showCustomDialog(
@@ -160,7 +169,7 @@ class AuthController extends GetxController {
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
       TokenStorage.saveToken(jsonData["accessToken"]).then(
-        (value) {
+        (value) async {
           if (type == ScreenVerifyType.signup) {
             showCustomDialog(
                 context: context,
@@ -170,14 +179,24 @@ class AuthController extends GetxController {
                   goOff(this, LocationScreen());
                 });
           } else if (type == ScreenVerifyType.signinPhoneNumber) {
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setBool('isLoggedIn', true);
             showCustomDialog(
                 context: context,
                 type: DialogType.success,
                 title: "${jsonData["message"]}",
                 okOnPress: () {
-                  goOff(this, LocationScreen());
+                  goOff(this, HomeScreen());
                 });
-          } else if (type == ScreenVerifyType.forgetPassword) {}
+          } else if (type == ScreenVerifyType.forgetPassword) {
+            showCustomDialog(
+                context: context,
+                type: DialogType.success,
+                title: "${jsonData["message"]}",
+                okOnPress: () {
+                  goOff(this, ResetPasswordScreen());
+                });
+          }
         },
       );
     } else {
@@ -207,13 +226,12 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> resentPassword(
-      {required String email,
-      required String newPassword,
+  Future<void> resetPassword(
+      {required String newPassword,
       required BuildContext context}) async {
     final response = await apiRepository.postData(
       '$mainPoint/api/auth/reset-password',
-      body: {"email": email, "newPassword": newPassword},
+      body: {"newPassword": newPassword},
       headers: {
         'Authorization': TokenStorage.token ?? "",
         'Content-Type': 'application/json'
@@ -221,7 +239,13 @@ class AuthController extends GetxController {
     );
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
-      print("Fetched Data: $jsonData");
+      showCustomDialog(
+          context: context,
+          type: DialogType.success,
+          title: "${jsonData["message"]}",
+          okOnPress: () {
+            goOff(this, LoginScreen());
+          });
     } else {
       showCustomDialog(
           context: context,

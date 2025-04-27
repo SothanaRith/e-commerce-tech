@@ -2,6 +2,10 @@ import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/language_screen.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'home_page/home_screen.dart';
+import 'login_page/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -14,14 +18,31 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
-
-    Future.delayed(const Duration(seconds: 3), () {
-
-      goOff(this, LanguageScreen());
-    });
-
     super.initState();
+    _checkFirstOpen();
+  }
+
+  Future<void> _checkFirstOpen() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool? isFirstTime = prefs.getBool('isFirstTime');
+    bool? isLoggedIn = prefs.getBool('isLoggedIn');
+
+    // Add small delay to show splash animation
+    await Future.delayed(const Duration(seconds: 3));
+
+    if (isFirstTime == null || isFirstTime == true) {
+      // First time user
+      await prefs.setBool('isFirstTime', false);
+      goOff(this, const LanguageScreen());
+    } else {
+      if (isLoggedIn != null && isLoggedIn == true) {
+        // Already logged in
+        goOff(this, const HomeScreen());
+      } else {
+        // Not logged in
+        goOff(this, const LoginScreen());
+      }
+    }
   }
 
   @override
@@ -36,8 +57,8 @@ class _SplashScreenState extends State<SplashScreen> {
               width: MediaQuery.sizeOf(context).width / 1.5,
               height: MediaQuery.sizeOf(context).width / 1.5,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(MediaQuery.sizeOf(context).width),
-                border: Border.all(width: 1, color: theme.primaryColor)
+                  borderRadius: BorderRadius.circular(MediaQuery.sizeOf(context).width),
+                  border: Border.all(width: 1, color: theme.primaryColor)
               ),
             ),
           ),
