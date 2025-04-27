@@ -1,5 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/list_view_custom_widget.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: customAppBar(type: this, title: "Select Delivery", context: context),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -24,7 +26,7 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                 child: Column(
                   children: [
                     SizedBox(
-                      height: 12,
+                      height: 24,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

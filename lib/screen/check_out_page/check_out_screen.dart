@@ -24,7 +24,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 12,),
+              SizedBox(height: 60,),
               AppText.title1("Shopping Address"),
               SizedBox(height: 12,),
               GestureDetector(
@@ -155,7 +155,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                   prices: '\$199.99',
                   countNumber: 4.toString(), // Passing the callback
                 ),
-
+                SizedBox(height: 100,),
               ])
             ],
           ),

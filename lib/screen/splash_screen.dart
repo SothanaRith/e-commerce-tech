@@ -1,5 +1,6 @@
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/language_screen.dart';
+import 'package:e_commerce_tech/screen/nav_bar_screen.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       if (isLoggedIn != null && isLoggedIn == true) {
         // Already logged in
-        goOff(this, const HomeScreen());
+        goOff(this, const MainScreen());
       } else {
         // Not logged in
         goOff(this, const LoginScreen());

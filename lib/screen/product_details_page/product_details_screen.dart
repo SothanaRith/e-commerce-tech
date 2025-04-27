@@ -22,6 +22,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       body: Stack(
         children: [
           SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -103,21 +104,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           ], height: 60),
                         ),
                       ),
-                      Positioned(
-                          top: 50,
-                          left: 25,
-                          child: InkWell(
-                            onTap: (){
-                              popBack(this);
-                            },
-                            child: Container(
-                                padding: EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: theme.secondaryHeaderColor.withAlpha(90)
-                                ),
-                                child: Icon(Icons.arrow_back)),
-                          )),
                       Positioned(
                           top: 50,
                           right: 25,
@@ -467,6 +453,21 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             ),
 
           ),
+          Positioned(
+              top: 50,
+              left: 25,
+              child: InkWell(
+                onTap: (){
+                  popBack(this);
+                },
+                child: Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: theme.secondaryHeaderColor.withAlpha(90)
+                    ),
+                    child: Icon(Icons.arrow_back)),
+              )),
         ],
       ),
     );

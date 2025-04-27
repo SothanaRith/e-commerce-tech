@@ -1,4 +1,5 @@
 import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,7 @@ class _SelectDeliveryOptionScreenState extends State<SelectDeliveryOptionScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: customAppBar(type: this, title: "Select Delivery", context: context),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -22,7 +24,7 @@ class _SelectDeliveryOptionScreenState extends State<SelectDeliveryOptionScreen>
               child: Column(
                 children: [
                   SizedBox(
-                    height: 12,
+                    height: 24,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
