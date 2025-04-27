@@ -36,7 +36,7 @@ class ApiRepository {
         return ApiResponse(data: response.body); // Keep JSON as string
       } else {
         hideLoadingDialog(context);
-        return ApiResponse(error: "Error: ${response.statusCode} - ${response.body}");
+        return ApiResponse(error: response.body);
       }
     } catch (e) {
       print("❌ [ERROR] Exception: $e");

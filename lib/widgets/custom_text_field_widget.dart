@@ -85,7 +85,7 @@ class CustomTextField extends StatelessWidget {
                 ),
           ),
         ),
-        if (subtitle != null) ...[
+        if (subtitle != null && subtitle != "") ...[
           SizedBox(height: 6.h),
           AppText.caption(
             subtitle!,

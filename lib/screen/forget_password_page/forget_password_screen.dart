@@ -1,14 +1,10 @@
 import 'package:e_commerce_tech/controllers/auth_controller.dart';
-import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../utils/tap_routes.dart';
 import '../../widgets/custom_button_widget.dart';
-import '../profile_setting_page/profile_screen.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});
@@ -20,14 +16,13 @@ class ForgetPasswordScreen extends StatefulWidget {
 class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
   final AuthController authController = Get.put(AuthController());
-
+  String emailError = "";
   TextEditingController emailTextField = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBar(type: GestureDetector(), title: "Password Manager" , haveArrowBack: true, context: context),
       body:
-
           SafeArea(
             child: SingleChildScrollView(
               child: Padding(
@@ -43,13 +38,20 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         CustomTextField(label: "Your Email here", rightIcon: Icon(Icons.mail), controller: emailTextField,
+                          subtitle: emailError,
                         ),
                       ],
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 30),
                       child: CustomButtonWidget(title: "Send OTP", action: (){
-                        authController.checkMail(email: emailTextField.text, context: context);
+                        if (emailTextField.text == "") {
+                          setState(() {
+                            emailError = "email is require";
+                          });
+                        } else {
+                          authController.checkMail(email: emailTextField.text, context: context);
+                        }
                       }, buttonStyle: BtnStyle.action,),
                     ),
                   ],

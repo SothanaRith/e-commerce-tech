@@ -30,15 +30,16 @@ class _OtpScreenState extends State<OtpScreen> {
     authController.verifyOTP(otp: otp, type: widget.type, context: context);
   }
 
-  Future<void> resendOtp() async {
+  void resendOtp() {
     authController.sendOTP(context: context);
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    resendOtp();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      resendOtp();
+    });
   }
 
   @override
