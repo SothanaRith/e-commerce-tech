@@ -10,6 +10,10 @@ import 'package:e_commerce_tech/widgets/grid_custom_widget.dart';
 import 'package:e_commerce_tech/widgets/item_card_widget.dart';
 import 'package:e_commerce_tech/widgets/slider_custom_widget.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+
+import '../../controllers/home_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,10 +25,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _isExpanded = false; // Track the expansion state
-
+  final HomeController homeController = Get.put(HomeController());
   @override
   void initState() {
     super.initState();
+  
     _scrollController.addListener(_onScroll);
   }
 
@@ -49,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: SingleChildScrollView(
         controller: _scrollController,

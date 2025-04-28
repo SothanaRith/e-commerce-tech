@@ -16,7 +16,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthController extends GetxController {
   late final ApiRepository apiRepository;
 
-  late final String mainPoint = "http://localhost:3000";
+  // late final String mainPoint = "http://localhost:6000";
+  late final String mainPoint = "http://192.168.1.6:6000";
   AuthController() {
     apiRepository = ApiRepository();
   }
