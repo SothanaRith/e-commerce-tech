@@ -39,7 +39,25 @@ class ProductController extends GetxController {
     }
   }
 
-  Future<void> getProductById(
+  Future<void> getProductById({required BuildContext context, required String id }) async {
+    final response = await apiRepository.fetchData(
+      '$mainPoint/api/product/get-product/${id}',
+      headers: {
+        'Content-Type': 'application/json'
+      }, context: context,
+    );
+    if (response.data != null) {
+      var jsonData = jsonDecode(response.data!);
+      print("Fetched Data: $jsonData");
+    } else {
+      showCustomDialog(
+          context: context,
+          type: DialogType.error,
+          title: "Error: ${response.error}");
+    }
+  }
+
+  Future<void> createProduct(
       {required String categoryId,
         required String name,
         required String description,
@@ -49,7 +67,7 @@ class ProductController extends GetxController {
         required List<String> variants,
         required BuildContext context}) async {
     final response = await apiRepository.postData(
-        '$mainPoint/api/product/register',
+        '$mainPoint/api/product/create-product',
         body: {
           "categoryId": categoryId,
           "name": name,
@@ -79,31 +97,25 @@ class ProductController extends GetxController {
   }
 
   Future<void> deleteProduct(
-      {required String email,
-        required String password,
+      {required String productId,
         required BuildContext context}) async {
     final response = await apiRepository.postData(
-        '$mainPoint/api/product/login',
-        body: {"email": email, "password": password},
+        '$mainPoint/api/product/delete/${productId}',
         headers: {'Content-Type': 'application/json'}, context: context
     );
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
-      TokenStorage.saveToken(jsonData["accessToken"]).then(
-            (value) {
-          showCustomDialog(
-              context: context,
-              type: DialogType.success,
-              title: "${jsonData["message"]}",
-              okOnPress: () {
-                goOff(
-                    this,
-                    OtpScreen(
-                      type: ScreenVerifyType.signinPhoneNumber,
-                    ));
-              });
-        },
-      );
+      showCustomDialog(
+          context: context,
+          type: DialogType.success,
+          title: "${jsonData["message"]}",
+          okOnPress: () {
+            goOff(
+                this,
+                OtpScreen(
+                  type: ScreenVerifyType.signinPhoneNumber,
+                ));
+          });
     } else {
       var jsonData = jsonDecode(response.error!);
       showCustomDialog(
@@ -113,34 +125,39 @@ class ProductController extends GetxController {
     }
   }
 
+
   Future<void> updateProduct(
-      {required String email, required BuildContext context}) async {
+      { required String productId,
+        required String categoryId,
+        required String name,
+        required String description,
+        required String price,
+        required List<String> images,
+        required List<String> review,
+        required List<String> variants,
+        required BuildContext context}) async {
     final response = await apiRepository.postData(
-        '$mainPoint/api/product/check-mail',
-        body: {"email": email},
+        '$mainPoint/api/product/update-product/${productId}',
+        body: {
+          "categoryId": categoryId,
+          "name": name,
+          "description": description,
+          "price": price,
+          "images": images,
+          "review": review,
+          "variants": variants
+        },
         headers: {'Content-Type': 'application/json'}, context: context
     );
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
-      print(jsonData["accessToken"]);
-      if (jsonData["accessToken"] == "") {
+      showCustomDialog(
+          context: context,
+          type: DialogType.success,
+          title: "${jsonData["message"]}",
+          okOnPress: () {
 
-      }
-      TokenStorage.saveToken(jsonData["accessToken"]).then(
-            (value) {
-          showCustomDialog(
-              context: context,
-              type: DialogType.success,
-              title: "${jsonData["message"]}",
-              okOnPress: () {
-                goOff(
-                    this,
-                    OtpScreen(
-                      type: ScreenVerifyType.forgetPassword,
-                    ));
-              });
-        },
-      );
+          });
     } else {
       showCustomDialog(
           context: context,
