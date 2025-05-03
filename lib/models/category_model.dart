@@ -1,18 +1,18 @@
 class CategoryResponse {
-  final List<Category> categories;
+  final List<CategoryModel> categories;
 
   CategoryResponse({required this.categories});
 
   factory CategoryResponse.fromJson(Map<String, dynamic> json) {
     return CategoryResponse(
-      categories: List<Category>.from(
-        json['categories'].map((x) => Category.fromJson(x)),
+      categories: List<CategoryModel>.from(
+        json['categories'].map((x) => CategoryModel.fromJson(x)),
       ),
     );
   }
 }
 
-class Category {
+class CategoryModel {
   final int id;
   final String name;
   final String description;
@@ -20,7 +20,7 @@ class Category {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  Category({
+  CategoryModel({
     required this.id,
     required this.name,
     required this.description,
@@ -29,8 +29,8 @@ class Category {
     required this.updatedAt,
   });
 
-  factory Category.fromJson(Map<String, dynamic> json) {
-    return Category(
+  factory CategoryModel.fromJson(Map<String, dynamic> json) {
+    return CategoryModel(
       id: json['id'],
       name: json['name'],
       description: json['description'],

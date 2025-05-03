@@ -17,7 +17,7 @@ class CategoryHomeScreenWidget extends StatelessWidget {
         SizedBox(height: 4),
         Obx(() {
           return SizedBox(
-            height: 300,
+            height: 110,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: controller.categories.length,
@@ -57,7 +57,7 @@ class CategoryHomeScreenWidget extends StatelessWidget {
     );
   }
 
-  Widget _categoryItem(Category category) {
+  Widget _categoryItem(CategoryModel category) {
     return Padding(
       padding: const EdgeInsets.only(right: 10), // Padding for spacing between items
       child: Column(
@@ -71,7 +71,7 @@ class CategoryHomeScreenWidget extends StatelessWidget {
             ),
             child: ClipOval(
               child: Image.network(
-                "http://192.168.1.6:6000/uploads/${category.imageUrl}",
+                "http://192.168.1.2:6000/uploads/${category.imageUrl}",
                 fit: BoxFit.cover,
                 errorBuilder: (_, __, ___) => Icon(Icons.image, size: 40, color: Colors.blue),
               ),

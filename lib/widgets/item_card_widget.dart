@@ -24,6 +24,7 @@ class ItemCardWidget extends StatelessWidget {
         goTo(this, ProductDetailsScreen());
         },
       child: Column(
+        spacing: 2,
         children: [
           // Maintain aspect ratio for the image
           AspectRatio(
@@ -54,19 +55,23 @@ class ItemCardWidget extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 4),
+          // const SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppText.title1(title, customStyle: const TextStyle(fontSize: 14)),
-                  AppText.title1(
-                    price,
-                    customStyle: TextStyle(color: theme.primaryColor, fontSize: 14),
-                  ),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppText.title1(title, customStyle: const TextStyle(fontSize: 14, overflow: TextOverflow.ellipsis, ),
+                    maxLines: 1,
+                    ),
+                    AppText.title1(
+                      price, customStyle: TextStyle(color: theme.primaryColor, fontSize: 14, overflow: TextOverflow.ellipsis,),
+                      maxLines: 1,
+                    ),
+                  ],
+                ),
               ),
               Container(
                 padding: const EdgeInsets.all(4),

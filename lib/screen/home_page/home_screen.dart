@@ -54,103 +54,123 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      body: SingleChildScrollView(
-        controller: _scrollController,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Custom Widget with Animated Expansion
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              height: _isExpanded ? 200 : 0,
-              width: double.infinity,
-              color: Colors.blue.withOpacity(0.5), // Example styling
-              child: Center(
-                child: Text(
-                  "Expanded Widget",
-                  style: TextStyle(color: Colors.white, fontSize: 20),
+      body: Obx(() => CustomScrollView(
+        controller: homeController.scrollController,
+        slivers: [
+          // Sliver AppBar-like content
+          SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  height: _isExpanded ? 200 : 0,
+                  width: double.infinity,
+                  color: Colors.blue.withOpacity(0.5),
+                  child: const Center(
+                    child: Text("Expanded Widget", style: TextStyle(color: Colors.white, fontSize: 20)),
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 60),
-            const Padding(
-              padding: EdgeInsets.all(12.0),
-              child: HomeTopBarScreenWidget(),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: (){
-                      goTo(this, SearchScreen());
-                    },
-                    child: Container(
-                      width: MediaQuery.sizeOf(context).width - 80,
-                      padding: EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        border: Border.all(width: 1, color: theme.primaryColor)
-                      ),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(2.0),
-                            child: SvgPicture.asset("assets/images/icons/search.svg"),
+                const SizedBox(height: 60),
+                const Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: HomeTopBarScreenWidget(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () => goTo(this, SearchScreen()),
+                        child: Container(
+                          width: MediaQuery.sizeOf(context).width - 80,
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            border: Border.all(width: 1, color: theme.primaryColor),
                           ),
-                          SizedBox(width: 12,),
-                          AppText.body1("Search something...")
-                        ],
-                      )
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      goTo(this, const FilterScreen());
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        color: theme.primaryColor,
+                          child: Row(
+                            children: [
+                              SvgPicture.asset("assets/images/icons/search.svg"),
+                              const SizedBox(width: 12),
+                              AppText.body1("Search something..."),
+                            ],
+                          ),
+                        ),
                       ),
-                      child: SvgPicture.asset("assets/images/icons/filter.svg"),
-                    ),
+                      InkWell(
+                        onTap: () => goTo(this, const FilterScreen()),
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            color: theme.primaryColor,
+                          ),
+                          child: SvgPicture.asset("assets/images/icons/filter.svg"),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 12),
-            const ImageSlider(
-              imageUrls: [
-                'https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg',
-                'https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg',
-                'https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg',
-              ],
-              height: 200,
-            ),
-            const SizedBox(height: 12),
-            const CategoryHomeScreenWidget(),
-            const SizedBox(height: 12),
-            GridCustomWidget(
-              items: List.generate(
-                9,
-                    (index) => const ItemCardWidget(
-                  imageUrl:
-                  "https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg",
-                  title: "Item",
-                  price: "10\$",
                 ),
+                const SizedBox(height: 12),
+                const ImageSlider(
+                  imageUrls: [
+                    'https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg',
+                    'https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg',
+                    'https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg',
+                  ],
+                  height: 200,
+                ),
+                const SizedBox(height: 12),
+                const CategoryHomeScreenWidget(),
+                const SizedBox(height: 12),
+              ],
+            ),
+          ),
+
+          // Sliver Grid (paged)
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            sliver: SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 24,
+                mainAxisSpacing: 12,
+                childAspectRatio: 0.8,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                  if (index < homeController.products.length) {
+                    final product = homeController.products[index];
+                    return ItemCardWidget(
+                      imageUrl: 'https://epaymentuat.acledabank.com.kh:8544/files/PCAT1746158068408.jpg',
+                      title: product.name ?? '',
+                      price: '\$${product.price ?? ''}',
+                    );
+                  } else {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                },
+                childCount: homeController.hasMore.value && homeController.isLoading.value
+                    ? homeController.products.length + 1
+                    : homeController.products.length,
               ),
             ),
-            const SizedBox(height: 130),
-          ],
-        ),
-      ),
+          ),
+
+          // Bottom spacer
+          SliverToBoxAdapter(child: const SizedBox(height: 132)),
+        ],
+      )),
     );
   }
+
 }
