@@ -29,6 +29,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     Future.delayed(Duration.zero, () {
       productController.getProductById(context: context, id: '1').then((value) {
         productItem = value;
+        print("ttsttstst${productItem!.imageUrl!.first}");
       },);
     });
   }

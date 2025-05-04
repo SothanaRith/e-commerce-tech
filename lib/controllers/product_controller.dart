@@ -17,7 +17,7 @@ class ProductController extends GetxController {
   late final ApiRepository apiRepository;
   bool isLoading = false;
 
-  late final String mainPoint = "http://localhost:6000";
+  late final String mainPoint = "http://localhost:3000";
   // late final String mainPoint = "http://192.168.1.6:6000";
   ProductController() {
     apiRepository = ApiRepository();
@@ -56,6 +56,8 @@ class ProductController extends GetxController {
     required BuildContext context,
     required String id,
   }) async {
+    isLoading = true;
+    update();
     final response = await apiRepository.fetchData(
       '$mainPoint/api/product/get-product/$id',
       headers: {
@@ -64,6 +66,8 @@ class ProductController extends GetxController {
       context: context,
     );
 
+    isLoading = false;
+    update();
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
       print("Fetched Data: $jsonData");
