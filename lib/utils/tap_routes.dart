@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-void goTo(dynamic from, dynamic to) {
+void goTo(dynamic from, Widget to) {
   final now = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
   debugPrint('''
   ===========================================
@@ -12,8 +12,11 @@ void goTo(dynamic from, dynamic to) {
   To: ${to.runtimeType}
   ===========================================
   ''');
-  Get.to(to);
+
+  // Force wrap in a builder function
+  Get.to(() => to);
 }
+
 
 /// Custom function to replace the current route and log detailed navigation info.
 void goOff(dynamic from, dynamic to) {

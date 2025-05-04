@@ -12,7 +12,7 @@ import '../utils/app_constants.dart';
 
 class HomeController extends GetxController {
   final ScrollController scrollController = ScrollController();
-  final String mainPoint = "http://192.168.1.2:6000";
+  final String mainPoint = "http://localhost:6000";
   final apiRepository = ApiRepository();
 
   int currentPage = 1;
