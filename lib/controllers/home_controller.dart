@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/models/category_model.dart';
 import 'package:e_commerce_tech/models/home_model.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
@@ -12,7 +13,6 @@ import '../utils/app_constants.dart';
 
 class HomeController extends GetxController {
   final ScrollController scrollController = ScrollController();
-  final String mainPoint = "http://localhost:6000";
   final apiRepository = ApiRepository();
 
   int currentPage = 1;

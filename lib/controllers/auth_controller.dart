@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/helper/rest_api_helper.dart';
 import 'package:e_commerce_tech/screen/forget_password_page/reset_password_screen.dart';
 import 'package:e_commerce_tech/screen/home_page/home_screen.dart';
@@ -16,7 +17,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthController extends GetxController {
   late final ApiRepository apiRepository;
 
-  late final String mainPoint = "http://localhost:6000";
   // late final String mainPoint = "http://192.168.1.6:6000";
   AuthController() {
     apiRepository = ApiRepository();

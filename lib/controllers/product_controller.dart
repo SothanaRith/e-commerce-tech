@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/helper/rest_api_helper.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
 import 'package:e_commerce_tech/screen/forget_password_page/reset_password_screen.dart';
@@ -17,7 +18,6 @@ class ProductController extends GetxController {
   late final ApiRepository apiRepository;
   bool isLoading = false;
 
-  late final String mainPoint = "http://localhost:3000";
   // late final String mainPoint = "http://192.168.1.6:6000";
   ProductController() {
     apiRepository = ApiRepository();

@@ -13,12 +13,12 @@ class CategoryResponse {
 }
 
 class CategoryModel {
-  final int id;
+  final String id;
   final String name;
   final String description;
   final String imageUrl;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String createdAt;
+  final String updatedAt;
 
   CategoryModel({
     required this.id,
@@ -31,12 +31,12 @@ class CategoryModel {
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
-      id: json['id'],
-      name: json['name'],
-      description: json['description'],
-      imageUrl: json['imageUrl'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      id: json['id'].toString(),
+      name: json['name'].toString(),
+      description: json['description'].toString(),
+      imageUrl: json['imageUrl'].toString(),
+      createdAt: json['createdAt'].toString(),
+      updatedAt: json['updatedAt'].toString(),
     );
   }
 }
