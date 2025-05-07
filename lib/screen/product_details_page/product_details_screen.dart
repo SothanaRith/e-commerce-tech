@@ -1,4 +1,5 @@
 import 'package:e_commerce_tech/controllers/product_controller.dart';
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
@@ -29,7 +30,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     Future.delayed(Duration.zero, () {
       productController.getProductById(context: context, id: '1').then((value) {
         productItem = value;
-        print("ttsttstst${productItem!.imageUrl!.first}");
       },);
     });
   }
@@ -62,7 +62,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         Positioned(
                             top: 0,
                             child: Image.network(
-                              productItem?.imageUrl != null ? productItem!.imageUrl!.first : "",
+                              productItem?.imageUrl != null ? "$mainPoint${productItem!.imageUrl!.first}" : "",
                               height: MediaQuery
                                   .sizeOf(context)
                                   .height / 1.5 - 35, width: MediaQuery
@@ -175,22 +175,21 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            AppText.h2("text"),
-
-                            Container(
-                                padding: EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(100),
-                                    color: theme.primaryColor.withAlpha(30)),
-                                child: Icon(
-                                  Icons.store,
-                                  color: theme.primaryColor,
-                                  size: 18,
-                                )),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AppText.h2(productItem?.name ?? ""),
+                                AppText.caption(productItem?.description ?? ""),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: AppText.h3(productItem?.price ?? "", customStyle: TextStyle(color: theme.primaryColor),),
+                            ),
                           ],
                         ),
-                        AppText.caption("text hello text do you "),
                         SizedBox(height: 12,),
                         Divider(thickness: 0.1, color: theme.highlightColor,),
                       ],
@@ -268,7 +267,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           ),
                           SizedBox(height: 10,),
                           AppText.caption(
-                              "very good drink I never seen before"),
+                              productItem?.reviews?[0].comment ?? ""),
                           SizedBox(height: 6,),
                           ListViewHorizontalWidget(
                               horizontalPadding: 4, items: [
@@ -459,62 +458,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: AppText.title1("Related product"),
                   ),
-                  GridCustomWidget(items: [
-                    ItemCardWidget(
-                      imageUrl:
-                      "https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg",
-                      title: "Item",
-                      price: "10\$",
+                  GridCustomWidget(
+                    items: List.generate(
+                      9,
+                          (index) => const ItemCardWidget(
+                        imageUrl:
+                        "https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg",
+                        title: "Item",
+                        price: "10\$",
+                      ),
                     ),
-                    ItemCardWidget(
-                      imageUrl:
-                      "https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg",
-                      title: "Item",
-                      price: "10\$",
-                    ),
-                    ItemCardWidget(
-                      imageUrl:
-                      "https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg",
-                      title: "Item",
-                      price: "10\$",
-                    ),
-                    ItemCardWidget(
-                      imageUrl:
-                      "https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg",
-                      title: "Item",
-                      price: "10\$",
-                    ),
-                    ItemCardWidget(
-                      imageUrl:
-                      "https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg",
-                      title: "Item",
-                      price: "10\$",
-                    ),
-                    ItemCardWidget(
-                      imageUrl:
-                      "https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg",
-                      title: "Item",
-                      price: "10\$",
-                    ),
-                    ItemCardWidget(
-                      imageUrl:
-                      "https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg",
-                      title: "Item",
-                      price: "10\$",
-                    ),
-                    ItemCardWidget(
-                      imageUrl:
-                      "https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg",
-                      title: "Item",
-                      price: "10\$",
-                    ),
-                    ItemCardWidget(
-                      imageUrl:
-                      "https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg",
-                      title: "Item",
-                      price: "10\$",
-                    ),
-                  ]),
+                  ),
                   SizedBox(height: 24,),
                 ],
               ),

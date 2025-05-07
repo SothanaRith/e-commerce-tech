@@ -103,7 +103,7 @@ class Category {
   Category({this.id});
 
   Category.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = json['id'].toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -130,11 +130,11 @@ class Variants {
         this.variantAttributes});
 
   Variants.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    productId = json['productId'];
-    sku = json['sku'];
-    price = json['price'];
-    stock = json['stock'];
+    id = json['id'].toString();
+    productId = json['productId'].toString();
+    sku = json['sku'].toString();
+    price = json['price'].toString();
+    stock = json['stock'].toString();
     if (json['VariantAttributes'] != null) {
       variantAttributes = <VariantAttributes>[];
       json['VariantAttributes'].forEach((v) {
@@ -165,8 +165,8 @@ class VariantAttributes {
   VariantAttributes({this.name, this.value});
 
   VariantAttributes.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    value = json['value'];
+    name = json['name'].toString();
+    value = json['value'].toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -185,9 +185,9 @@ class Reviews {
   Reviews({this.id, this.rating, this.comment});
 
   Reviews.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    rating = json['rating'];
-    comment = json['comment'];
+    id = json['id'].toString();
+    rating = json['rating'].toString();
+    comment = json['comment'].toString();
   }
 
   Map<String, dynamic> toJson() {
