@@ -1,3 +1,5 @@
+import 'package:e_commerce_tech/models/user_model.dart';
+
 class ProductModel {
   String? id;
   String? categoryId;
@@ -181,13 +183,20 @@ class Reviews {
   String? id;
   String? rating;
   String? comment;
+  UserReView? user;
+  List<String>? images;
 
-  Reviews({this.id, this.rating, this.comment});
+  Reviews({this.id, this.rating, this.comment, this.user, this.images});
 
   Reviews.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
     rating = json['rating'].toString();
     comment = json['comment'].toString();
+    if (json['user'] != null) {
+      user = UserReView.fromJson(json['user']); // ✅ Parse properly
+    }
+    images = json['imageUrl'] != null ? List<String>.from(json['imageUrl']) : [];
+
   }
 
   Map<String, dynamic> toJson() {
@@ -195,6 +204,35 @@ class Reviews {
     data['id'] = id;
     data['rating'] = rating;
     data['comment'] = comment;
+    data['imageUrl'] = images;
     return data;
+  }
+}
+
+class UserReView {
+  final int id;
+  final String name;
+  final String email;
+
+  UserReView({
+    required this.id,
+    required this.name,
+    required this.email,
+  });
+
+  factory UserReView.fromJson(Map<String, dynamic> json) {
+    return UserReView(
+      id: json['id'],
+      name: json['name'],
+      email: json['email'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+    };
   }
 }
