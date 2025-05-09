@@ -15,7 +15,7 @@ class ProductModel {
   Category? category;
   List<Variants>? variants;
   List<Reviews>? reviews;
-  List<String>? relatedProducts;
+  List<RelatedProduct>? relatedProducts;
 
   ProductModel(
       {this.id,
@@ -42,7 +42,9 @@ class ProductModel {
     description = json['description'].toString();
     price = json['price'].toString();
     totalStock = json['totalStock'].toString();
-    imageUrl = json['imageUrl'].cast<String>();
+    imageUrl = json['imageUrl'] != null && json['imageUrl'] is List
+        ? List<String>.from(json['imageUrl'])
+        : [];
     storeId = json['storeId'].toString();
     createdAt = json['createdAt'].toString();
     updatedAt = json['updatedAt'].toString();
@@ -64,9 +66,10 @@ class ProductModel {
     if (json['RelatedProducts'] != null) {
       relatedProducts = [];
       json['RelatedProducts'].forEach((v) {
-        relatedProducts!.add(v);
+        relatedProducts!.add(RelatedProduct.fromJson(v));
       });
     }
+
   }
 
   Map<String, dynamic> toJson() {
@@ -235,4 +238,23 @@ class UserReView {
       'email': email,
     };
   }
+}
+
+class RelatedProduct {
+  final String id;
+  final String name;
+
+  RelatedProduct({required this.id, required this.name});
+
+  factory RelatedProduct.fromJson(Map<String, dynamic> json) {
+    return RelatedProduct(
+      id: json['id'].toString(),
+      name: json['name'].toString(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+  };
 }

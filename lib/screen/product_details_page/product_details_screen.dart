@@ -27,7 +27,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     Future.delayed(Duration.zero, () async {
       ProductModel product = await productController.getProductById(
         context: context,
-        id: '1', // Replace with dynamic ID if needed
+        id: '20', // Replace with dynamic ID if needed
       );
       setState(() {
         productItem = product;
@@ -148,35 +148,35 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         ],
                       ),
                     ),
-
-                    // Shipping info
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(Icons.delivery_dining),
-                              const SizedBox(width: 6),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  AppText.caption("Free shipping", customStyle: TextStyle(color: theme.primaryColor)),
-                                  Row(
-                                    children: [
-                                      AppText.caption("Estimate: "),
-                                      AppText.caption("2-30 Days"),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Icon(Icons.arrow_forward_ios_rounded, color: theme.highlightColor, size: 20),
-                        ],
-                      ),
-                    ),
+                    //
+                    // // Shipping info
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: [
+                    //       Row(
+                    //         children: [
+                    //           const Icon(Icons.delivery_dining),
+                    //           const SizedBox(width: 6),
+                    //           Column(
+                    //             crossAxisAlignment: CrossAxisAlignment.start,
+                    //             children: [
+                    //               AppText.caption("Free shipping", customStyle: TextStyle(color: theme.primaryColor)),
+                    //               Row(
+                    //                 children: [
+                    //                   AppText.caption("Estimate: "),
+                    //                   AppText.caption("2-30 Days"),
+                    //                 ],
+                    //               ),
+                    //             ],
+                    //           ),
+                    //         ],
+                    //       ),
+                    //       Icon(Icons.arrow_forward_ios_rounded, color: theme.highlightColor, size: 20),
+                    //     ],
+                    //   ),
+                    // ),
 
                     const SizedBox(height: 32),
 
@@ -220,7 +220,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               ),
                               const SizedBox(height: 10),
                               AppText.caption(review.comment ?? ""),
-
+                              const SizedBox(height: 10),
                               if (review.images != null && review.images!.isNotEmpty)
                                 ListViewHorizontalWidget(
                                   horizontalPadding: 4,
@@ -240,7 +240,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   }),
                                   height: 60,
                                 ),
-
                             ],
                           ),
                         );
@@ -264,8 +263,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       items: List.generate(productItem!.relatedProducts?.length ?? 0, (index) {
                         final related = productItem!.relatedProducts![index];
                         return ItemCardWidget(
-                          imageUrl: "$mainPoint${productItem!.imageUrl?.first ?? ''}",
-                          title: "Product $related",
+                          imageUrl: productItem!.imageUrl != null && productItem!.imageUrl!.isNotEmpty
+                              ? "$mainPoint${productItem!.imageUrl!.first}"
+                              : "https://via.placeholder.com/150",
+                          title: "Product ${related.name}",
                           price: "${productItem!.price ?? '0'}\$",
                         );
                       }),
