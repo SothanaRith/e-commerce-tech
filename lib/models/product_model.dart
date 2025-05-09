@@ -243,18 +243,21 @@ class UserReView {
 class RelatedProduct {
   final String id;
   final String name;
+  final String price;
 
-  RelatedProduct({required this.id, required this.name});
+  RelatedProduct({required this.id, required this.name, required this.price,});
 
   factory RelatedProduct.fromJson(Map<String, dynamic> json) {
     return RelatedProduct(
       id: json['id'].toString(),
       name: json['name'].toString(),
+      price: json['price'].toString(),
     );
   }
 
   Map<String, dynamic> toJson() => {
     'id': id,
     'name': name,
+    'price': price,
   };
 }

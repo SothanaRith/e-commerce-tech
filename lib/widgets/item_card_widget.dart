@@ -9,19 +9,22 @@ class ItemCardWidget extends StatelessWidget {
   final String imageUrl;
   final String title;
   final String price;
+  final String? id;
 
   const ItemCardWidget({
     super.key,
     required this.imageUrl,
     required this.title,
     required this.price,
+    this.id,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: (){
-        goTo(this, ProductDetailsScreen());
+        print(id);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsScreen(id: id ?? '20',),));
         },
       child: Column(
         spacing: 2,

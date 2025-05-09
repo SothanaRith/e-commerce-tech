@@ -11,7 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
-  const ProductDetailsScreen({super.key});
+  const ProductDetailsScreen({super.key, required this.id});
+  final String id;
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
@@ -27,7 +28,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     Future.delayed(Duration.zero, () async {
       ProductModel product = await productController.getProductById(
         context: context,
-        id: '20', // Replace with dynamic ID if needed
+        id: widget.id, // Replace with dynamic ID if needed
       );
       setState(() {
         productItem = product;
@@ -266,8 +267,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           imageUrl: productItem!.imageUrl != null && productItem!.imageUrl!.isNotEmpty
                               ? "$mainPoint${productItem!.imageUrl!.first}"
                               : "https://via.placeholder.com/150",
-                          title: "Product ${related.name}",
-                          price: "${productItem!.price ?? '0'}\$",
+                          title: "${related.name}",
+                          price: "${related.price ?? '0'}\$",
+                          id: related.id,
                         );
                       }),
                     ),
