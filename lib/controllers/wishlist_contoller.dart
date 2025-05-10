@@ -53,7 +53,7 @@ class WishlistController extends GetxController {
         required String productId,
       }) async {
     final response = await apiRepository.postData(
-        '$mainPoint/api/wishlist/create-wishlist',
+        '$mainPoint/api/product/wishlist',
         body: {
           "userId": userId,
           "productId": productId,
@@ -82,7 +82,7 @@ class WishlistController extends GetxController {
         required String userId,
         required BuildContext context }) async {
     final response = await apiRepository.postData(
-        '$mainPoint/api/wishlist/delete/$userId/$productId',
+        '$mainPoint/api/product/wishlist/delete/$userId/$productId',
         headers: {'Content-Type': 'application/json'}, context: context
     );
     if (response.data != null) {

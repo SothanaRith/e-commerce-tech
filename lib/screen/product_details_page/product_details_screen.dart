@@ -1,9 +1,12 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/controllers/product_controller.dart';
+import 'package:e_commerce_tech/controllers/wishlist_contoller.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
+import 'package:e_commerce_tech/widgets/custom_dialog.dart';
 import 'package:e_commerce_tech/widgets/grid_custom_widget.dart';
 import 'package:e_commerce_tech/widgets/item_card_widget.dart';
 import 'package:e_commerce_tech/widgets/list_view_horizontal_widget.dart';
@@ -20,6 +23,7 @@ class ProductDetailsScreen extends StatefulWidget {
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   final ProductController productController = Get.put(ProductController());
+  final WishlistController wishlistController = Get.put(WishlistController());
   ProductModel? productItem;
 
   @override
@@ -64,7 +68,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               top: 0,
                               child: Image.network(
                                 "$mainPoint${productItem!.imageUrl!.first}",
-                                height: MediaQuery.sizeOf(context).height / 1.5 - 35,
+                                height:
+                                    MediaQuery.sizeOf(context).height / 1.5 -
+                                        35,
                                 width: MediaQuery.sizeOf(context).width,
                                 fit: BoxFit.cover,
                               ),
@@ -73,7 +79,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             bottom: 0,
                             child: Container(
                               width: MediaQuery.sizeOf(context).width * 0.85,
-                              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 4),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
                                 color: theme.secondaryHeaderColor,
@@ -83,7 +90,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 height: 60,
                                 items: List.generate(
                                   productItem!.imageUrl?.length ?? 0,
-                                      (index) {
+                                  (index) {
                                     final url = productItem!.imageUrl![index];
                                     return Container(
                                       width: 60,
@@ -104,18 +111,36 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           Positioned(
                             top: 50,
                             right: 25,
-                            child: Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: theme.secondaryHeaderColor.withAlpha(90),
+                            child: GestureDetector(
+                              onTap: () {
+                                showCustomDialog(
+                                    context: context,
+                                    type: DialogType.info,
+                                    title: "Are you sure you want to add ${productItem?.name} to wishlist ?",
+                                    okOnPress: () {
+                                      wishlistController.createWishlist(context: context, userId: "1", productId: productItem?.id ?? '');
+
+                                    },
+                                    cancelOnPress: () {
+
+                                });
+
+                              },
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: theme.secondaryHeaderColor
+                                          .withAlpha(90),
+                                    ),
+                                    child: Icon(Icons.heart_broken,
+                                        color: theme.primaryColor),
                                   ),
-                                  child: Icon(Icons.heart_broken, color: theme.primaryColor),
-                                ),
-                                const SizedBox(width: 6),
-                              ],
+                                  const SizedBox(width: 6),
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -135,12 +160,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   AppText.h2(productItem?.name ?? ""),
-                                  AppText.caption(productItem?.description ?? ""),
+                                  AppText.caption(
+                                      productItem?.description ?? ""),
                                 ],
                               ),
                               AppText.h3(
                                 productItem?.price ?? "",
-                                customStyle: TextStyle(color: theme.primaryColor),
+                                customStyle:
+                                    TextStyle(color: theme.primaryColor),
                               ),
                             ],
                           ),
@@ -181,100 +208,118 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
                     const SizedBox(height: 32),
 
-                    // Reviews
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      child: AppText.title("Reviews"),
-                    ),
-                    const SizedBox(height: 12),
-                    ListViewHorizontalWidget(
-                      height: 160,
-                      items: List.generate(productItem!.reviews?.length ?? 0, (index) {
-                        final review = productItem!.reviews![index];
-                        return Container(
-                          padding: const EdgeInsets.all(12),
-                          width: 300,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(18),
-                            color: theme.secondaryHeaderColor,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  AppText.title1(review.user?.name ?? "Anonymous"),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      AppText.caption("Mar 30 2024"), // TODO: Add actual date if available
-                                      Row(
-                                        children: List.generate(
-                                          int.tryParse(review.rating ?? '0') ?? 0,
-                                              (index) => const Icon(Icons.star, size: 16),
+                    if (productItem!.reviews != null  && productItem!.reviews!.isNotEmpty) ...[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: AppText.title("Reviews"),
+                      ),
+                      const SizedBox(height: 12),
+                      ListViewHorizontalWidget(
+                        height: 160,
+                        items: List.generate(productItem!.reviews?.length ?? 0,
+                            (index) {
+                          final review = productItem!.reviews![index];
+                          return Container(
+                            padding: const EdgeInsets.all(12),
+                            width: 300,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(18),
+                              color: theme.secondaryHeaderColor,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    AppText.title1(
+                                        review.user?.name ?? "Anonymous"),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        AppText.caption(
+                                            "Mar 30 2024"), // TODO: Add actual date if available
+                                        Row(
+                                          children: List.generate(
+                                            int.tryParse(
+                                                    review.rating ?? '0') ??
+                                                0,
+                                            (index) => const Icon(Icons.star,
+                                                size: 16),
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              AppText.caption(review.comment ?? ""),
-                              const SizedBox(height: 10),
-                              if (review.images != null && review.images!.isNotEmpty)
-                                ListViewHorizontalWidget(
-                                  horizontalPadding: 4,
-                                  items: List.generate(review.images!.length, (i) {
-                                    final imageUrl = "$mainPoint${review.images![i]}";
-                                    return Container(
-                                      width: 60,
-                                      height: 60,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        image: DecorationImage(
-                                          image: NetworkImage(imageUrl),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                                  height: 60,
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                            ],
-                          ),
-                        );
-                      }),
-                    ),
+                                const SizedBox(height: 10),
+                                AppText.caption(review.comment ?? ""),
+                                const SizedBox(height: 10),
+                                if (review.images != null &&
+                                    review.images!.isNotEmpty)
+                                  ListViewHorizontalWidget(
+                                    horizontalPadding: 4,
+                                    items: List.generate(review.images!.length,
+                                        (i) {
+                                      final imageUrl =
+                                          "$mainPoint${review.images![i]}";
+                                      return Container(
+                                        width: 60,
+                                        height: 60,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          image: DecorationImage(
+                                            image: NetworkImage(imageUrl),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                    height: 60,
+                                  ),
+                              ],
+                            ),
+                          );
+                        }),
+                      ),
+                    ],
+                    // Reviews
 
-                    const SizedBox(height: 24),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: AppText.title1("Store Contacts"),
-                    ),
+                    if (productItem!.variants != null && productItem!.variants!.isNotEmpty) ...[
+                      const SizedBox(height: 24),
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: AppText.title1("Store Contacts"),
+                      ),
+                      const SizedBox(height: 24),
+                    ],
+                    if (productItem!.relatedProducts != null && productItem!.relatedProducts!.isNotEmpty) ...[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: AppText.title1("Related Products"),
+                      ),
+                      // Related Products
+                      GridCustomWidget(
+                        items: List.generate(
+                            productItem!.relatedProducts?.length ?? 0, (index) {
+                          final related = productItem!.relatedProducts![index];
+                          return ItemCardWidget(
+                            imageUrl: productItem!.imageUrl != null &&
+                                    productItem!.imageUrl!.isNotEmpty
+                                ? "$mainPoint${productItem!.imageUrl!.first}"
+                                : "https://via.placeholder.com/150",
+                            title: "${related.name}",
+                            price: "${related.price}\$",
+                            id: related.id,
+                          );
+                        }),
+                      ),
 
-                    const SizedBox(height: 24),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      child: AppText.title1("Related Products"),
-                    ),
-
-                    // Related Products
-                    GridCustomWidget(
-                      items: List.generate(productItem!.relatedProducts?.length ?? 0, (index) {
-                        final related = productItem!.relatedProducts![index];
-                        return ItemCardWidget(
-                          imageUrl: productItem!.imageUrl != null && productItem!.imageUrl!.isNotEmpty
-                              ? "$mainPoint${productItem!.imageUrl!.first}"
-                              : "https://via.placeholder.com/150",
-                          title: "${related.name}",
-                          price: "${related.price ?? '0'}\$",
-                          id: related.id,
-                        );
-                      }),
-                    ),
-
-                    const SizedBox(height: 24),
+                      const SizedBox(height: 24),
+                    ],
                   ],
                 ),
               ),
