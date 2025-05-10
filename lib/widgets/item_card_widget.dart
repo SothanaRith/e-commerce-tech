@@ -24,7 +24,7 @@ class ItemCardWidget extends StatelessWidget {
     return InkWell(
       onTap: (){
         print(id);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsScreen(id: id ?? '20',),));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsScreen(id: id ?? '1',),));
         },
       child: Column(
         spacing: 2,
