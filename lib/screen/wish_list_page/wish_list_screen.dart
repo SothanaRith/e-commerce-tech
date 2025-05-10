@@ -29,21 +29,24 @@ class _WishListScreenState extends State<WishListScreen> {
   }
 
   void fetchWishlist() async {
-    final data = await wishlistController.getAllWishlist(
-      context: context,
-      userId: "1", // 🔁 Replace with dynamic user ID
-    );
-    setState(() {
-      wishlist = data;
-      isLoading = false;
+    Future.delayed(Duration.zero, () async {
+      final data = await wishlistController.getAllWishlist(
+        context: context,
+        userId: "1", // 🔁 Replace with dynamic user ID
+      );
+      setState(() {
+        wishlist = data;
+        isLoading = false;
+      });
     });
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBar(type: this, title: "Wish list", context: context, haveArrowBack: false),
-      body: SingleChildScrollView(
+      body: isLoading ? Center(child: Text("data"),) : SingleChildScrollView(
         child: Column(
           children: [
             SizedBox(height: 6),
@@ -52,7 +55,7 @@ class _WishListScreenState extends State<WishListScreen> {
               items: wishlist.map((item) {
                 final product = item.product;
                 return ItemCardWidget(
-                  imageUrl: product?.imageUrl?.first ?? '',
+                  imageUrl: product?.imageUrl != null ? "product?.imageUrl?.first" ?? "" : "",
                   title: product?.name ?? 'Unknown',
                   price: "${product?.price ?? '--'}\$",
                 );
