@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/helper/rest_api_helper.dart';
+import 'package:e_commerce_tech/models/product_by_category.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
 import 'package:e_commerce_tech/screen/forget_password_page/reset_password_screen.dart';
 import 'package:e_commerce_tech/screen/home_page/home_screen.dart';
@@ -22,7 +23,7 @@ class ProductController extends GetxController {
   ProductController() {
     apiRepository = ApiRepository();
   }
-
+ 
   Future<List<ProductModel>> getAllProduct({required BuildContext context}) async {
     final response = await apiRepository.fetchData(
       '$mainPoint/api/product/get-all',

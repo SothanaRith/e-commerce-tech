@@ -100,4 +100,3 @@ class HomeController extends GetxController {
     super.onClose();
   }
 }
-
