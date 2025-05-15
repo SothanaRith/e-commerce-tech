@@ -19,6 +19,7 @@ class CustomTextField extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final Widget? leftIcon;
   final Widget? rightIcon;
+  final void Function(String)? onSubmitted;
 
   const CustomTextField({
     super.key,
@@ -38,6 +39,7 @@ class CustomTextField extends StatelessWidget {
     this.padding = const EdgeInsets.symmetric(horizontal: 16),
     this.leftIcon,
     this.rightIcon,
+    this.onSubmitted,
   });
 
   @override
@@ -51,6 +53,7 @@ class CustomTextField extends StatelessWidget {
         ],
         TextField(
           controller: controller,
+          onSubmitted: onSubmitted,
           style: textStyle ??
               TextStyle(
                 color: textColor,

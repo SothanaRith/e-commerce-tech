@@ -1,3 +1,5 @@
+import 'package:e_commerce_tech/controllers/search_controller.dart';
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
@@ -6,6 +8,7 @@ import 'package:e_commerce_tech/widgets/grid_custom_widget.dart';
 import 'package:e_commerce_tech/widgets/item_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -15,6 +18,10 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+
+  TextEditingController searchText = TextEditingController();
+  final SearchingController searchController = Get.put(SearchingController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,18 +38,35 @@ class _SearchScreenState extends State<SearchScreen> {
                    SizedBox(
                        width: MediaQuery.sizeOf(context).width - 80,
                        child: CustomTextField(
+                         controller: searchText,
                          label: "Search something...",
+                         onSubmitted: (value) async {
+                           await searchController.searchProduct(
+                             context: context,
+                             search: value.trim(),
+                           );
+                         },
                          leftIcon: Padding(
                            padding: const EdgeInsets.all(12.0),
                            child: SvgPicture.asset("assets/images/icons/search.svg"),
                          ),
-                       )),
-                   Container(
+                       )
+                   ),
+                   GestureDetector(
+                     onTap: () async {
+                       await searchController.searchProduct(
+                         context: context,
+                         search: searchText.text.trim(),
+                       );
+                     },
+                     child: Container(
                        padding: EdgeInsets.all(8),
                        decoration: BoxDecoration(
                            borderRadius: BorderRadius.circular(100),
                            color: theme.primaryColor),
-                       child: SvgPicture.asset("assets/images/icons/filter.svg")),
+                       child: SvgPicture.asset("assets/images/icons/search.svg"),
+                     ),
+                   )
                  ],
                ),
              ),
@@ -52,62 +76,19 @@ class _SearchScreenState extends State<SearchScreen> {
                child: AppText.title1("Result for 'jacket'"),
              ),
              SizedBox(height: 12,),
-             GridCustomWidget(items: [
-               ItemCardWidget(
-                 imageUrl:
-                 "https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg",
-                 title: "Item",
-                 price: "10\$",
-               ),
-               ItemCardWidget(
-                 imageUrl:
-                 "https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg",
-                 title: "Item",
-                 price: "10\$",
-               ),
-               ItemCardWidget(
-                 imageUrl:
-                 "https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg",
-                 title: "Item",
-                 price: "10\$",
-               ),
-               ItemCardWidget(
-                 imageUrl:
-                 "https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg",
-                 title: "Item",
-                 price: "10\$",
-               ),
-               ItemCardWidget(
-                 imageUrl:
-                 "https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg",
-                 title: "Item",
-                 price: "10\$",
-               ),
-               ItemCardWidget(
-                 imageUrl:
-                 "https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg",
-                 title: "Item",
-                 price: "10\$",
-               ),
-               ItemCardWidget(
-                 imageUrl:
-                 "https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg",
-                 title: "Item",
-                 price: "10\$",
-               ),
-               ItemCardWidget(
-                 imageUrl:
-                 "https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg",
-                 title: "Item",
-                 price: "10\$",
-               ),
-               ItemCardWidget(
-                 imageUrl:
-                 "https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg",
-                 title: "Item",
-                 price: "10\$",
-               ),
-             ])
+             GetBuilder<SearchingController>(
+               builder: (controller) {
+                 return GridCustomWidget(
+                   items: controller.searchResults.map((item) {
+                     return ItemCardWidget(
+                       imageUrl: "$mainPoint${item.imageUrl != null ? item.imageUrl!.isEmpty ? '' : item.imageUrl![0] : ''}", // Change key to match your API
+                       title: item.name.toString(),
+                       price: "${item.price}\$",
+                     );
+                   }).toList(),
+                 );
+               },
+             ),
            ],
         ),
       ),

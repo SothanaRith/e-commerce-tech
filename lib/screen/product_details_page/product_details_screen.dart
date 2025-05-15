@@ -156,14 +156,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  AppText.h2(productItem?.name ?? ""),
-                                  AppText.caption(
-                                      productItem?.description ?? ""),
-                                ],
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    AppText.h3(productItem?.name ?? "", maxLines: 2,),
+                                    SizedBox(height: 10,),
+                                    AppText.caption(
+                                        productItem?.description ?? "", maxLines: 4,),
+                                  ],
+                                ),
                               ),
+                              SizedBox(width: 10,),
                               AppText.h3(
                                 productItem?.price ?? "",
                                 customStyle:
