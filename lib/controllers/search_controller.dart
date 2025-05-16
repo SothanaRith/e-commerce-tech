@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/helper/rest_api_helper.dart';
@@ -11,15 +10,38 @@ import 'package:get/get.dart';
 
 class SearchingController extends GetxController {
   late final ApiRepository apiRepository;
-  List<ProductModel> searchResults = []; // ✅ normal list
+
+  List<ProductModel> searchResults = [];
 
   SearchingController() {
     apiRepository = ApiRepository();
   }
 
-  Future<void> searchProduct({required BuildContext context, String search = ''}) async {
+  Future<void> searchProduct({
+    required BuildContext context,
+    String search = '',
+    String? categoryId,
+    double? minPrice,
+    double? maxPrice,
+  }) async {
+    final Map<String, String> queryParameters = {
+      'query': search,
+    };
+
+    if (categoryId != null && categoryId.isNotEmpty) {
+      queryParameters['categoryId'] = categoryId;
+    }
+    if (minPrice != null) {
+      queryParameters['minPrice'] = minPrice.toString();
+    }
+    if (maxPrice != null) {
+      queryParameters['maxPrice'] = maxPrice.toString();
+    }
+
+    final queryString = Uri(queryParameters: queryParameters).query;
+
     final response = await apiRepository.fetchData(
-      '$mainPoint/api/product/search?query=$search',
+      '$mainPoint/api/product/search?$queryString',
       headers: {
         'Authorization': TokenStorage.token ?? "",
         'Content-Type': 'application/json'
@@ -29,12 +51,12 @@ class SearchingController extends GetxController {
 
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
-
       List<ProductModel> products = (jsonData as List)
           .map((item) => ProductModel.fromJson(item))
           .toList();
-      searchResults = products; // ✅ update result
-      update(); // ✅ notify GetBuilder to rebuild
+
+      searchResults = products;
+      update();  // notify GetBuilder widgets to rebuild
     } else {
       showCustomDialog(
         context: context,
@@ -42,5 +64,10 @@ class SearchingController extends GetxController {
         title: "Error: ${response.error}",
       );
     }
+  }
+
+  void clearResults() {
+    searchResults = [];
+    update();
   }
 }
