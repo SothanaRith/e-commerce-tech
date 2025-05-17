@@ -7,6 +7,9 @@ import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_text_field_widget.dart';
 import 'package:e_commerce_tech/widgets/grid_custom_widget.dart';
 import 'package:e_commerce_tech/widgets/item_card_widget.dart';
+import 'package:e_commerce_tech/widgets/list_view_horizontal_widget.dart';
+import 'package:e_commerce_tech/widgets/range_slider_widget.dart';
+import 'package:e_commerce_tech/widgets/text_btn_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -27,6 +30,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   String? selectedCategory;
   RangeValues priceRange = const RangeValues(0, 1000);
+  double? selectedRating = 0;
 
   final List<Map<String, String>> categories = [
     {'id': '1', 'name': 'Clothing'},
@@ -38,6 +42,7 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     super.initState();
 
+    // Ensures initial fetch happens after build is complete
     WidgetsBinding.instance.addPostFrameCallback((_) {
       searchController.searchProduct(
         context: context,
@@ -56,6 +61,7 @@ class _SearchScreenState extends State<SearchScreen> {
           categoryId: selectedCategory,
           minPrice: priceRange.start,
           maxPrice: priceRange.end,
+          minRating: selectedRating,
         );
       });
     });
@@ -94,6 +100,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           categoryId: selectedCategory,
                           minPrice: priceRange.start,
                           maxPrice: priceRange.end,
+                          minRating: selectedRating,
                         );
                       },
                       leftIcon: Padding(
@@ -112,44 +119,61 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                       child: SvgPicture.asset("assets/images/icons/filter.svg"),
                     ),
-                    filterContent: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    filterContent: (setModalState) => SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 12),
-                          const Text("Category", style: TextStyle(fontWeight: FontWeight.bold)),
-                          DropdownButton<String>(
-                            isExpanded: true,
-                            value: selectedCategory,
-                            hint: const Text("Select Category"),
-                            items: categories.map((cat) {
-                              return DropdownMenuItem<String>(
-                                value: cat['id']!,
-                                child: Text(cat['name']!),
-                              );
-                            }).toList(),
-                            onChanged: (val) {
-                              setState(() {
-                                selectedCategory = val;
-                              });
-                            },
+                          Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: AppText.title1("Category"),
                           ),
-                          const SizedBox(height: 24),
-                          const Text("Price Range", style: TextStyle(fontWeight: FontWeight.bold)),
-                          RangeSlider(
-                            values: priceRange,
+                          ListViewHorizontalWidget(
+                            items: [
+                              TextBtnWidget(title: "Clothing", onTap: () {
+                                setCategory('1', setModalState);
+                              }),
+                              TextBtnWidget(title: "Electronics", onTap: () {
+                                setCategory('2', setModalState);
+                              }),
+                              TextBtnWidget(title: "Books", onTap: () {
+                                setCategory('3', setModalState);
+                              }),
+                            ],
+                            height: 40,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: AppText.title1("Pricing Range"),
+                          ),
+                          RangeSliderWidget(
                             min: 0,
-                            max: 1000,
-                            divisions: 20,
-                            labels: RangeLabels("\$${priceRange.start.round()}", "\$${priceRange.end.round()}"),
-                            onChanged: (range) {
-                              setState(() {
-                                priceRange = range;
-                              });
+                            max: 3000,
+                            start: priceRange.start,
+                            end: priceRange.end,
+                            onChanged: (values) {
+                              setModalState(() {});
+                              setState(() => priceRange = values);
                             },
                           ),
-                          const SizedBox(height: 24),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6),
+                            child: AppText.title1("Reviews"),
+                          ),
+                          Row(
+                            children: List.generate(5, (index) {
+                              return IconButton(
+                                icon: Icon(
+                                  Icons.star,
+                                  color: selectedRating! >= index + 1 ? Colors.amber : Colors.grey,
+                                ),
+                                onPressed: () {
+                                  setModalState(() {});
+                                  setState(() => selectedRating = (index + 1).toDouble());
+                                },
+                              );
+                            }),
+                          ),
+                          const SizedBox(height: 12),
                         ],
                       ),
                     ),
@@ -160,9 +184,11 @@ class _SearchScreenState extends State<SearchScreen> {
                         categoryId: selectedCategory,
                         minPrice: priceRange.start,
                         maxPrice: priceRange.end,
+                        minRating: selectedRating,
                       );
                     },
                   ),
+
                 ],
               ),
             ),
@@ -208,5 +234,16 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
     );
+  }
+
+  // Set the selected category
+  void setCategory(String? category, void Function(void Function()) state) {
+    Future.delayed(Duration.zero, () {
+      state(() {});
+      setState(() {
+        selectedCategory = category;
+      });
+    });
+
   }
 }

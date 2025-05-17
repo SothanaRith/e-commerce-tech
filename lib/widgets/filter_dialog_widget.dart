@@ -11,7 +11,7 @@ class FilterDialogWidget extends StatefulWidget {
   });
 
   final Widget child;
-  final Widget filterContent;
+  final Widget Function(StateSetter) filterContent;
   final VoidCallback onApply;
 
   @override
@@ -49,32 +49,36 @@ class _FilterDialogWidgetState extends State<FilterDialogWidget> {
                     ),
                     child: SingleChildScrollView(
                       controller: scrollController,
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () => Navigator.of(context).pop(),
-                            child: Container(
-                              width: MediaQuery.sizeOf(context).width / 7,
-                              margin: const EdgeInsets.all(16),
-                              height: 8,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100),
-                                color: Colors.grey.withOpacity(0.4),
+                      child: StatefulBuilder(
+                        builder: (context, setModalState) {
+                          return Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () => Navigator.of(context).pop(),
+                                child: Container(
+                                  width: MediaQuery.sizeOf(context).width / 7,
+                                  margin: const EdgeInsets.all(16),
+                                  height: 8,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    color: Colors.grey.withOpacity(0.4),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          widget.filterContent,
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                widget.onApply();
-                              },
-                              child: const Text("Apply Filters"),
-                            ),
-                          ),
-                        ],
+                              widget.filterContent(setModalState),
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    widget.onApply();
+                                  },
+                                  child: const Text("Apply Filters"),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       ),
                     ),
                   );

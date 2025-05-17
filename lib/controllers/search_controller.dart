@@ -22,7 +22,7 @@ class SearchingController extends GetxController {
     String search = '',
     String? categoryId,
     double? minPrice,
-    double? maxPrice,
+    double? maxPrice, double? minRating,
   }) async {
     final Map<String, String> queryParameters = {
       'query': search,
