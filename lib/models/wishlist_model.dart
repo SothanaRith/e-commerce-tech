@@ -1,10 +1,12 @@
+import 'package:e_commerce_tech/models/product_model.dart';
+
 class WishlistModel {
   int? id;
   int? userId;
   int? productId;
   String? createdAt;
   String? updatedAt;
-  Product? product;
+  ProductModel? product;
 
   WishlistModel({
     this.id,
@@ -21,7 +23,7 @@ class WishlistModel {
     productId = json['productId'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
-    product = json['Product'] != null ? Product.fromJson(json['Product']) : null;
+    product = json['Product'] != null ? ProductModel.fromJson(json['Product']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -33,38 +35,6 @@ class WishlistModel {
     data['updatedAt'] = updatedAt;
     if (product != null) {
       data['Product'] = product!.toJson();
-    }
-    return data;
-  }
-}
-
-class Product {
-  int? id;
-  String? name;
-  String? price;
-  List<String>? imageUrl;
-
-  Product({
-    this.id,
-    this.name,
-    this.price,
-    this.imageUrl,
-  });
-
-  Product.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    price = json['price'];
-    imageUrl = json['imageUrl'] != null ? List<String>.from(json['imageUrl']) : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['id'] = id;
-    data['name'] = name;
-    data['price'] = price;
-    if (imageUrl != null) {
-      data['imageUrl'] = imageUrl;
     }
     return data;
   }

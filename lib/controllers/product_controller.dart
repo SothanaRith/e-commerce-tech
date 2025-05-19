@@ -24,10 +24,11 @@ class ProductController extends GetxController {
     apiRepository = ApiRepository();
   }
  
-  Future<List<ProductModel>> getAllProduct({required BuildContext context}) async {
+  Future<List<ProductModel>> getAllProduct({required BuildContext context, required String userId}) async {
     final response = await apiRepository.fetchData(
-      '$mainPoint/api/product/get-all',
+      '$mainPoint/api/product/get-all/$userId',
       headers: {
+        'Authorization': TokenStorage.token ?? "",
         'Content-Type': 'application/json',
       },
       context: context,
@@ -56,12 +57,14 @@ class ProductController extends GetxController {
   Future<ProductModel> getProductById({
     required BuildContext context,
     required String id,
+    required String userId,
   }) async {
     isLoading = true;
     update();
     final response = await apiRepository.fetchData(
-      '$mainPoint/api/product/get-product/$id',
+      '$mainPoint/api/product/get-product/$id/$userId',
       headers: {
+        'Authorization': TokenStorage.token ?? "",
         'Content-Type': 'application/json',
       },
       context: context,

@@ -16,7 +16,7 @@ class CategoryController extends GetxController {
   CategoryController({required this.categoryId, required this.context});
 
   final apiRepository = ApiRepository();
-  RxList<Product> productByCategories = <Product>[].obs;
+  RxList<ProductModel> productByCategories = <ProductModel>[].obs;
   RxBool isLoadingProducts = false.obs;
 
   @override

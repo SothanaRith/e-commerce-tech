@@ -9,7 +9,7 @@ class GridCustomWidget extends StatelessWidget {
   final EdgeInsets? padding;
   const GridCustomWidget(
       {super.key,
-        required this.items, this.crossAxisSpacing = 24,
+        required this.items, this.crossAxisSpacing = 14,
         this.crossAxisCount = 2,
         this.childAspectRatio = 0.8,
         this.mainAxisSpacing = 12, this.padding

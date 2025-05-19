@@ -2,6 +2,7 @@ import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/check_out_page/check_out_screen.dart';
 import 'package:e_commerce_tech/screen/home_page/home_screen.dart';
 import 'package:e_commerce_tech/screen/profile_setting_page/profile_screen.dart';
+import 'package:e_commerce_tech/screen/search_page/search_screen.dart';
 import 'package:e_commerce_tech/screen/wish_list_page/wish_list_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class _MainScreenState extends State<MainScreen> {
 
   final pagesList = [
     const HomeScreen(),
-    const CheckOutScreen(),
+    const SearchScreen(),
     const WishListScreen(),
     const ProfileScreen(),
   ];

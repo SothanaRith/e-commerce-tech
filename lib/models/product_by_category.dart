@@ -14,11 +14,13 @@
 // }
 
 // lib/models/products_response.dart
+import 'package:e_commerce_tech/models/product_model.dart';
+
 class ProductsResponse {
   final int statusCode;
   final String status;
   final String message;
-  final List<Product> data;
+  final List<ProductModel> data;
 
   ProductsResponse({
     required this.statusCode,
@@ -32,7 +34,7 @@ class ProductsResponse {
     status: json['status'] as String,
     message: json['message'] as String,
     data: (json['data'] as List<dynamic>)
-        .map((e) => Product.fromJson(e as Map<String, dynamic>))
+        .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
         .toList(),
   );
 
@@ -41,86 +43,6 @@ class ProductsResponse {
     'status': status,
     'message': message,
     'data': data.map((e) => e.toJson()).toList(),
-  };
-}
-
-// lib/models/product.dart
-class Product {
-  final int id;
-  final int categoryId;
-  final String? reviewId;
-  final String name;
-  final String description;
-  final String price;
-  final int? totalStock;
-  final List<String>? imageUrl;
-  final int? storeId;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final List<Variant> variants;
-  final List<Review> reviews;
-  final List<RelatedProduct> relatedProducts;
-
-  Product({
-    required this.id,
-    required this.categoryId,
-    this.reviewId,
-    required this.name,
-    required this.description,
-    required this.price,
-    this.totalStock,
-    this.imageUrl,
-    this.storeId,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.variants,
-    required this.reviews,
-    required this.relatedProducts,
-  });
-
-  factory Product.fromJson(Map<String, dynamic> json) => Product(
-    id: json['id'] as int,
-    categoryId: json['categoryId'] as int,
-    reviewId: json['reviewId']?.toString(),
-    name: json['name'] as String,
-    description: json['description'] as String,
-    price: json['price'] as String,
-    totalStock: json['totalStock'] as int?,
-    imageUrl: (json['imageUrl'] as String?)
-        ?.replaceAll(RegExp(r'^\[|\]$'), '') // strip [ ]
-        .split(',')
-        .map((s) => s.trim().replaceAll('"', ''))
-        .where((s) => s.isNotEmpty)
-        .toList(),
-    storeId: json['storeId'] as int?,
-    createdAt: DateTime.parse(json['createdAt'] as String),
-    updatedAt: DateTime.parse(json['updatedAt'] as String),
-    variants: (json['Variants'] as List<dynamic>)
-        .map((e) => Variant.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    reviews: (json['Reviews'] as List<dynamic>)
-        .map((e) => Review.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    relatedProducts: (json['RelatedProducts'] as List<dynamic>)
-        .map((e) => RelatedProduct.fromJson(e as Map<String, dynamic>))
-        .toList(),
-  );
-
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'categoryId': categoryId,
-    'reviewId': reviewId,
-    'name': name,
-    'description': description,
-    'price': price,
-    'totalStock': totalStock,
-    'imageUrl': imageUrl,
-    'storeId': storeId,
-    'createdAt': createdAt.toIso8601String(),
-    'updatedAt': updatedAt.toIso8601String(),
-    'Variants': variants.map((v) => v.toJson()).toList(),
-    'Reviews': reviews.map((r) => r.toJson()).toList(),
-    'RelatedProducts': relatedProducts.map((p) => p.toJson()).toList(),
   };
 }
 

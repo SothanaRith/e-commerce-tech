@@ -32,7 +32,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     Future.delayed(Duration.zero, () async {
       ProductModel product = await productController.getProductById(
         context: context,
-        id: widget.id, // Replace with dynamic ID if needed
+        id: widget.id, userId: '1', // Replace with dynamic ID if needed
       );
       setState(() {
         productItem = product;
@@ -211,7 +211,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     // ),
 
                     const SizedBox(height: 32),
-
                     if (productItem!.reviews != null  && productItem!.reviews!.isNotEmpty) ...[
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -311,13 +310,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             productItem!.relatedProducts?.length ?? 0, (index) {
                           final related = productItem!.relatedProducts![index];
                           return ItemCardWidget(
-                            imageUrl: productItem!.imageUrl != null &&
-                                    productItem!.imageUrl!.isNotEmpty
-                                ? "$mainPoint${productItem!.imageUrl!.first}"
-                                : "https://via.placeholder.com/150",
-                            title: "${related.name}",
-                            price: "${related.price}\$",
-                            id: related.id,
+                            product: productItem!
                           );
                         }),
                       ),

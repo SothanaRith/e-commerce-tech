@@ -51,11 +51,7 @@ class _ProductByCategoryScreenState extends State<ProductByCategoryScreen> {
           itemBuilder: (context, index) {
             final product = controller.productByCategories[index];
             return ItemCardWidget(
-              imageUrl: product.imageUrl != null && product.imageUrl!.isNotEmpty
-                  ? product.imageUrl!.first
-                  : "",
-              title: product.name ?? '',
-              price: '\$${product.price ?? ''}',
+              product: product,
             );
           },
         );

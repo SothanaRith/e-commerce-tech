@@ -21,6 +21,7 @@ class SearchingController extends GetxController {
     required BuildContext context,
     String search = '',
     String? categoryId,
+    required String userId,
     double? minPrice,
     double? maxPrice, double? minRating,
   }) async {
@@ -41,7 +42,7 @@ class SearchingController extends GetxController {
     final queryString = Uri(queryParameters: queryParameters).query;
 
     final response = await apiRepository.fetchData(
-      '$mainPoint/api/product/search?$queryString',
+      '$mainPoint/api/product/search/$userId?$queryString',
       headers: {
         'Authorization': TokenStorage.token ?? "",
         'Content-Type': 'application/json'

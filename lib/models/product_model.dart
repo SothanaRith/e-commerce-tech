@@ -12,6 +12,7 @@ class ProductModel {
   String? storeId;
   String? createdAt;
   String? updatedAt;
+  String? isInWishlist;
   Category? category;
   List<Variants>? variants;
   List<Reviews>? reviews;
@@ -29,6 +30,7 @@ class ProductModel {
         this.storeId,
         this.createdAt,
         this.updatedAt,
+        this.isInWishlist,
         this.category,
         this.variants,
         this.reviews,
@@ -48,6 +50,7 @@ class ProductModel {
     storeId = json['storeId'].toString();
     createdAt = json['createdAt'].toString();
     updatedAt = json['updatedAt'].toString();
+    isInWishlist = json['isInWishlist'].toString();
     category = json['Category'] != null
         ? Category.fromJson(json['Category'])
         : null;
@@ -85,6 +88,7 @@ class ProductModel {
     data['storeId'] = storeId;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
+    data['isInWishlist'] = isInWishlist;
     if (category != null) {
       data['Category'] = category!.toJson();
     }

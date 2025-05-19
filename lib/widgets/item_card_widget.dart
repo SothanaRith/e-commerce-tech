@@ -1,4 +1,9 @@
+import 'dart:ffi';
+
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/models/product_by_category.dart';
+import 'package:e_commerce_tech/models/product_model.dart';
 import 'package:e_commerce_tech/screen/product_details_page/product_details_screen.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
@@ -6,25 +11,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ItemCardWidget extends StatelessWidget {
-  final String imageUrl;
-  final String title;
-  final String price;
-  final String? id;
+  final ProductModel product;
 
   const ItemCardWidget({
     super.key,
-    required this.imageUrl,
-    required this.title,
-    required this.price,
-    this.id,
+    required this.product,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: (){
-        print(id);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsScreen(id: id ?? '1',),));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsScreen(id: product.id.toString(),),));
         },
       child: Column(
         spacing: 2,
@@ -37,7 +35,7 @@ class ItemCardWidget extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: NetworkImage(imageUrl),
+                      image: NetworkImage("$mainPoint${product.imageUrl?.first ?? ""}"),
                       fit: BoxFit.cover, // Ensure the image scales properly
                     ),
                     borderRadius: BorderRadius.circular(12),
@@ -46,19 +44,24 @@ class ItemCardWidget extends StatelessWidget {
                 Positioned(
                   top: 8,
                   right: 8,
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(120),
-                      color: Colors.white.withAlpha(90),
+                  child: GestureDetector(
+                    onTap: () {
+
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(120),
+                        color: Colors.white.withAlpha(90),
+                      ),
+                      child: SvgPicture.asset("assets/images/icons/heart.svg", width: 20,),
                     ),
-                    child: SvgPicture.asset("assets/images/icons/heart.svg", width: 20,),
                   ),
                 ),
               ],
             ),
           ),
-          // const SizedBox(height: 4),
+          const SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -66,23 +69,29 @@ class ItemCardWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppText.title1(title, customStyle: const TextStyle(fontSize: 14, overflow: TextOverflow.ellipsis, ),
+                    AppText.title2(product.name ?? '', customStyle: const TextStyle(fontSize: 12, overflow: TextOverflow.ellipsis, ),
                     maxLines: 1,
                     ),
                     AppText.title1(
-                      price, customStyle: TextStyle(color: theme.primaryColor, fontSize: 14, overflow: TextOverflow.ellipsis,),
+                      '\$${product.isInWishlist}', customStyle: TextStyle(color: theme.primaryColor, fontSize: 14, overflow: TextOverflow.ellipsis,),
                       maxLines: 1,
                     ),
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(120),
-                  color: theme.primaryColor.withAlpha(30),
+              SizedBox(width: 6,),
+              GestureDetector(
+                onTap: () {
+
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(120),
+                    color: theme.primaryColor.withAlpha(30),
+                  ),
+                  child: product.isInWishlist == 'false' ? SvgPicture.asset("assets/images/icons/add_store.svg", width: 20,) : SvgPicture.asset("assets/images/icons/apple.png", width: 20,),
                 ),
-                child: SvgPicture.asset("assets/images/icons/add_store.svg", width: 20,),
               ),
             ],
           ),

@@ -1,4 +1,6 @@
+import 'package:e_commerce_tech/controllers/auth_controller.dart';
 import 'package:e_commerce_tech/controllers/wishlist_contoller.dart';
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/wishlist_model.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
@@ -54,11 +56,13 @@ class _WishListScreenState extends State<WishListScreen> {
             GridCustomWidget(
               items: wishlist.map((item) {
                 final product = item.product;
-                return ItemCardWidget(
-                  imageUrl: product?.imageUrl != null ? "product?.imageUrl?.first" ?? "" : "",
-                  title: product?.name ?? 'Unknown',
-                  price: "${product?.price ?? '--'}\$",
-                );
+                if (product != null) {
+                  return ItemCardWidget(
+                      product: product
+                  );
+                } else {
+                  return SizedBox();
+                }
               }).toList(),
             ),
             SizedBox(height: 130),
