@@ -28,25 +28,25 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     Future.delayed(Duration.zero, () {
-      loadHome(page: currentPage, context: Get.context!);
+      loadHome(page: currentPage, context: Get.context!, userId: "1");
       // loadCategory(context: Get.context!);
 
       scrollController.addListener(() {
         if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - 200) {
           if (!isLoading.value && hasMore.value) {
             currentPage++;
-            loadHome(page: currentPage, context: Get.context!);
+            loadHome(page: currentPage, context: Get.context!, userId: "1");
           }
         }
       });
     });
   }
 
-  Future<void> loadHome({required int page, required BuildContext context}) async {
+  Future<void> loadHome({required int page, required String userId, required BuildContext context}) async {
     isLoading.value = true;
 
     final response = await apiRepository.fetchData(
-      "$mainPoint/api/home/loadHome?page=$page&size=$pageSize",
+      "$mainPoint/api/home/loadHome/?page=$page&size=$pageSize&userId=$userId",
       headers: {
         'Authorization': TokenStorage.token ?? "",
         'Content-Type': 'application/json',

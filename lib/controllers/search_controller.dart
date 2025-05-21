@@ -52,7 +52,7 @@ class SearchingController extends GetxController {
 
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
-      List<ProductModel> products = (jsonData as List)
+      List<ProductModel> products = (jsonData["data"] as List)
           .map((item) => ProductModel.fromJson(item))
           .toList();
 
