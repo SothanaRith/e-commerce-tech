@@ -2,10 +2,8 @@ import 'dart:ffi';
 
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
-import 'package:e_commerce_tech/models/product_by_category.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
 import 'package:e_commerce_tech/screen/product_details_page/product_details_screen.dart';
-import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -20,7 +18,7 @@ class ItemCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: (){
         Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsScreen(id: product.id.toString(),),));
         },
@@ -44,7 +42,8 @@ class ItemCardWidget extends StatelessWidget {
                 Positioned(
                   top: 8,
                   right: 8,
-                  child: GestureDetector(
+                  child: product.isInWishlist != "null" ?
+                  GestureDetector(
                     onTap: () {
 
                     },
@@ -52,11 +51,11 @@ class ItemCardWidget extends StatelessWidget {
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(120),
-                        color: Colors.white.withAlpha(90),
+                        color: product.isInWishlist == 'true' ? theme.primaryColor : Colors.white.withAlpha(150),
                       ),
-                      child: SvgPicture.asset("assets/images/icons/heart.svg", width: 20,),
+                      child: product.isInWishlist == 'true' ? SvgPicture.asset("assets/images/icons/heart.svg", width: 20, color: Colors.white,) : SvgPicture.asset("assets/images/icons/heart.svg", width: 20,),
                     ),
-                  ),
+                  ) : SizedBox(),
                 ),
               ],
             ),
@@ -73,7 +72,7 @@ class ItemCardWidget extends StatelessWidget {
                     maxLines: 1,
                     ),
                     AppText.title1(
-                      '\$${product.isInWishlist}', customStyle: TextStyle(color: theme.primaryColor, fontSize: 14, overflow: TextOverflow.ellipsis,),
+                      '\$${product.price}', customStyle: TextStyle(color: theme.primaryColor, fontSize: 14, overflow: TextOverflow.ellipsis,),
                       maxLines: 1,
                     ),
                   ],
@@ -90,7 +89,7 @@ class ItemCardWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(120),
                     color: theme.primaryColor.withAlpha(30),
                   ),
-                  child: product.isInWishlist == 'false' ? SvgPicture.asset("assets/images/icons/add_store.svg", width: 20,) : SvgPicture.asset("assets/images/icons/apple.png", width: 20,),
+                  child: SvgPicture.asset("assets/images/icons/add_store.svg", width: 20,),
                 ),
               ),
             ],

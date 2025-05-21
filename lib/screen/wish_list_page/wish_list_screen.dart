@@ -1,13 +1,8 @@
-import 'package:e_commerce_tech/controllers/auth_controller.dart';
 import 'package:e_commerce_tech/controllers/wishlist_contoller.dart';
-import 'package:e_commerce_tech/helper/global.dart';
-import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/wishlist_model.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
-import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/grid_custom_widget.dart';
 import 'package:e_commerce_tech/widgets/item_card_widget.dart';
-import 'package:e_commerce_tech/widgets/list_view_horizontal_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -41,7 +36,6 @@ class _WishListScreenState extends State<WishListScreen> {
         isLoading = false;
       });
     });
-
   }
 
   @override
