@@ -68,12 +68,23 @@ class _FilterDialogWidgetState extends State<FilterDialogWidget> {
                               widget.filterContent(setModalState),
                               Padding(
                                 padding: const EdgeInsets.all(16.0),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                    widget.onApply();
-                                  },
-                                  child: const Text("Apply Filters"),
+                                child: Row(
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        widget.onApply();
+                                      },
+                                      child: const Text("Apply Filters"),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+
+                                      },
+                                      child: const Text("Clear Filters"),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
