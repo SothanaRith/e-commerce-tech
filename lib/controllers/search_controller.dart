@@ -12,6 +12,10 @@ class SearchingController extends GetxController {
   late final ApiRepository apiRepository;
 
   List<ProductModel> searchResults = [];
+  int currentPage = 1;
+  int pageSize = 10;
+  int totalPages = 1;
+  bool isLoading = false;
 
   SearchingController() {
     apiRepository = ApiRepository();
@@ -23,10 +27,20 @@ class SearchingController extends GetxController {
     String? categoryId,
     required String userId,
     double? minPrice,
-    double? maxPrice, double? minRating,
+    double? maxPrice,
+    double? minRating,
+    int page = 1,
+    int size = 10,
+    bool append = false, // New param to control appending results
   }) async {
+    if (isLoading) return; // Prevent concurrent calls
+    isLoading = true;
+    update();
+
     final Map<String, String> queryParameters = {
       'query': search,
+      'page': page.toString(),
+      'size': size.toString(),
     };
 
     if (categoryId != null && categoryId.isNotEmpty) {
@@ -38,6 +52,9 @@ class SearchingController extends GetxController {
     if (maxPrice != null) {
       queryParameters['maxPrice'] = maxPrice.toString();
     }
+    if (minRating != null && minRating > 0) {
+      queryParameters['minRating'] = minRating.toString();
+    }
 
     final queryString = Uri(queryParameters: queryParameters).query;
 
@@ -45,20 +62,35 @@ class SearchingController extends GetxController {
       '$mainPoint/api/product/search/$userId?$queryString',
       headers: {
         'Authorization': TokenStorage.token ?? "",
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       context: context,
     );
 
     if (response.data != null) {
-      var jsonData = jsonDecode(response.data!);
-      List<ProductModel> products = (jsonData["data"] as List)
+      final jsonData = jsonDecode(response.data!);
+      final List<dynamic> dataList = jsonData["data"] ?? [];
+
+      List<ProductModel> products = dataList
           .map((item) => ProductModel.fromJson(item))
           .toList();
 
-      searchResults = products;
-      update();  // notify GetBuilder widgets to rebuild
+      if (append) {
+        searchResults.addAll(products);
+      } else {
+        searchResults = products;
+      }
+
+      currentPage = page;
+      pageSize = size;
+      totalPages = jsonData["pagination"]?["totalPages"] ?? 1;
+
+      isLoading = false;
+      update();
     } else {
+      isLoading = false;
+      update();
+
       showCustomDialog(
         context: context,
         type: DialogType.error,
@@ -69,6 +101,8 @@ class SearchingController extends GetxController {
 
   void clearResults() {
     searchResults = [];
+    currentPage = 1;
+    totalPages = 1;
     update();
   }
 }

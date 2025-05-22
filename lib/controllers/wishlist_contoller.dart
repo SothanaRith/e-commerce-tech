@@ -92,11 +92,6 @@ class WishlistController extends GetxController {
           type: DialogType.success,
           title: "${jsonData["message"]}",
           okOnPress: () {
-            goOff(
-                this,
-                OtpScreen(
-                  type: ScreenVerifyType.signinPhoneNumber,
-                ));
           });
     } else {
       var jsonData = jsonDecode(response.error!);

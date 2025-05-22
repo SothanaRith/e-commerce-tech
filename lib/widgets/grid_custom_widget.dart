@@ -19,7 +19,7 @@ class GridCustomWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       padding: padding ?? EdgeInsets.all(12.0),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount, // Two items per row
