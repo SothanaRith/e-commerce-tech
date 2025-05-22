@@ -19,15 +19,17 @@ class ProductByCategoryScreen extends StatefulWidget {
 }
 
 class _ProductByCategoryScreenState extends State<ProductByCategoryScreen> {
-  // final CategoryController controller = Get.put(CategoryController(categoryId: widget.categoryId, context: context));
+  final CategoryController controller = Get.put(CategoryController());
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    controller.listProByCategory(categoryId: widget.categoryId, context: context);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(CategoryController(
-      categoryId: widget.categoryId.toString(),
-      context: context,
-    ));
     return Scaffold(
       appBar: AppBar(title: Text(widget.categoryName)),
       body: Obx(() {
