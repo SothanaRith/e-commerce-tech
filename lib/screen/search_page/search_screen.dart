@@ -121,7 +121,6 @@ class _SearchScreenState extends State<SearchScreen> {
       setState(() {
         selectedCategory = category;
       });
-      _searchProducts(page: 1);
     });
   }
 
@@ -155,76 +154,76 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                       ),
 
-                      // FilterDialogWidget(
-                      //   child: Container(
-                      //     padding: const EdgeInsets.all(12),
-                      //     decoration: BoxDecoration(
-                      //       borderRadius: BorderRadius.circular(100),
-                      //       color: theme.primaryColor,
-                      //     ),
-                      //     child: SvgPicture.asset("assets/images/icons/filter.svg"),
-                      //   ),
-                      //   filterContent: (setModalState) => SingleChildScrollView(
-                      //     child: Column(
-                      //       crossAxisAlignment: CrossAxisAlignment.start,
-                      //       children: [
-                      //         Padding(
-                      //           padding: const EdgeInsets.all(12.0),
-                      //           child: AppText.title1("Category"),
-                      //         ),
-                      //         categoryController.category == null
-                      //             ? const Center(child: CircularProgressIndicator())
-                      //             : ListViewHorizontalWidget(
-                      //           items: categoryController.category!.categories.map((cat) {
-                      //             return TextBtnWidget(
-                      //               title: cat.name,
-                      //               onTap: () {
-                      //                 setCategory(cat.id, setModalState);
-                      //               },
-                      //             );
-                      //           }).toList(),
-                      //           height: 40,
-                      //         ),
-                      //         Padding(
-                      //           padding: const EdgeInsets.all(12.0),
-                      //           child: AppText.title1("Pricing Range"),
-                      //         ),
-                      //         RangeSliderWidget(
-                      //           min: 0,
-                      //           max: 3000,
-                      //           start: priceRange.start,
-                      //           end: priceRange.end,
-                      //           onChanged: (values) {
-                      //             setModalState(() {});
-                      //             setState(() => priceRange = values);
-                      //           },
-                      //         ),
-                      //         Padding(
-                      //           padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6),
-                      //           child: AppText.title1("Reviews"),
-                      //         ),
-                      //         Row(
-                      //           children: List.generate(5, (index) {
-                      //             return IconButton(
-                      //               icon: Icon(
-                      //                 Icons.star,
-                      //                 color: selectedRating! >= index + 1 ? Colors.amber : Colors.grey,
-                      //               ),
-                      //               onPressed: () {
-                      //                 setModalState(() {});
-                      //                 setState(() => selectedRating = (index + 1).toDouble());
-                      //               },
-                      //             );
-                      //           }),
-                      //         ),
-                      //         const SizedBox(height: 12),
-                      //       ],
-                      //     ),
-                      //   ),
-                      //   onApply: () {
-                      //     _searchProducts(page: 1);
-                      //   },
-                      // ),
+                      FilterDialogWidget(
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            color: theme.primaryColor,
+                          ),
+                          child: SvgPicture.asset("assets/images/icons/filter.svg"),
+                        ),
+                        filterContent: (setModalState) => SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: AppText.title1("Category"),
+                              ),
+                              categoryController.category == null
+                                  ? const Center(child: CircularProgressIndicator())
+                                  : ListViewHorizontalWidget(
+                                items: categoryController.category!.categories.map((cat) {
+                                  return TextBtnWidget(
+                                    title: cat.name,
+                                    onTap: () {
+                                      setCategory(cat.id, setModalState);
+                                    },
+                                  );
+                                }).toList(),
+                                height: 40,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: AppText.title1("Pricing Range"),
+                              ),
+                              RangeSliderWidget(
+                                min: 0,
+                                max: 3000,
+                                start: priceRange.start,
+                                end: priceRange.end,
+                                onChanged: (values) {
+                                  setModalState(() {});
+                                  setState(() => priceRange = values);
+                                },
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6),
+                                child: AppText.title1("Reviews"),
+                              ),
+                              Row(
+                                children: List.generate(5, (index) {
+                                  return IconButton(
+                                    icon: Icon(
+                                      Icons.star,
+                                      color: selectedRating! >= index + 1 ? Colors.amber : Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      setModalState(() {});
+                                      setState(() => selectedRating = (index + 1).toDouble());
+                                    },
+                                  );
+                                }),
+                              ),
+                              const SizedBox(height: 12),
+                            ],
+                          ),
+                        ),
+                        onApply: () {
+                          _searchProducts(page: 1);
+                        },
+                      ),
 
                     ],
                   ),
