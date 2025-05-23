@@ -8,11 +8,13 @@ class FilterDialogWidget extends StatefulWidget {
     required this.child,
     required this.filterContent,
     required this.onApply,
+    required this.onClear,
   });
 
   final Widget child;
   final Widget Function(StateSetter) filterContent;
   final VoidCallback onApply;
+  final VoidCallback onClear;
 
   @override
   State<FilterDialogWidget> createState() => _FilterDialogWidgetState();
@@ -80,7 +82,7 @@ class _FilterDialogWidgetState extends State<FilterDialogWidget> {
                                     ElevatedButton(
                                       onPressed: () {
                                         Navigator.of(context).pop();
-
+                                        widget.onClear();
                                       },
                                       child: const Text("Clear Filters"),
                                     ),

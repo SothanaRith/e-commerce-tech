@@ -34,7 +34,7 @@ class _SearchScreenState extends State<SearchScreen> {
   late ScrollController _scrollController;
   bool _isLoadingMore = false;
 
-  String? selectedCategory;
+  List<String> selectedCategories = [];
   RangeValues priceRange = const RangeValues(0, 1000);
   double? selectedRating = 0;
   @override
@@ -78,7 +78,7 @@ class _SearchScreenState extends State<SearchScreen> {
       searchController.searchProduct(
         context: context,
         search: searchText.text.trim(),
-        categoryId: selectedCategory,
+        categoryId: selectedCategories.isNotEmpty ? selectedCategories.join(',') : null,
         minPrice: priceRange.start,
         maxPrice: priceRange.end,
         minRating: selectedRating,
@@ -94,7 +94,7 @@ class _SearchScreenState extends State<SearchScreen> {
         searchController.searchProduct(
           context: context,
           search: searchText.text.trim(),
-          categoryId: selectedCategory,
+          categoryId: selectedCategories.isNotEmpty ? selectedCategories.join(',') : null,
           minPrice: priceRange.start,
           maxPrice: priceRange.end,
           minRating: selectedRating,
@@ -109,19 +109,23 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
+  void toggleCategory(String categoryId, void Function(void Function()) state) {
+    Future.delayed(Duration.zero, () {
+      state(() {});
+      setState(() {
+        if (selectedCategories.contains(categoryId)) {
+          selectedCategories.remove(categoryId);
+        } else {
+          selectedCategories.add(categoryId);
+        }
+      });
+    });
+  }
+
   void _loadMore() {
     if (searchController.currentPage < searchController.totalPages) {
       _searchProducts(page: searchController.currentPage + 1);
     }
-  }
-
-  void setCategory(String? category, void Function(void Function()) state) {
-    Future.delayed(Duration.zero, () {
-      state(() {});
-      setState(() {
-        selectedCategory = category;
-      });
-    });
   }
 
   @override
@@ -177,8 +181,9 @@ class _SearchScreenState extends State<SearchScreen> {
                                 items: categoryController.category!.categories.map((cat) {
                                   return TextBtnWidget(
                                     title: cat.name,
+                                    isSelected: selectedCategories.contains(cat.id), // <-- Add this if your widget supports it
                                     onTap: () {
-                                      setCategory(cat.id, setModalState);
+                                      toggleCategory(cat.id, setModalState);
                                     },
                                   );
                                 }).toList(),
@@ -221,6 +226,15 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                         ),
                         onApply: () {
+                          _searchProducts(page: 1);
+                        },
+                        onClear: () {
+                          setState(() {
+                            selectedCategories = [];
+                            priceRange = const RangeValues(0, 1000);
+                            selectedRating = 0;
+                            searchText.clear();
+                          });
                           _searchProducts(page: 1);
                         },
                       ),
