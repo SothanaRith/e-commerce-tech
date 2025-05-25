@@ -6,6 +6,7 @@ import 'package:e_commerce_tech/screen/check_out_page/payment_verify_screen.dart
 import 'package:e_commerce_tech/screen/check_out_page/select_delivery_option_screen.dart';
 import 'package:e_commerce_tech/screen/check_out_page/shipping_address_screen.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
+import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/item_select_widget.dart';
 import 'package:e_commerce_tech/widgets/list_view_custom_widget.dart';
@@ -34,20 +35,15 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Checkout'),
-        backgroundColor: theme.primaryColor,
-      ),
+      appBar: customAppBar(type: this, title: "Checkout", context: context),
       body: GetBuilder<CartController>(
         builder: (logic) {
           if (logic.isLoadingProducts.value) {
             return const Center(child: CircularProgressIndicator());
           }
-
           if (logic.cartList.isEmpty) {
             return const Center(child: Text("Your cart is empty."));
           }
-
           return SingleChildScrollView(
             padding: const EdgeInsets.all(12.0),
             child: Column(
@@ -223,8 +219,12 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                 ElevatedButton(
                   onPressed: () {
                     // Proceed to payment or order confirmation
-                    // For example:
-                    goTo(this, PaymentMethodScreen());
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PaymentMethodScreen(),
+                      ),
+                    );
                   },
                   child: AppText.title2("check out", customStyle: TextStyle(color: theme.secondaryHeaderColor),),
                   style: ElevatedButton.styleFrom(

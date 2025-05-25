@@ -1,4 +1,6 @@
+import 'package:e_commerce_tech/controllers/order_contoller.dart';
 import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,9 +13,13 @@ class PaymentMethodScreen extends StatefulWidget {
 }
 
 class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
+
+  OrderController orderController = OrderController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: customAppBar(type: this, title: "Payment method", context: context),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(12.0),

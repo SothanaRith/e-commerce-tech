@@ -14,7 +14,7 @@ class OrderController extends GetxController {
   Future<bool> placeOrder({
     required BuildContext context,
     required String userId,
-    required List<Map<String, dynamic>> items, // [{productId, variantId?, quantity}]
+    required List<Map<String, dynamic>> items,
     required String paymentType,
   }) async {
     try {

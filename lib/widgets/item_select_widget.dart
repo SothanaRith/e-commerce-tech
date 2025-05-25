@@ -43,67 +43,71 @@ class ItemSelectWidget extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppText.title1(title),
-                        AppText.title1(
-                          prices,
-                          customStyle: TextStyle(color: theme.primaryColor),
-                        ),
-                        Container(
-                          padding:
-                              EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: theme.primaryColor.withAlpha(60),
-                          ),
-                          child: AppText.caption(
-                            "Free Delivery",
-                            customStyle: TextStyle(
-                                color: theme.primaryColor,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (count != null) ...[
-                      Row(
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          GestureDetector(
-                            onTap: () => count!(false), // Decrement
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 14, vertical: 6),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(4),
-                                shape: BoxShape.rectangle,
-                                color: theme.highlightColor,
-                              ),
-                              child: AppText.title("-"),
-                            ),
+                          AppText.title1(title),
+                          AppText.title1(
+                            prices,
+                            customStyle: TextStyle(color: theme.primaryColor),
                           ),
-                          SizedBox(width: 12),
-                          AppText.title(countNumber.toString()),
-                          SizedBox(width: 12),
-                          GestureDetector(
-                            onTap: () => count!(true), // Increment
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 6),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(4),
-                                shape: BoxShape.rectangle,
-                                color: theme.primaryColor,
-                              ),
-                              child: AppText.title(
-                                "+",
-                                customStyle: TextStyle(
-                                    color: theme.secondaryHeaderColor),
-                              ),
+                          Container(
+                            padding:
+                                EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: theme.primaryColor.withAlpha(60),
+                            ),
+                            child: AppText.caption(
+                              "Free Delivery",
+                              customStyle: TextStyle(
+                                  color: theme.primaryColor,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                         ],
+                      ),
+                    ),
+                    if (count != null) ...[
+                      Expanded(
+                        child: Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () => count!(false), // Decrement
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 14, vertical: 6),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  shape: BoxShape.rectangle,
+                                  color: theme.highlightColor,
+                                ),
+                                child: AppText.title("-"),
+                              ),
+                            ),
+                            SizedBox(width: 12),
+                            AppText.title(countNumber.toString()),
+                            SizedBox(width: 12),
+                            GestureDetector(
+                              onTap: () => count!(true), // Increment
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  shape: BoxShape.rectangle,
+                                  color: theme.primaryColor,
+                                ),
+                                child: AppText.title(
+                                  "+",
+                                  customStyle: TextStyle(
+                                      color: theme.secondaryHeaderColor),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ] else ...[
                       Container(
