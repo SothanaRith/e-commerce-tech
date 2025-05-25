@@ -35,6 +35,7 @@ class _WishListScreenState extends State<WishListScreen> {
         wishlist = data;
         isLoading = false;
       });
+      print("object === $wishlist");
     });
   }
 
@@ -50,6 +51,7 @@ class _WishListScreenState extends State<WishListScreen> {
             GridCustomWidget(
               items: wishlist.map((item) {
                 final product = item.product;
+                print("object== ${item.product}");
                 if (product != null) {
                   return ItemCardWidget(
                       product: product

@@ -23,7 +23,7 @@ class WishlistModel {
     productId = json['productId'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
-    product = json['Product'] != null ? ProductModel.fromJson(json['Product']) : null;
+    product = json['product'] != null ? ProductModel.fromJson(json['product']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -34,7 +34,7 @@ class WishlistModel {
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
     if (product != null) {
-      data['Product'] = product!.toJson();
+      data['product'] = product!.toJson();
     }
     return data;
   }
