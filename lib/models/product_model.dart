@@ -18,6 +18,10 @@ class ProductModel {
   List<Reviews>? reviews;
   List<RelatedProduct>? relatedProducts;
 
+  // NEW fields
+  int? cartQuantity; // default 0 if not present
+  bool? isInCart;    // default false if not present
+
   ProductModel(
       {this.id,
         this.categoryId,
@@ -34,9 +38,18 @@ class ProductModel {
         this.category,
         this.variants,
         this.reviews,
-        this.relatedProducts});
+        this.relatedProducts,
+        this.cartQuantity = 0,  // default
+        this.isInCart = false   // default
+      });
 
-  ProductModel.fromJson(Map<String, dynamic> json) {
+  ProductModel.fromJson(Map<String, dynamic> json)
+      : cartQuantity = json['cartQuantity'] != null
+      ? int.tryParse(json['cartQuantity'].toString()) ?? 0
+      : 0,
+        isInCart = json['isInCart'] != null
+            ? (json['isInCart'] == true || json['isInCart'].toString() == '1')
+            : false {
     id = json['id'].toString();
     categoryId = json['categoryId'].toString();
     reviewId = json['reviewId'].toString();
@@ -51,9 +64,8 @@ class ProductModel {
     createdAt = json['createdAt'].toString();
     updatedAt = json['updatedAt'].toString();
     isInWishlist = json['isInWishlist'].toString();
-    category = json['Category'] != null
-        ? Category.fromJson(json['Category'])
-        : null;
+    category =
+    json['Category'] != null ? Category.fromJson(json['Category']) : null;
     if (json['Variants'] != null) {
       variants = <Variants>[];
       json['Variants'].forEach((v) {
@@ -72,7 +84,6 @@ class ProductModel {
         relatedProducts!.add(RelatedProduct.fromJson(v));
       });
     }
-
   }
 
   Map<String, dynamic> toJson() {
@@ -89,6 +100,11 @@ class ProductModel {
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
     data['isInWishlist'] = isInWishlist;
+
+    // New fields added to JSON output
+    data['cartQuantity'] = cartQuantity;
+    data['isInCart'] = isInCart;
+
     if (category != null) {
       data['Category'] = category!.toJson();
     }
@@ -99,8 +115,7 @@ class ProductModel {
       data['Reviews'] = reviews!.map((v) => v.toJson()).toList();
     }
     if (relatedProducts != null) {
-      data['RelatedProducts'] =
-          relatedProducts!.map((v) => v).toList();
+      data['RelatedProducts'] = relatedProducts!.map((v) => v.toJson()).toList();
     }
     return data;
   }

@@ -1,6 +1,5 @@
-import 'dart:ffi';
-
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:e_commerce_tech/controllers/cart_controller.dart';
 import 'package:e_commerce_tech/controllers/wishlist_contoller.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
@@ -24,28 +23,106 @@ class ItemCardWidget extends StatefulWidget {
 }
 
 class _ItemCardWidgetState extends State<ItemCardWidget> {
-
   final WishlistController wishlistController = Get.put(WishlistController());
+  final CartController cartController = Get.put(CartController());
+
+  int _dialogQuantity = 1;
+
+  void _showAddToCartQuantityDialog() {
+    _dialogQuantity = widget.product.cartQuantity == 0 ? 1 : widget.product.cartQuantity ?? 1;
+
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.info,
+      animType: AnimType.bottomSlide,
+      title: 'Select Quantity',
+      body: StatefulBuilder(
+        builder: (context, setState) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
+            child: Column(
+              children: [
+                AppText.title('Select Quantity'),
+                SizedBox(height: 10,),
+                AppText.body2('Before add to cart you need to insert quantity'),
+                SizedBox(height: 10,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Decrement Button
+                    IconButton(
+                      icon: Icon(Icons.remove_circle_outline),
+                      iconSize: 32,
+                      onPressed: () {
+                        if (_dialogQuantity > 1) {
+                          setState(() {
+                            _dialogQuantity--;
+                          });
+                        }
+                      },
+                    ),
+
+                    SizedBox(width: 20),
+
+                    // Quantity display
+                    Text(
+                      '$_dialogQuantity',
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+
+                    SizedBox(width: 20),
+
+                    // Increment Button
+                    IconButton(
+                      icon: Icon(Icons.add_circle_outline),
+                      iconSize: 32,
+                      onPressed: () {
+                        setState(() {
+                          _dialogQuantity++;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+      btnCancelOnPress: () {},
+      btnOkOnPress: () {
+        cartController.addItemToCart(
+          context: context,
+          userId: '1',
+          productId: widget.product.id ?? '0',
+          quantity: _dialogQuantity.toString(),
+        );
+      },
+    ).show();
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsScreen(id: widget.product.id.toString(),),));
-        },
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductDetailsScreen(id: widget.product.id.toString()),
+          ),
+        );
+      },
       child: Column(
-        spacing: 2,
         children: [
-          // Maintain aspect ratio for the image
           AspectRatio(
-            aspectRatio: 1, // Square image
+            aspectRatio: 1,
             child: Stack(
               children: [
                 Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: NetworkImage("$mainPoint${widget.product.imageUrl?.first ?? ""}"),
-                      fit: BoxFit.cover, // Ensure the image scales properly
+                      fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -53,33 +130,53 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                 Positioned(
                   top: 8,
                   right: 8,
-                  child: widget.product.isInWishlist != "null" ?
-                  GestureDetector(
+                  child: widget.product.isInWishlist != "null"
+                      ? GestureDetector(
                     onTap: () {
                       showCustomDialog(
-                          context: context,
-                          type: DialogType.info,
-                          title: "Are you sure you want to ${widget.product.isInWishlist == 'true' ? "remove" : "add"} ${widget.product.name} to wishlist ?",
-                          okOnPress: () {
-                            if (widget.product.isInWishlist == 'true') {
-                              wishlistController.deleteWishlist(context: context, userId: "1", productId: widget.product.id ?? '');
-                            } else {
-                              wishlistController.createWishlist(context: context, userId: "1", productId: widget.product.id ?? '');
-                            }
-                          },
-                          cancelOnPress: () {
-
-                          });
+                        context: context,
+                        type: DialogType.info,
+                        title:
+                        "Are you sure you want to ${widget.product.isInWishlist == 'true' ? "remove" : "add"} ${widget.product.name} to wishlist ?",
+                        okOnPress: () {
+                          if (widget.product.isInWishlist == 'true') {
+                            wishlistController.deleteWishlist(
+                              context: context,
+                              userId: "1",
+                              productId: widget.product.id ?? '',
+                            );
+                          } else {
+                            wishlistController.createWishlist(
+                              context: context,
+                              userId: "1",
+                              productId: widget.product.id ?? '',
+                            );
+                          }
+                        },
+                        cancelOnPress: () {},
+                      );
                     },
                     child: Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(120),
-                        color: widget.product.isInWishlist == 'true' ? theme.primaryColor : Colors.white.withAlpha(150),
+                        color: widget.product.isInWishlist == 'true'
+                            ? theme.primaryColor
+                            : Colors.white.withAlpha(150),
                       ),
-                      child: widget.product.isInWishlist == 'true' ? SvgPicture.asset("assets/images/icons/heart.svg", width: 20, color: Colors.white,) : SvgPicture.asset("assets/images/icons/heart.svg", width: 20,),
+                      child: widget.product.isInWishlist == 'true'
+                          ? SvgPicture.asset(
+                        "assets/images/icons/heart.svg",
+                        width: 20,
+                        color: Colors.white,
+                      )
+                          : SvgPicture.asset(
+                        "assets/images/icons/heart.svg",
+                        width: 20,
+                      ),
                     ),
-                  ) : SizedBox(),
+                  )
+                      : SizedBox(),
                 ),
               ],
             ),
@@ -92,28 +189,69 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppText.title2(widget.product.name ?? '', customStyle: const TextStyle(fontSize: 12, overflow: TextOverflow.ellipsis, ),
-                    maxLines: 1,
+                    AppText.title2(
+                      widget.product.name ?? '',
+                      customStyle: const TextStyle(
+                        fontSize: 12,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      maxLines: 1,
                     ),
                     AppText.title1(
-                      '\$${widget.product.price}', customStyle: TextStyle(color: theme.primaryColor, fontSize: 14, overflow: TextOverflow.ellipsis,),
+                      '\$${widget.product.price}',
+                      customStyle: TextStyle(
+                        color: theme.primaryColor,
+                        fontSize: 14,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       maxLines: 1,
                     ),
                   ],
                 ),
               ),
-              SizedBox(width: 6,),
+              SizedBox(width: 6),
               GestureDetector(
                 onTap: () {
-
+                  _showAddToCartQuantityDialog();
                 },
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(120),
-                    color: theme.primaryColor.withAlpha(30),
-                  ),
-                  child: SvgPicture.asset("assets/images/icons/add_store.svg", width: 20,),
+                child: Stack(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      margin: EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: widget.product.isInCart == true
+                            ? theme.primaryColor
+                            : theme.primaryColor.withAlpha(30),
+                      ),
+                      child: SvgPicture.asset(
+                        "assets/images/icons/add_store.svg",
+                        width: 20,
+                        color: widget.product.isInCart == true ? Colors.white : theme.primaryColor,
+                      ),
+                    ),
+                    if (widget.product.isInCart == true)
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.red,
+                          ),
+                          child: AppText.caption(
+                            '${widget.product.cartQuantity}',
+                            customStyle: TextStyle(
+                              color: theme.secondaryHeaderColor,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            maxLines: 1,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ],

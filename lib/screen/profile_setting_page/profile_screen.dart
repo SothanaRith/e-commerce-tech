@@ -1,3 +1,4 @@
+import 'package:e_commerce_tech/screen/check_out_page/check_out_screen.dart';
 import 'package:e_commerce_tech/screen/forget_password_page/forget_password_screen.dart';
 import 'package:e_commerce_tech/screen/forget_password_page/help_center.dart';
 import 'package:e_commerce_tech/screen/home_page/home_screen.dart';
@@ -25,6 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     MenuItem(
       title: 'My Orders',
       iconName:"assets/images/icons/shopping_bag.svg",
+      screen: const CheckOutScreen(),
       hasSpecialAction: false,
     ),
     MenuItem(

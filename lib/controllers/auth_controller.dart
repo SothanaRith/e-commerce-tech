@@ -6,6 +6,7 @@ import 'package:e_commerce_tech/screen/forget_password_page/reset_password_scree
 import 'package:e_commerce_tech/screen/home_page/home_screen.dart';
 import 'package:e_commerce_tech/screen/location_page/location_screen.dart';
 import 'package:e_commerce_tech/screen/login_page/login_screen.dart';
+import 'package:e_commerce_tech/screen/nav_bar_screen.dart';
 import 'package:e_commerce_tech/screen/verify_code_page/verify_code_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
@@ -187,7 +188,7 @@ class AuthController extends GetxController {
                 type: DialogType.success,
                 title: "${jsonData["message"]}",
                 okOnPress: () {
-                  goOff(this, HomeScreen());
+                  goOff(this, MainScreen());
                 });
           } else if (type == ScreenVerifyType.forgetPassword) {
             showCustomDialog(
