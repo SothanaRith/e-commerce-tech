@@ -1,4 +1,5 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:e_commerce_tech/controllers/cart_controller.dart';
 import 'package:e_commerce_tech/controllers/product_controller.dart';
 import 'package:e_commerce_tech/controllers/wishlist_contoller.dart';
 import 'package:e_commerce_tech/helper/global.dart';
@@ -28,6 +29,83 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   ProductModel? productItem;
 
   String? selectedImageUrl; // Track current main image
+
+  final CartController cartController = Get.put(CartController());
+
+  int _dialogQuantity = 1;
+
+  void _showAddToCartQuantityDialog() {
+    _dialogQuantity = productItem?.cartQuantity == 0 ? 1 : productItem?.cartQuantity ?? 1;
+
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.info,
+      animType: AnimType.bottomSlide,
+      title: 'Select Quantity',
+      body: StatefulBuilder(
+        builder: (context, setState) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
+            child: Column(
+              children: [
+                AppText.title('Select Quantity'),
+                SizedBox(height: 10,),
+                AppText.body2('Before add to cart you need to insert quantity'),
+                SizedBox(height: 10,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Decrement Button
+                    IconButton(
+                      icon: Icon(Icons.remove_circle_outline),
+                      iconSize: 32,
+                      onPressed: () {
+                        if (_dialogQuantity > 1) {
+                          setState(() {
+                            _dialogQuantity--;
+                          });
+                        }
+                      },
+                    ),
+
+                    SizedBox(width: 20),
+
+                    // Quantity display
+                    Text(
+                      '$_dialogQuantity',
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+
+                    SizedBox(width: 20),
+
+                    // Increment Button
+                    IconButton(
+                      icon: Icon(Icons.add_circle_outline),
+                      iconSize: 32,
+                      onPressed: () {
+                        setState(() {
+                          _dialogQuantity++;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+      btnCancelOnPress: () {},
+      btnOkOnPress: () {
+        cartController.addItemToCart(
+          context: context,
+          userId: '1',
+          productId: productItem?.id ?? '0',
+          quantity: _dialogQuantity.toString(),
+        );
+      },
+    ).show();
+  }
 
   @override
   void initState() {
@@ -214,9 +292,58 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               SizedBox(
                                 width: 10,
                               ),
-                              AppText.h3(
-                                productItem?.price ?? "",
-                                customStyle: TextStyle(color: theme.primaryColor),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  AppText.h3(
+                                    productItem?.price ?? "",
+                                    customStyle: TextStyle(color: theme.primaryColor),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      _showAddToCartQuantityDialog();
+                                    },
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.all(4),
+                                          margin: EdgeInsets.all(2),
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: productItem?.isInCart == true
+                                                ? theme.primaryColor
+                                                : theme.primaryColor.withAlpha(30),
+                                          ),
+                                          child: SvgPicture.asset(
+                                            "assets/images/icons/add_store.svg",
+                                            width: 20,
+                                            color: productItem?.isInCart == true ? Colors.white : theme.primaryColor,
+                                          ),
+                                        ),
+                                        if (productItem?.isInCart == true)
+                                          Positioned(
+                                            top: 0,
+                                            right: 0,
+                                            child: Container(
+                                              padding: const EdgeInsets.all(4),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.red,
+                                              ),
+                                              child: AppText.caption(
+                                                '${productItem?.cartQuantity}',
+                                                customStyle: TextStyle(
+                                                  color: theme.secondaryHeaderColor,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                                maxLines: 1,
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),

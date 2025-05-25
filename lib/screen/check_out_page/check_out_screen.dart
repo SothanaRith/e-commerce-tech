@@ -1,6 +1,8 @@
 import 'package:e_commerce_tech/controllers/cart_controller.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/screen/check_out_page/payment_method_screen.dart';
+import 'package:e_commerce_tech/screen/check_out_page/payment_verify_screen.dart';
 import 'package:e_commerce_tech/screen/check_out_page/select_delivery_option_screen.dart';
 import 'package:e_commerce_tech/screen/check_out_page/shipping_address_screen.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
@@ -222,8 +224,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                   onPressed: () {
                     // Proceed to payment or order confirmation
                     // For example:
-                    // goTo(this, PaymentScreen());
-                    Get.snackbar('Checkout', 'Proceed to payment (not implemented)');
+                    goTo(this, PaymentMethodScreen());
                   },
                   child: AppText.title2("check out", customStyle: TextStyle(color: theme.secondaryHeaderColor),),
                   style: ElevatedButton.styleFrom(
