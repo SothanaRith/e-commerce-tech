@@ -222,7 +222,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => PaymentMethodScreen(),
+                        builder: (context) => PaymentMethodScreen(cart: logic.cartList,),
                       ),
                     );
                   },
