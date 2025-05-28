@@ -16,7 +16,7 @@ class ProductModel {
   Category? category;
   List<Variants>? variants;
   List<Reviews>? reviews;
-  List<RelatedProduct>? relatedProducts;
+  List<ProductModel>? relatedProducts;
 
   // NEW fields
   int? cartQuantity; // default 0 if not present
@@ -81,7 +81,7 @@ class ProductModel {
     if (json['RelatedProducts'] != null) {
       relatedProducts = [];
       json['RelatedProducts'].forEach((v) {
-        relatedProducts!.add(RelatedProduct.fromJson(v));
+        relatedProducts!.add(ProductModel.fromJson(v));
       });
     }
   }

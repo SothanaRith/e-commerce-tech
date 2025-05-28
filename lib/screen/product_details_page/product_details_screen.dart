@@ -451,7 +451,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         items: List.generate(
                             productItem!.relatedProducts?.length ?? 0, (index) {
                           final related = productItem!.relatedProducts![index];
-                          return ItemCardWidget(product: productItem!);
+                          return ItemCardWidget(product: related);
                         }),
                       ),
                       const SizedBox(height: 24),
