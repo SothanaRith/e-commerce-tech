@@ -42,13 +42,14 @@ class _SearchScreenState extends State<SearchScreen> {
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 200) {
         _loadMore();
       }
     });
 
     Future.delayed(Duration.zero, () {
-     categoryController.fetchAllCategory(context: context);
+      categoryController.fetchAllCategory(context: context);
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -78,7 +79,8 @@ class _SearchScreenState extends State<SearchScreen> {
       searchController.searchProduct(
         context: context,
         search: searchText.text.trim(),
-        categoryId: selectedCategories.isNotEmpty ? selectedCategories.join(',') : null,
+        categoryId:
+            selectedCategories.isNotEmpty ? selectedCategories.join(',') : null,
         minPrice: priceRange.start,
         maxPrice: priceRange.end,
         minRating: selectedRating,
@@ -91,10 +93,13 @@ class _SearchScreenState extends State<SearchScreen> {
       // Load more — append results
       if (!_isLoadingMore) {
         _isLoadingMore = true;
-        searchController.searchProduct(
+        searchController
+            .searchProduct(
           context: context,
           search: searchText.text.trim(),
-          categoryId: selectedCategories.isNotEmpty ? selectedCategories.join(',') : null,
+          categoryId: selectedCategories.isNotEmpty
+              ? selectedCategories.join(',')
+              : null,
           minPrice: priceRange.start,
           maxPrice: priceRange.end,
           minRating: selectedRating,
@@ -102,7 +107,8 @@ class _SearchScreenState extends State<SearchScreen> {
           page: page,
           size: 10,
           append: true,
-        ).then((_) {
+        )
+            .then((_) {
           _isLoadingMore = false;
         });
       }
@@ -153,11 +159,11 @@ class _SearchScreenState extends State<SearchScreen> {
                           },
                           leftIcon: Padding(
                             padding: const EdgeInsets.all(12.0),
-                            child: SvgPicture.asset("assets/images/icons/search.svg"),
+                            child: SvgPicture.asset(
+                                "assets/images/icons/search.svg"),
                           ),
                         ),
                       ),
-
                       FilterDialogWidget(
                         child: Container(
                           padding: const EdgeInsets.all(12),
@@ -165,7 +171,8 @@ class _SearchScreenState extends State<SearchScreen> {
                             borderRadius: BorderRadius.circular(100),
                             color: theme.primaryColor,
                           ),
-                          child: SvgPicture.asset("assets/images/icons/filter.svg"),
+                          child: SvgPicture.asset(
+                              "assets/images/icons/filter.svg"),
                         ),
                         filterContent: (setModalState) => SingleChildScrollView(
                           child: Column(
@@ -176,19 +183,25 @@ class _SearchScreenState extends State<SearchScreen> {
                                 child: AppText.title1("Category"),
                               ),
                               categoryController.category == null
-                                  ? const Center(child: CircularProgressIndicator())
+                                  ? const Center(
+                                      child: CircularProgressIndicator())
                                   : ListViewHorizontalWidget(
-                                items: categoryController.category!.categories.map((cat) {
-                                  return TextBtnWidget(
-                                    title: cat.name,
-                                    isSelected: selectedCategories.contains(cat.id), // <-- Add this if your widget supports it
-                                    onTap: () {
-                                      toggleCategory(cat.id, setModalState);
-                                    },
-                                  );
-                                }).toList(),
-                                height: 40,
-                              ),
+                                      items: categoryController
+                                          .category!.categories
+                                          .map((cat) {
+                                        return TextBtnWidget(
+                                          title: cat.name,
+                                          isSelected:
+                                              selectedCategories.contains(cat
+                                                  .id), // <-- Add this if your widget supports it
+                                          onTap: () {
+                                            toggleCategory(
+                                                cat.id, setModalState);
+                                          },
+                                        );
+                                      }).toList(),
+                                      height: 40,
+                                    ),
                               Padding(
                                 padding: const EdgeInsets.all(12.0),
                                 child: AppText.title1("Pricing Range"),
@@ -204,7 +217,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                 },
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12.0, vertical: 6),
                                 child: AppText.title1("Reviews"),
                               ),
                               Row(
@@ -212,11 +226,14 @@ class _SearchScreenState extends State<SearchScreen> {
                                   return IconButton(
                                     icon: Icon(
                                       Icons.star,
-                                      color: selectedRating! >= index + 1 ? Colors.amber : Colors.grey,
+                                      color: selectedRating! >= index + 1
+                                          ? Colors.amber
+                                          : Colors.grey,
                                     ),
                                     onPressed: () {
                                       setModalState(() {});
-                                      setState(() => selectedRating = (index + 1).toDouble());
+                                      setState(() => selectedRating =
+                                          (index + 1).toDouble());
                                     },
                                   );
                                 }),
@@ -238,18 +255,17 @@ class _SearchScreenState extends State<SearchScreen> {
                           _searchProducts(page: 1);
                         },
                       ),
-
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 12),
-
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: GetBuilder<SearchingController>(
                     builder: (_) {
-                      final queryText = searchText.text.isEmpty ? 'all products' : searchText.text;
+                      final queryText = searchText.text.isEmpty
+                          ? 'all products'
+                          : searchText.text;
                       return AppText.title1("Result for '$queryText'");
                     },
                   ),
@@ -257,7 +273,6 @@ class _SearchScreenState extends State<SearchScreen> {
                 const SizedBox(height: 12),
               ],
             ),
-
             Expanded(
               child: RefreshIndicator(
                 onRefresh: () async {
@@ -267,7 +282,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 },
                 child: GetBuilder<SearchingController>(
                   builder: (_) {
-                    if (searchController.isLoading && searchController.searchResults.isEmpty) {
+                    if (searchController.isLoading &&
+                        searchController.searchResults.isEmpty) {
                       return const Center(child: CircularProgressIndicator());
                     }
 
@@ -287,10 +303,21 @@ class _SearchScreenState extends State<SearchScreen> {
                       physics: const AlwaysScrollableScrollPhysics(),
                       children: [
                         GridCustomWidget(
-                          items: results.map((item) => ItemCardWidget(product: item)).toList(),
+                          items: results
+                              .map((item) => ItemCardWidget(
+                                  product: item,
+                                  onUpdateWishlist: () {
+                                    _searchProducts(
+                                        page: 1); // refresh search result
+                                  },
+                                  onUpdateCheckOut: () {
+                                    _searchProducts(
+                                        page: 1); // refresh search result
+                                  }))
+                              .toList(),
                         ),
-
-                        if (searchController.isLoading && searchController.searchResults.isNotEmpty)
+                        if (searchController.isLoading &&
+                            searchController.searchResults.isNotEmpty)
                           const Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Center(child: CircularProgressIndicator()),

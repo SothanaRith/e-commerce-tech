@@ -12,13 +12,14 @@ import 'package:get/get.dart';
 class WishlistController extends GetxController {
   late final ApiRepository apiRepository;
   bool isLoading = false;
-
-  // late final String mainPoint = "http://192.168.1.6:6000";
+  List<WishlistModel> wishlistData = [];
   WishlistController() {
     apiRepository = ApiRepository();
   }
 
   Future<List<WishlistModel>> getAllWishlist({required BuildContext context, required String userId}) async {
+    isLoading = true;
+    update();
     final response = await apiRepository.fetchData(
       '$mainPoint/api/product/wishlist/$userId',
       headers: {
@@ -36,6 +37,10 @@ class WishlistController extends GetxController {
           .map((item) => WishlistModel.fromJson(item))
           .toList();
 
+      wishlistData = wishlist;
+      print("dsjhjhsdjsdj ${wishlistData}");
+      isLoading = false;
+      update();
       return wishlist;
     } else {
       showCustomDialog(

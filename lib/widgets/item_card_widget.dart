@@ -13,9 +13,11 @@ import 'package:get/get.dart';
 
 class ItemCardWidget extends StatefulWidget {
   final ProductModel product;
+  final VoidCallback? onUpdateWishlist;
+  final VoidCallback? onUpdateCheckOut;
   const ItemCardWidget({
     super.key,
-    required this.product,
+    required this.product, this.onUpdateWishlist, this.onUpdateCheckOut,
   });
 
   @override
@@ -96,7 +98,7 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
           userId: '1',
           productId: widget.product.id ?? '0',
           quantity: _dialogQuantity.toString(),
-        );
+        ).then((_) => widget.onUpdateCheckOut?.call());
       },
     ).show();
   }
@@ -138,21 +140,21 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                         type: DialogType.info,
                         title:
                         "Are you sure you want to ${widget.product.isInWishlist == 'true' ? "remove" : "add"} ${widget.product.name} to wishlist ?",
-                        okOnPress: () {
-                          if (widget.product.isInWishlist == 'true') {
-                            wishlistController.deleteWishlist(
-                              context: context,
-                              userId: "1",
-                              productId: widget.product.id ?? '',
-                            );
-                          } else {
-                            wishlistController.createWishlist(
-                              context: context,
-                              userId: "1",
-                              productId: widget.product.id ?? '',
-                            );
-                          }
-                        },
+                          okOnPress: () {
+                            if (widget.product.isInWishlist == 'true') {
+                              wishlistController.deleteWishlist(
+                                context: context,
+                                userId: "1",
+                                productId: widget.product.id ?? '',
+                              ).then((_) => widget.onUpdateWishlist?.call());
+                            } else {
+                              wishlistController.createWishlist(
+                                context: context,
+                                userId: "1",
+                                productId: widget.product.id ?? '',
+                              ).then((_) => widget.onUpdateWishlist?.call());
+                            }
+                          },
                         cancelOnPress: () {},
                       );
                     },

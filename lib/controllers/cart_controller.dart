@@ -72,13 +72,6 @@ class CartController extends GetxController {
     );
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
-      showCustomDialog(
-          context: context,
-          type: DialogType.success,
-          title: "${jsonData["message"]}",
-          okOnPress: () {
-
-          });
     } else {
       showCustomDialog(
           context: context,

@@ -68,6 +68,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     final product = homeController.products[index];
                     return ItemCardWidget(
                       product: product,
+                      onUpdateCheckOut: () {
+                        homeController.loadHome(page: 1, userId: '1', context: context);
+                      },
+                      onUpdateWishlist: () {
+                        homeController.loadHome(page: 1, userId: '1', context: context);
+                      },
                     );
                   } else {
                     return const Center(
