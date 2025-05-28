@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:e_commerce_tech/controllers/home_controller.dart';
+import 'package:e_commerce_tech/controllers/search_controller.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/helper/rest_api_helper.dart';
 import 'package:e_commerce_tech/models/wishlist_model.dart';
-import 'package:e_commerce_tech/screen/verify_code_page/verify_code_screen.dart';
-import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,6 +13,8 @@ class WishlistController extends GetxController {
   late final ApiRepository apiRepository;
   bool isLoading = false;
   List<WishlistModel> wishlistData = [];
+  final SearchingController searchController = Get.put(SearchingController());
+  final HomeController homeController = Get.put(HomeController());
   WishlistController() {
     apiRepository = ApiRepository();
   }
@@ -72,7 +74,9 @@ class WishlistController extends GetxController {
           type: DialogType.success,
           title: "${jsonData["message"]}",
           okOnPress: () {
-
+            getAllWishlist(context: context, userId: '1');
+            searchController.searchProduct(context: context, userId: '1');
+            homeController.loadHome(page: 1, userId: '1', context: context);
           });
     } else {
       showCustomDialog(
@@ -97,6 +101,9 @@ class WishlistController extends GetxController {
           type: DialogType.success,
           title: "${jsonData["message"]}",
           okOnPress: () {
+            getAllWishlist(context: context, userId: '1');
+            searchController.searchProduct(context: context, userId: '1');
+            homeController.loadHome(page: 1, userId: '1', context: context);
           });
     } else {
       var jsonData = jsonDecode(response.error!);
