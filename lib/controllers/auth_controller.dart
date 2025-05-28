@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/helper/rest_api_helper.dart';
+import 'package:e_commerce_tech/models/user_model.dart';
 import 'package:e_commerce_tech/screen/forget_password_page/reset_password_screen.dart';
 import 'package:e_commerce_tech/screen/home_page/home_screen.dart';
 import 'package:e_commerce_tech/screen/location_page/location_screen.dart';
@@ -29,16 +30,39 @@ class AuthController extends GetxController {
       headers: {
         'Authorization': TokenStorage.token ?? "",
         'Content-Type': 'application/json'
-      }, context: context,
+      },
+      context: context,
     );
+
     if (response.data != null) {
-      var jsonData = jsonDecode(response.data!);
-      print("Fetched Data: $jsonData");
-    } else {
-      showCustomDialog(
+      try {
+        var jsonData = jsonDecode(response.data!);
+        print("Fetched Data: $jsonData");
+
+        if (jsonData["success"] == true && jsonData["filteredUser"] != null) {
+          User fetchedUser = User.fromJson(jsonData["filteredUser"]);
+          await UserStorage.saveUser(fetchedUser);
+          print("User saved to storage: ${fetchedUser.name}");
+        } else {
+          showCustomDialog(
+            context: context,
+            type: DialogType.error,
+            title: "Failed to fetch user: ${jsonData["message"] ?? "Unknown error"}",
+          );
+        }
+      } catch (e) {
+        showCustomDialog(
           context: context,
           type: DialogType.error,
-          title: "Error: ${response.error}");
+          title: "Invalid user response: ${e.toString()}",
+        );
+      }
+    } else {
+      showCustomDialog(
+        context: context,
+        type: DialogType.error,
+        title: "Error: ${response.error}",
+      );
     }
   }
 
@@ -172,7 +196,10 @@ class AuthController extends GetxController {
       var jsonData = jsonDecode(response.data!);
       TokenStorage.saveToken(jsonData["accessToken"]).then(
         (value) async {
+          await getUser(context: context);
           if (type == ScreenVerifyType.signup) {
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setBool('isLoggedIn', true);
             showCustomDialog(
                 context: context,
                 type: DialogType.success,
@@ -220,6 +247,7 @@ class AuthController extends GetxController {
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
       print("Fetched Data: $jsonData");
+      TokenStorage.saveToken(jsonData["accessToken"]);
     } else {
       showCustomDialog(
           context: context,

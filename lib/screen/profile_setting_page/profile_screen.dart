@@ -1,7 +1,10 @@
+import 'package:e_commerce_tech/helper/global.dart';
+import 'package:e_commerce_tech/models/user_model.dart';
 import 'package:e_commerce_tech/screen/check_out_page/check_out_screen.dart';
 import 'package:e_commerce_tech/screen/forget_password_page/forget_password_screen.dart';
 import 'package:e_commerce_tech/screen/forget_password_page/help_center.dart';
 import 'package:e_commerce_tech/screen/home_page/home_screen.dart';
+import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -54,6 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ),
   ];
 
+  User? user = UserStorage.currentUser;
   // Method to show logout bottom sheet
   void _showLogoutBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -152,11 +156,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       CircleAvatar(
                         radius: 50,
                         backgroundColor: Colors.grey[300], // Placeholder color
-                        child: Icon(
-                          Icons.person,
-                          size: 50,
-                          color: Colors.grey[600],
-                        ),
+                        child: Image.network(user?.coverImage != null ? "$mainPoint${user?.coverImage}" : ''),
                       ),
                       Container(
                         decoration: BoxDecoration(
@@ -175,8 +175,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                   const SizedBox(height: 10), // Spacing between avatar and text
-                  const Text(
-                    'Rose BanSon',
+                  Text(
+                    user?.name ?? 'Rose BanSon',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
