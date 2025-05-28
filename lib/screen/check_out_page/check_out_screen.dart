@@ -163,9 +163,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                         },
                         onDismissed: (direction) {
                           cartController.removeItemToCart(context: context, productId: product.id ?? '', userId: '1');
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('${product.name} removed from cart')),
-                          );
                         },
                         child: GestureDetector(
                           child: ItemSelectWidget(
