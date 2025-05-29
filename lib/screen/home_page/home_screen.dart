@@ -1,5 +1,7 @@
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/search_page/search_screen.dart';
+import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_tech/screen/home_page/widgets/category_home_screen_widget.dart';
@@ -69,10 +71,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     return ItemCardWidget(
                       product: product,
                       onUpdateCheckOut: () {
-                        homeController.loadHome(page: 1, userId: '1', context: context);
+                        homeController.loadHome(page: 1, userId: UserStorage.currentUser?.id.toString() ?? '', context: context);
                       },
                       onUpdateWishlist: () {
-                        homeController.loadHome(page: 1, userId: '1', context: context);
+                        homeController.loadHome(page: 1, userId: UserStorage.currentUser?.id.toString() ?? '', context: context);
                       },
                     );
                   } else {

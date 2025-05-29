@@ -5,6 +5,7 @@ import 'package:e_commerce_tech/controllers/wishlist_contoller.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
+import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_dialog.dart';
@@ -99,7 +100,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       btnOkOnPress: () {
         cartController.addItemToCart(
           context: context,
-          userId: '1',
+          userId: UserStorage.currentUser?.id.toString() ?? '',
           productId: productItem?.id ?? '0',
           quantity: _dialogQuantity.toString(),
         );
@@ -113,7 +114,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     Future.delayed(Duration.zero, () async {
       ProductModel product = await productController.getProductById(
         context: context,
-        id: widget.id, userId: '1',
+        id: widget.id, userId: UserStorage.currentUser?.id.toString() ?? '',
       );
       setState(() {
         productItem = product;
@@ -220,12 +221,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     if (productItem?.isInWishlist == 'true') {
                                       wishlistController.deleteWishlist(
                                           context: context,
-                                          userId: "1",
+                                          userId: UserStorage.currentUser?.id.toString() ?? '',
                                           productId: productItem?.id ?? '');
                                     } else {
                                       wishlistController.createWishlist(
                                           context: context,
-                                          userId: "1",
+                                          userId: UserStorage.currentUser?.id.toString() ?? '',
                                           productId: productItem?.id ?? '');
                                     }
                                   },

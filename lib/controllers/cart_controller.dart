@@ -103,10 +103,10 @@ class CartController extends GetxController {
           okOnPress: () async {
             await wishlistController.getAllWishlist(
               context: context,
-              userId: "1", // 🔁 Replace with dynamic user ID
+              userId: userId.toString(), // 🔁 Replace with dynamic user ID
             );
-            await searchController.searchProduct(context: context, userId: '1');
-            await homeController.loadHome(page: 1, userId: '1', context: context);
+            await searchController.searchProduct(context: context, userId: userId.toString());
+            await homeController.loadHome(page: 1, userId: userId.toString(), context: context);
           });
     } else {
       var jsonData = jsonDecode(response.error!);

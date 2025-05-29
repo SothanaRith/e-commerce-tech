@@ -74,9 +74,9 @@ class WishlistController extends GetxController {
           type: DialogType.success,
           title: "${jsonData["message"]}",
           okOnPress: () {
-            getAllWishlist(context: context, userId: '1');
-            searchController.searchProduct(context: context, userId: '1');
-            homeController.loadHome(page: 1, userId: '1', context: context);
+            getAllWishlist(context: context, userId: userId.toString());
+            searchController.searchProduct(context: context, userId: userId.toString());
+            homeController.loadHome(page: 1, userId: userId.toString(), context: context);
           });
     } else {
       showCustomDialog(
@@ -101,9 +101,9 @@ class WishlistController extends GetxController {
           type: DialogType.success,
           title: "${jsonData["message"]}",
           okOnPress: () {
-            getAllWishlist(context: context, userId: '1');
-            searchController.searchProduct(context: context, userId: '1');
-            homeController.loadHome(page: 1, userId: '1', context: context);
+            getAllWishlist(context: context, userId: userId.toString());
+            searchController.searchProduct(context: context, userId: userId.toString());
+            homeController.loadHome(page: 1, userId: userId.toString(), context: context);
           });
     } else {
       var jsonData = jsonDecode(response.error!);

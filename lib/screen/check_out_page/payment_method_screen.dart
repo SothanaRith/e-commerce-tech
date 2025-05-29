@@ -1,7 +1,9 @@
 import 'package:e_commerce_tech/controllers/order_contoller.dart';
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/cart_model.dart';
 import 'package:e_commerce_tech/screen/check_out_page/payment_verify_screen.dart';
+import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:flutter/material.dart';
@@ -169,7 +171,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
               onPressed: selectedMethodIndex == null
                   ? null
                   : () {
-                orderController.placeOrder(context: context, userId: '1', items: items, paymentType: paymentMethods[selectedMethodIndex ?? 0]['bankName'] ?? "").then((value) {
+                orderController.placeOrder(context: context, userId: UserStorage.currentUser?.id.toString() ?? '', items: items, paymentType: paymentMethods[selectedMethodIndex ?? 0]['bankName'] ?? "").then((value) {
                   if (value) {
                     Navigator.push(
                       context,

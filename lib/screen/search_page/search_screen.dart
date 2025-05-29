@@ -5,6 +5,7 @@ import 'package:e_commerce_tech/controllers/search_controller.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/category_model.dart';
+import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_text_field_widget.dart';
 import 'package:e_commerce_tech/widgets/grid_custom_widget.dart';
@@ -84,7 +85,7 @@ class _SearchScreenState extends State<SearchScreen> {
         minPrice: priceRange.start,
         maxPrice: priceRange.end,
         minRating: selectedRating,
-        userId: '1',
+        userId: UserStorage.currentUser?.id.toString() ?? '',
         page: 1,
         size: 10,
         append: false,
@@ -103,7 +104,7 @@ class _SearchScreenState extends State<SearchScreen> {
           minPrice: priceRange.start,
           maxPrice: priceRange.end,
           minRating: selectedRating,
-          userId: '1',
+          userId: UserStorage.currentUser?.id.toString() ?? '',
           page: page,
           size: 10,
           append: true,

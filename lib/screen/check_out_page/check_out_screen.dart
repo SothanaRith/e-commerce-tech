@@ -5,6 +5,7 @@ import 'package:e_commerce_tech/screen/check_out_page/payment_method_screen.dart
 import 'package:e_commerce_tech/screen/check_out_page/payment_verify_screen.dart';
 import 'package:e_commerce_tech/screen/check_out_page/select_delivery_option_screen.dart';
 import 'package:e_commerce_tech/screen/check_out_page/shipping_address_screen.dart';
+import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
@@ -28,7 +29,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
     super.initState();
     // Fetch cart once when screen initializes
     Future.delayed(Duration.zero, () {
-      cartController.fetchAllCart(context: context, userId: '1');
+      cartController.fetchAllCart(context: context, userId: UserStorage.currentUser?.id.toString() ?? '');
     });
   }
 
@@ -162,7 +163,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                           ) ?? false; // Return false if dialog dismissed by other means
                         },
                         onDismissed: (direction) {
-                          cartController.removeItemToCart(context: context, productId: product.id ?? '', userId: '1');
+                          cartController.removeItemToCart(context: context, productId: product.id ?? '', userId: UserStorage.currentUser?.id.toString() ?? '');
                         },
                         child: GestureDetector(
                           child: ItemSelectWidget(

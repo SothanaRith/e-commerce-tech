@@ -1,4 +1,6 @@
 import 'package:e_commerce_tech/controllers/wishlist_contoller.dart';
+import 'package:e_commerce_tech/helper/global.dart';
+import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/grid_custom_widget.dart';
 import 'package:e_commerce_tech/widgets/item_card_widget.dart';
@@ -25,7 +27,7 @@ class _WishListScreenState extends State<WishListScreen> {
     Future.delayed(Duration.zero, () async {
       await wishlistController.getAllWishlist(
         context: context,
-        userId: "1", // 🔁 Replace with dynamic user ID
+        userId: UserStorage.currentUser?.id.toString() ?? '', // 🔁 Replace with dynamic user ID
       );
     });
   }

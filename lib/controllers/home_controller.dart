@@ -28,14 +28,14 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     Future.delayed(Duration.zero, () {
-      loadHome(page: currentPage, context: Get.context!, userId: "1");
+      loadHome(page: currentPage, context: Get.context!, userId: UserStorage.currentUser?.id.toString() ?? '');
       // loadCategory(context: Get.context!);
 
       scrollController.addListener(() {
         if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - 200) {
           if (!isLoading.value && hasMore.value) {
             currentPage++;
-            loadHome(page: currentPage, context: Get.context!, userId: "1");
+            loadHome(page: currentPage, context: Get.context!, userId: UserStorage.currentUser?.id.toString()  ?? '');
           }
         }
       });

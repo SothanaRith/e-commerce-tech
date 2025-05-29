@@ -5,6 +5,7 @@ import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
 import 'package:e_commerce_tech/screen/product_details_page/product_details_screen.dart';
+import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
@@ -95,7 +96,7 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
       btnOkOnPress: () {
         cartController.addItemToCart(
           context: context,
-          userId: '1',
+          userId: UserStorage.currentUser?.id.toString() ?? '',
           productId: widget.product.id ?? '0',
           quantity: _dialogQuantity.toString(),
         ).then((_) => widget.onUpdateCheckOut?.call());
@@ -144,13 +145,13 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                             if (widget.product.isInWishlist == 'true') {
                               wishlistController.deleteWishlist(
                                 context: context,
-                                userId: "1",
+                                userId: UserStorage.currentUser?.id.toString() ?? '',
                                 productId: widget.product.id ?? '',
                               ).then((_) => widget.onUpdateWishlist?.call());
                             } else {
                               wishlistController.createWishlist(
                                 context: context,
-                                userId: "1",
+                                userId: UserStorage.currentUser?.id.toString() ?? '',
                                 productId: widget.product.id ?? '',
                               ).then((_) => widget.onUpdateWishlist?.call());
                             }

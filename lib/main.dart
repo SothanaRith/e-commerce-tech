@@ -1,4 +1,5 @@
 import 'package:e_commerce_tech/controllers/theme_controller.dart';
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/widgets/all_get_binding.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +19,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Map<String, Map<String, String>> _languages = await dep.init();
   await TokenStorage.loadToken();
+  await UserStorage.loadUser();
   Get.put(ThemeController());
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
