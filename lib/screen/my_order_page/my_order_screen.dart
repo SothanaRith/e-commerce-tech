@@ -41,9 +41,18 @@ class _MyOrderScreenState extends State<MyOrderScreen> with SingleTickerProvider
       body: TabBarView(
         controller: _tabController,
         children: const [
-          ActiveOrders(),
-          CompleteOrders(),
-          CancelOrders(),
+          Padding(
+            padding: EdgeInsets.all(12.0),
+            child: ActiveOrders(),
+          ),
+          Padding(
+            padding: EdgeInsets.all(12.0),
+            child: CompleteOrders(),
+          ),
+          Padding(
+            padding: EdgeInsets.all(12.0),
+            child: CancelOrders(),
+          ),
         ],
       ),
     );
