@@ -283,4 +283,32 @@ class AuthController extends GetxController {
           title: "Error: ${response.error}");
     }
   }
+
+  Future<void> logout(
+      {required BuildContext context}) async {
+    final response = await apiRepository.postData(
+        '$mainPoint/api/auth/logout',
+        headers: {
+          'Authorization': TokenStorage.token ?? "",
+          'Content-Type': 'application/json'
+        }, context: context
+    );
+    if (response.data != null) {
+      var jsonData = jsonDecode(response.data!);
+      UserStorage.clearUser();
+      TokenStorage.clearToken();
+      showCustomDialog(
+          context: context,
+          type: DialogType.success,
+          title: "${jsonData["message"]}",
+          okOnPress: () {
+            goOff(this, LoginScreen());
+          });
+    } else {
+      showCustomDialog(
+          context: context,
+          type: DialogType.error,
+          title: "Error: ${response.error}");
+    }
+  }
 }

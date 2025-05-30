@@ -23,6 +23,12 @@ class TokenStorage {
     token = "Bearer ${prefs.getString('access_token')}"; // Load token once at app start
   }
 
+  static Future<void> clearToken() async {
+    token = null;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('access_token');
+  }
+
   static Future<void> saveToken(String newToken) async {
     token = "Bearer $newToken";
     (await SharedPreferences.getInstance()).setString('access_token', newToken);
