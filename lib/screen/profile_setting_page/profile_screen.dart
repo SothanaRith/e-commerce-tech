@@ -1,4 +1,5 @@
 import 'package:e_commerce_tech/helper/global.dart';
+import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/user_model.dart';
 import 'package:e_commerce_tech/screen/check_out_page/check_out_screen.dart';
 import 'package:e_commerce_tech/screen/forget_password_page/forget_password_screen.dart';
@@ -6,9 +7,9 @@ import 'package:e_commerce_tech/screen/forget_password_page/help_center.dart';
 import 'package:e_commerce_tech/screen/home_page/home_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
+import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
 import '../forget_password_page/privacy.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -23,7 +24,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     MenuItem(
       title: 'Your profile',
       iconName: "assets/images/icons/person.svg",
-      screen: const HomeScreen(),
+      screen: const CheckOutScreen(),
+      hasSpecialAction: false,
+    ),
+    MenuItem(
+      title: 'CheckOut',
+      iconName:"assets/images/icons/shopping_bag.svg",
+      screen: const CheckOutScreen(),
       hasSpecialAction: false,
     ),
     MenuItem(
@@ -114,7 +121,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         // goTo(this, const LoginScreen());
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
+                        backgroundColor: theme.primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -156,7 +163,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       CircleAvatar(
                         radius: 50,
                         backgroundColor: Colors.grey[300], // Placeholder color
-                        child: Image.network(user?.coverImage != null ? "$mainPoint${user?.coverImage}" : ''),
+                        backgroundImage: NetworkImage(
+                          user?.coverImage != null
+                              ? "$mainPoint${user!.coverImage}"
+                              : 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740',
+                        ),
                       ),
                       Container(
                         decoration: BoxDecoration(
@@ -167,7 +178,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                         child: CircleAvatar(
-                          radius: 14,
+                          radius: 12,
                           backgroundColor: Colors.white,
                           child: SvgPicture.asset("assets/images/icons/edit-2.svg")
                         ),
@@ -196,11 +207,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ListTile(
                       leading: SvgPicture.asset(
                         menuItems[index].iconName,
-                        color: Colors.green,
+                        color: theme.primaryColor,
                       ),
-                      title: Text(
+                      title: AppText.title2(
                         menuItems[index].title,
-                        style: const TextStyle(fontSize: 16),
+                        customStyle: const TextStyle(fontSize: 16),
                       ),
                       trailing:  SvgPicture.asset(
                       "assets/images/icons/arrow-down.svg"
@@ -218,10 +229,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                     ),
                     if (index < menuItems.length - 1)
-                      const Divider(
+                       Divider(
                         height: 1,
                         thickness: 1,
-                        color: Colors.grey,
+                        color: Colors.grey.withAlpha(35),
                         indent: 16, // Optional: adds padding on the left
                         endIndent: 16, // Optional: adds padding on the right
                       ),

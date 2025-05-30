@@ -20,7 +20,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
           children: [
             SizedBox(height: 12,),
             GridCustomWidget(items: [
-
             ])
           ],
         ),

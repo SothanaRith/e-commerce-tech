@@ -1,6 +1,7 @@
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/models/category_model.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
+import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -42,18 +43,9 @@ class CategoryHomeScreenWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
+          AppText.title2(
             "Category",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-          ),
-          GestureDetector(
-            onTap: () {
-              // Navigate to the category screen (you can update this based on your needs)
-            },
-            child: Text(
-              "See All",
-              style: TextStyle(fontWeight: FontWeight.w600, color: Colors.blue),
-            ),
+            customStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
         ],
       ),
@@ -62,11 +54,10 @@ class CategoryHomeScreenWidget extends StatelessWidget {
 
   Widget _categoryItem(CategoryModel category) {
     return Padding(
-      padding: const EdgeInsets.only(right: 10), // Padding for spacing between items
+      padding: const EdgeInsets.only(right: 10, left: 10), // Padding for spacing between items
       child: InkWell(
         splashColor: Colors.transparent,
         onTap: (){
-          print("catName::::::${category.name}");
           goTo(this, (ProductByCategoryScreen(categoryId: category.id, categoryName: category.name)));
         },
         child: Column(
@@ -80,16 +71,16 @@ class CategoryHomeScreenWidget extends StatelessWidget {
               ),
               child: ClipOval(
                 child: Image.network(
-                  "${mainPoint}/uploads/${category.imageUrl}",
+                  "${mainPoint}${category.imageUrl}",
                   fit: BoxFit.cover,
                   errorBuilder: (_, __, ___) => Icon(Icons.image, size: 40, color: Colors.blue),
                 ),
               ),
             ),
-            SizedBox(height: 5),
-            Text(
+            SizedBox(height: 10),
+            AppText.body2(
               category.name,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              customStyle: TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         ),

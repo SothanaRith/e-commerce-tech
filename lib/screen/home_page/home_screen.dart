@@ -1,15 +1,10 @@
-import 'package:e_commerce_tech/helper/global.dart';
-import 'package:e_commerce_tech/main.dart';
-import 'package:e_commerce_tech/screen/search_page/search_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_tech/screen/home_page/widgets/category_home_screen_widget.dart';
 import 'package:e_commerce_tech/screen/home_page/widgets/home_top_bar_screen_widget.dart';
-import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/item_card_widget.dart';
 import 'package:e_commerce_tech/widgets/slider_custom_widget.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
@@ -50,11 +45,20 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 12),
             const CategoryHomeScreenWidget(),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: AppText.title2(
+                "All Product",
+                customStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+            ),
             const SizedBox(height: 12),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: GridView.builder(
                 shrinkWrap: true,
+                padding: EdgeInsets.all(0),
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: homeController.hasMore.value && homeController.isLoading.value
                     ? homeController.products.length + 1
