@@ -4,7 +4,6 @@ import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/helper/rest_api_helper.dart';
 import 'package:e_commerce_tech/models/user_model.dart';
 import 'package:e_commerce_tech/screen/forget_password_page/reset_password_screen.dart';
-import 'package:e_commerce_tech/screen/home_page/home_screen.dart';
 import 'package:e_commerce_tech/screen/location_page/location_screen.dart';
 import 'package:e_commerce_tech/screen/login_page/login_screen.dart';
 import 'package:e_commerce_tech/screen/nav_bar_screen.dart';
@@ -197,6 +196,7 @@ class AuthController extends GetxController {
       TokenStorage.saveToken(jsonData["accessToken"]).then(
         (value) async {
           await getUser(context: context);
+          await UserStorage.loadUser();
           if (type == ScreenVerifyType.signup) {
             final prefs = await SharedPreferences.getInstance();
             await prefs.setBool('isLoggedIn', true);
@@ -210,6 +210,7 @@ class AuthController extends GetxController {
           } else if (type == ScreenVerifyType.signinPhoneNumber) {
             final prefs = await SharedPreferences.getInstance();
             await prefs.setBool('isLoggedIn', true);
+            await TokenStorage.loadToken();
             showCustomDialog(
                 context: context,
                 type: DialogType.success,
@@ -286,29 +287,17 @@ class AuthController extends GetxController {
 
   Future<void> logout(
       {required BuildContext context}) async {
-    final response = await apiRepository.postData(
-        '$mainPoint/api/auth/logout',
-        headers: {
-          'Authorization': TokenStorage.token ?? "",
-          'Content-Type': 'application/json'
-        }, context: context
-    );
-    if (response.data != null) {
-      var jsonData = jsonDecode(response.data!);
-      UserStorage.clearUser();
-      TokenStorage.clearToken();
-      showCustomDialog(
-          context: context,
-          type: DialogType.success,
-          title: "${jsonData["message"]}",
-          okOnPress: () {
-            goOff(this, LoginScreen());
-          });
-    } else {
-      showCustomDialog(
-          context: context,
-          type: DialogType.error,
-          title: "Error: ${response.error}");
-    }
+    UserStorage.clearUser();
+    TokenStorage.clearToken();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', false);
+
+    showCustomDialog(
+        context: context,
+        type: DialogType.success,
+        title: "logout successfully",
+        okOnPress: () {
+          goOff(this, LoginScreen());
+        });
   }
 }

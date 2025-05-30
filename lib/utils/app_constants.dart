@@ -74,8 +74,8 @@ class UserStorage {
       'phone': user.phone,
       'role': user.role,
       'status': user.status,
-      'createdAt': user.createdAt.toIso8601String(),
-      'updatedAt': user.updatedAt.toIso8601String(),
+      'createdAt': user.createdAt,
+      'updatedAt': user.updatedAt,
     };
   }
 }

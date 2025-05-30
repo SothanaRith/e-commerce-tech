@@ -1,3 +1,4 @@
+import 'package:e_commerce_tech/controllers/auth_controller.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/user_model.dart';
@@ -10,6 +11,7 @@ import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import '../forget_password_page/privacy.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -63,6 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       hasSpecialAction: true, // Flag for special action (bottom sheet)
     ),
   ];
+  final AuthController authController = Get.put(AuthController());
 
   User? user = UserStorage.currentUser;
   // Method to show logout bottom sheet
@@ -115,10 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        // Add your logout logic here (e.g., clear user session)
-                        Navigator.pop(context); // Close the bottom sheet
-                        // Example: Navigate to a login screen or reset app state
-                        // goTo(this, const LoginScreen());
+                        authController.logout(context: context);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: theme.primaryColor,

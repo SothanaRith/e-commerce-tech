@@ -23,20 +23,20 @@ class UserModel {
 }
 
 class User {
-  final int id;
+  final String? id;
   final String name;
   final String email;
   final String? phone;
   final String role;
   final String status;
 
-  final bool isVerify;
-  final bool isMuted;
-  final bool hasStory;
-  final bool isFriend;
-  final bool isFollowing;
-  final bool isFollower;
-  final bool isBlock;
+  final String? isVerify;
+  final String? isMuted;
+  final String? hasStory;
+  final String? isFriend;
+  final String? isFollowing;
+  final String? isFollower;
+  final String? isBlock;
 
   final String? bio;
   final String? statusTitle;
@@ -44,13 +44,13 @@ class User {
   final String? thumbnailImage;
   final String? userQR;
 
-  final double? latLongLat;
-  final double? latLongLong;
+  final String? latLongLat;
+  final String? latLongLong;
 
-  final DateTime? friendSince;
-  final DateTime? lastActive;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String? friendSince;
+  final String? lastActive;
+  final String? createdAt;
+  final String? updatedAt;
 
   User({
     required this.id,
@@ -81,34 +81,34 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'],
-      name: json['name'],
-      email: json['email'],
-      phone: json['phone'],
-      role: json['role'],
-      status: json['status'],
+      id: json['id'].toString(),
+      name: json['name'].toString(),
+      email: json['email'].toString(),
+      phone: json['phone'].toString(),
+      role: json['role'].toString(),
+      status: json['status'].toString(),
 
-      isVerify: json['isVerify'] ?? false,
-      isMuted: json['isMuted'] ?? false,
-      hasStory: json['hasStory'] ?? false,
-      isFriend: json['isFriend'] ?? false,
-      isFollowing: json['isFollowing'] ?? false,
-      isFollower: json['isFollower'] ?? false,
-      isBlock: json['isBlock'] ?? false,
+      isVerify: json['isVerify'].toString(),
+      isMuted: json['isMuted'].toString(),
+      hasStory: json['hasStory'].toString(),
+      isFriend: json['isFriend'].toString(),
+      isFollowing: json['isFollowing'].toString(),
+      isFollower: json['isFollower'].toString(),
+      isBlock: json['isBlock'].toString(),
 
-      bio: json['bio'],
-      statusTitle: json['statusTitle'],
-      coverImage: json['coverImage'],
-      thumbnailImage: json['thumbnailImage'],
+      bio: json['bio'].toString(),
+      statusTitle: json['statusTitle'].toString(),
+      coverImage: json['coverImage'].toString(),
+      thumbnailImage: json['thumbnailImage'].toString(),
       userQR: json['userQR'],
 
-      latLongLat: json['LatLong_lat'] != null ? double.tryParse(json['LatLong_lat'].toString()) : null,
-      latLongLong: json['LatLong_long'] != null ? double.tryParse(json['LatLong_long'].toString()) : null,
+      latLongLat: json['LatLong_lat'].toString(),
+      latLongLong: json['LatLong_long'].toString(),
 
-      friendSince: json['friendSince'] != null ? DateTime.tryParse(json['friendSince']) : null,
-      lastActive: json['lastActive'] != null ? DateTime.tryParse(json['lastActive']) : null,
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      friendSince: json['friendSince'].toString(),
+      lastActive: json['lastActive'].toString(),
+      createdAt: json['createdAt'].toString(),
+      updatedAt: json['updatedAt'].toString(),
     );
   }
 
@@ -138,10 +138,10 @@ class User {
       'LatLong_lat': latLongLat,
       'LatLong_long': latLongLong,
 
-      'friendSince': friendSince?.toIso8601String(),
-      'lastActive': lastActive?.toIso8601String(),
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      'friendSince': friendSince,
+      'lastActive': lastActive,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
     };
   }
 }
