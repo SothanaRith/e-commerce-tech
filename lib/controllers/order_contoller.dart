@@ -1,14 +1,67 @@
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:e_commerce_tech/helper/global.dart';
+import 'package:e_commerce_tech/models/Transaction_model.dart';
+import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../helper/global.dart';
 import '../helper/rest_api_helper.dart';
 import '../widgets/custom_dialog.dart';
 
 class OrderController extends GetxController {
-  final apiRepository = ApiRepository();
+  final ApiRepository apiRepository = ApiRepository();
+
+  bool isLoading = false;
+
+  // Store transactions keyed by status
+  Map<String, List<TransactionModel>> transactionsByStatus = {};
+
+  /// Fetch transactions by status and userId, store them by status key.
+  Future<List<TransactionModel>> getTransactionById({
+    required BuildContext context,
+    required String status,
+    required String userId,
+  }) async {
+    isLoading = true;
+    update();
+
+    final response = await apiRepository.fetchData(
+      '$mainPoint/api/product/transactions/$status/$userId',
+      headers: {
+        'Authorization': TokenStorage.token ?? "",
+        'Content-Type': 'application/json',
+      },
+      context: context,
+    );
+
+    isLoading = false;
+    update();
+
+    if (response.data != null) {
+      final List<dynamic> jsonData = jsonDecode(response.data!);
+
+      List<TransactionModel> transactions = jsonData
+          .map((item) => TransactionModel.fromJson(item))
+          .toList();
+
+      // Save transactions for this status
+      transactionsByStatus[status] = transactions;
+      update();
+
+      return transactions;
+    } else {
+      // Show error dialog on failure
+      showCustomDialog(
+        context: context,
+        type: DialogType.error,
+        title: "Error: ${response.error ?? 'Failed to fetch transactions'}",
+      );
+      throw Exception('Failed to fetch transactions');
+    }
+  }
+
+  /// Place an order method remains unchanged
   RxBool isPlacingOrder = false.obs;
 
   Future<bool> placeOrder({
