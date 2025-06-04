@@ -1,6 +1,7 @@
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/home_page/home_screen.dart';
 import 'package:e_commerce_tech/screen/language_screen.dart';
+import 'package:e_commerce_tech/screen/location_page/location_screen.dart';
 import 'package:e_commerce_tech/screen/login_page/login_screen.dart';
 import 'package:e_commerce_tech/screen/profile_setting_page/profile_screen.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
@@ -78,7 +79,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: CustomButtonWidget(title: "Let's get started!", action: (){
-                  goOff(this, ProfileScreen());
+                  goOff(this, LocationScreen());
                 }, buttonStyle: BtnStyle.action,),
               ),
               Padding(

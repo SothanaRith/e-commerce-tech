@@ -1,5 +1,6 @@
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/home_page/home_screen.dart';
+import 'package:e_commerce_tech/screen/location_page/location_select_screen.dart';
 import 'package:e_commerce_tech/screen/nav_bar_screen.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
@@ -37,7 +38,7 @@ class _LocationScreenState extends State<LocationScreen> {
           AppText.body2("take all  in store to make sure you can get all of this from your hand but it's just your per reviews", textAlign: TextAlign.center,),
           SizedBox(height: 30,),
           CustomButtonWidget(title: "Let's get started!", action: (){
-            goOff(this, MainScreen());
+            goOff(this, LocationSelectScreen());
           }, buttonStyle: BtnStyle.normal,)
         ],
       ),

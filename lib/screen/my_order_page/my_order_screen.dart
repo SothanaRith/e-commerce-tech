@@ -1,6 +1,7 @@
 import 'package:e_commerce_tech/controllers/order_contoller.dart';
 import 'package:e_commerce_tech/models/Transaction_model.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
+import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/item_select_widget.dart';
 import 'package:e_commerce_tech/widgets/list_view_custom_widget.dart';
 import 'package:flutter/material.dart';
@@ -58,17 +59,14 @@ class _MyOrderScreenState extends State<MyOrderScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("My Orders"),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: "Pending"),
-            Tab(text: "Complete"),
-            Tab(text: "Cancel"),
-          ],
-        ),
-      ),
+      appBar: customAppBar(type: this, title: "Checkout", context: context, bottom: TabBar(
+        controller: _tabController,
+        tabs: const [
+          Tab(text: "Pending"),
+          Tab(text: "Complete"),
+          Tab(text: "Cancel"),
+        ],
+      ),),
       body: TabBarView(
         controller: _tabController,
         children: const [
@@ -117,13 +115,11 @@ class _OrdersTabState extends State<OrdersTab> {
             final tx = items[index];
             final imageList = <String>[];
 
-            print("object image ${tx.order?.orderItems?[1].product?.name}");
             for (var item in tx.order?.orderItems ?? []) {
               for (var image in item.product?.imageUrl ?? []) {
                 imageList.add(image);
               }
             }
-            print("object image $imageList");
             return ItemSelectWidget(
               imageUrl: imageList,
               title: tx.createdAt ?? 'No Title',

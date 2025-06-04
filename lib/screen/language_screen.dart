@@ -1,5 +1,7 @@
 import 'package:country_flags/country_flags.dart';
 import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/screen/login_page/login_screen.dart';
+import 'package:e_commerce_tech/screen/nav_bar_screen.dart';
 import 'package:e_commerce_tech/screen/welcome_screen.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
@@ -9,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:e_commerce_tech/controllers/language_controller.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LanguageScreen extends StatelessWidget {
   const LanguageScreen({super.key});
@@ -29,8 +32,22 @@ class LanguageScreen extends StatelessWidget {
                 child: CustomButtonWidget(
                   title: "continues",
                   width: MediaQuery.of(context).size.width - 30,
-                  action: () {
-                    goOff(this, WelcomeScreen());
+                  action: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    bool? isFirstTime = prefs.getBool('isFirstTime');
+                    bool? isLoggedIn = prefs.getBool('isLoggedIn');
+
+                    if (isFirstTime == null || isFirstTime == true) {
+                      goOff(this, WelcomeScreen());
+                    } else {
+                      if (isLoggedIn != null && isLoggedIn == true) {
+                        // Already logged in
+                        goOff(this, const MainScreen());
+                      } else {
+                        // Not logged in
+                        goOff(this, const WelcomeScreen());
+                      }
+                    }
                   },
                   buttonStyle: BtnStyle.action,
                 ),

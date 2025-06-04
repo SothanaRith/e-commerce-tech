@@ -11,6 +11,7 @@ PreferredSizeWidget customAppBar({
   Color? backgroundColor,
   Color? surfaceTintColor,
   bool haveArrowBack = true,
+  PreferredSizeWidget? bottom,
   required BuildContext context,
 }) {
   return AppBar(
@@ -19,6 +20,7 @@ PreferredSizeWidget customAppBar({
     backgroundColor: backgroundColor ?? theme.scaffoldBackgroundColor, // Fixed background color
     surfaceTintColor: surfaceTintColor ?? theme.scaffoldBackgroundColor,
     actions: action ?? [],
+    bottom: bottom,
     title: Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [

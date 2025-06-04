@@ -6,6 +6,7 @@ import 'package:e_commerce_tech/screen/check_out_page/check_out_screen.dart';
 import 'package:e_commerce_tech/screen/forget_password_page/forget_password_screen.dart';
 import 'package:e_commerce_tech/screen/forget_password_page/help_center.dart';
 import 'package:e_commerce_tech/screen/home_page/home_screen.dart';
+import 'package:e_commerce_tech/screen/language_screen.dart';
 import 'package:e_commerce_tech/screen/my_order_page/my_order_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
@@ -40,6 +41,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       title: 'My Orders',
       iconName:"assets/images/icons/shopping_bag.svg",
       screen: const MyOrderScreen(),
+      hasSpecialAction: false,
+    ),
+    MenuItem(
+      title: 'My Language',
+      iconName:"assets/images/icons/shopping_bag.svg",
+      screen: const LanguageScreen(),
       hasSpecialAction: false,
     ),
     MenuItem(
