@@ -25,18 +25,27 @@ class _MyOrderScreenState extends State<MyOrderScreen>
 
     final userId = UserStorage.currentUser?.id.toString() ?? '';
 
-    // Load initial tab's data (pending)
-    orderController.getTransactionById(
-        context: context, status: 'pending', userId: userId);
+    Future.delayed(Duration.zero, () {
+      orderController.getTransactionById(
+        context: context,
+        status: 'pending',
+        userId: userId,
+      );
+    });
 
     _tabController.addListener(() {
-      if (_tabController.indexIsChanging) return; // skip while animating
+      if (_tabController.indexIsChanging) return;
 
       final statuses = ['pending', 'complete', 'failed'];
       final status = statuses[_tabController.index];
 
-      orderController.getTransactionById(
-          context: context, status: status, userId: userId);
+      Future.delayed(Duration.zero, () {
+        orderController.getTransactionById(
+          context: context,
+          status: status,
+          userId: userId,
+        );
+      });
     });
   }
 
@@ -82,7 +91,7 @@ class OrdersTab extends StatefulWidget {
 }
 
 class _OrdersTabState extends State<OrdersTab> {
-  final OrderController orderController = Get.find<OrderController>();
+  final OrderController orderController = Get.put(OrderController());
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +100,6 @@ class _OrdersTabState extends State<OrdersTab> {
         return const Center(child: CircularProgressIndicator());
       }
 
-      // Get transactions for this tab's status from the map
       final List<TransactionModel> items =
           orderController.transactionsByStatus[widget.status] ?? [];
 
@@ -101,17 +109,28 @@ class _OrdersTabState extends State<OrdersTab> {
 
       return Padding(
         padding: const EdgeInsets.all(12.0),
-        child: SingleChildScrollView(
-          child: ListViewCustomWidget(
-            items: items
-                .map((tx) => ItemSelectWidget(
-              imageUrl: tx.order?.orderItems?[0].product?.imageUrl?.first ?? '',
-              title: tx.notes ?? 'No Title',
+        child: ListView.builder(
+          shrinkWrap: true,
+          physics: const BouncingScrollPhysics(),
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            final tx = items[index];
+            final imageList = <String>[];
+
+            print("object image ${tx.order?.orderItems?[1].product?.name}");
+            for (var item in tx.order?.orderItems ?? []) {
+              for (var image in item.product?.imageUrl ?? []) {
+                imageList.add(image);
+              }
+            }
+            print("object image $imageList");
+            return ItemSelectWidget(
+              imageUrl: imageList,
+              title: tx.createdAt ?? 'No Title',
               prices: '\$${tx.amount ?? '0.00'}',
-              countNumber: tx.orderId?.toString() ?? '0',
-            ))
-                .toList(),
-          ),
+              countNumber: tx.order?.orderItems?.length.toString() ?? '0',
+            );
+          },
         ),
       );
     });

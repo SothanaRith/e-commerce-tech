@@ -167,9 +167,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                         },
                         child: GestureDetector(
                           child: ItemSelectWidget(
-                            imageUrl: product.imageUrl != null
-                                ? "$mainPoint${product.imageUrl![0]}"
-                                : 'https://via.placeholder.com/150',
+                            imageUrl: product.imageUrl ?? [],
                             title: product.name ?? '',
                             prices: totalPrice,
                             countNumber: quantity.toString(),

@@ -23,7 +23,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: ItemSelectWidget(
-                imageUrl: 'https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg',
+                imageUrl: [],
                 title: 'Tech Gadget',
                 prices: '\$199.99',
                 countNumber: 4.toString(), // Passing the callback
