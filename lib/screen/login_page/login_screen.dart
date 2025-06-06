@@ -1,5 +1,6 @@
 import 'package:e_commerce_tech/controllers/auth_controller.dart';
 import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/screen/check_out_page/shipping_address_screen.dart';
 import 'package:e_commerce_tech/screen/forget_password_page/forget_password_screen.dart';
 import 'package:e_commerce_tech/screen/location_page/location_select_screen.dart';
 import 'package:e_commerce_tech/screen/sign_up_page/sign_up_screen.dart';
@@ -124,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(width: 10),
                   socialBtn(
                       icons: "assets/images/icons/google.png", action: () {
-                    goOff(this, LocationSelectScreen());
+                    goOff(this, ShippingAddressScreen());
                   }),
                   SizedBox(width: 10),
                   socialBtn(

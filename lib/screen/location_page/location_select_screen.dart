@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:async';
+import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_button_widget.dart';
+import 'package:e_commerce_tech/widgets/custom_text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -201,7 +203,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
                 ClipRRect(
                   borderRadius: radius,
                   child: SizedBox(
-                    height: MediaQuery.sizeOf(context).height / 1.6,
+                    height: MediaQuery.sizeOf(context).height / 1.8,
                     width: double.infinity,
                     child: GoogleMap(
                       initialCameraPosition: CameraPosition(
@@ -220,13 +222,10 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
                   ),
               ],
             ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Find your location',
-                border: OutlineInputBorder(borderRadius: radius),
-              ),
+            const SizedBox(height: 12),
+            CustomTextField(label: "Find your location",
+            controller: _searchController,
+              rightIcon: Icon(Icons.search, color: theme.primaryColor,),
             ),
             if (_suggestions.isNotEmpty)
               Material(
@@ -247,7 +246,6 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
                   ),
                 ),
               ),
-            const SizedBox(height: 20),
           ],
         ),
       ),

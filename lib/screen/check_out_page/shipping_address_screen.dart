@@ -1,5 +1,7 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/screen/location_page/location_select_screen.dart';
+import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/list_view_custom_widget.dart';
@@ -429,16 +431,16 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
             SizedBox(
               height: 24,
             ),
-            DottedBorder(
-                borderType: BorderType.RRect,
-                radius: Radius.circular(12),
-                dashPattern: [6, 4],
-                color: Colors.black,
-                strokeWidth: 1.5,
-                child: InkWell(
-                  onTap: () {
-                    // Handle button tap
-                  },
+            GestureDetector(
+              onTap: () {
+                goTo(this, LocationSelectScreen());
+              },
+              child: DottedBorder(
+                  borderType: BorderType.RRect,
+                  radius: Radius.circular(12),
+                  dashPattern: [6, 4],
+                  color: Colors.black,
+                  strokeWidth: 1.5,
                   child: Container(
                     width: MediaQuery.sizeOf(context).width * 0.8,
                     padding: EdgeInsets.symmetric(vertical: 12),
@@ -448,8 +450,8 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                         style: TextStyle(fontSize: 16, color: Colors.black),
                       ),
                     ),
-                  ),
-                ))
+                  )),
+            )
           ],
         ),
       ),
