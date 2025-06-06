@@ -1,5 +1,7 @@
-import 'dart:async';
 import 'dart:convert';
+import 'dart:async';
+import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
+import 'package:e_commerce_tech/widgets/custom_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -12,22 +14,23 @@ class LocationSelectScreen extends StatefulWidget {
   const LocationSelectScreen({super.key});
 
   @override
-  State<LocationSelectScreen> createState() => _LocationSelectScreenState();
+  _LocationSelectScreenState createState() => _LocationSelectScreenState();
 }
 
 class _LocationSelectScreenState extends State<LocationSelectScreen> {
   LatLng? _selectedLatLng;
   String _currentAddress = '';
-  GoogleMapController? _mapController;
-  final TextEditingController _searchController = TextEditingController();
   List<Map<String, String>> _suggestions = [];
   Timer? _debounce;
+  Marker? _marker;
+  final TextEditingController _searchController = TextEditingController();
+  GoogleMapController? _mapController;
 
   @override
   void initState() {
     super.initState();
     _checkAndFetchCurrentLocation();
-    _searchController.addListener(_onSearchChanged);
+    _searchController.addListener(_onSearchChanged); // Listen for text changes
   }
 
   @override
@@ -38,13 +41,15 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
     super.dispose();
   }
 
+  // Debounce function for the search
   void _onSearchChanged() {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
-      _getSuggestions(_searchController.text);
+      _getSuggestions(_searchController.text); // Fetch suggestions based on input
     });
   }
 
+  // Check and fetch current location of the user
   Future<void> _checkAndFetchCurrentLocation() async {
     try {
       LocationPermission permission = await Geolocator.checkPermission();
@@ -63,33 +68,77 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
     }
   }
 
+  // Set the location on the map and update the search controller
+  // Dynamically build the address string based on available components
   Future<void> _setLocation(LatLng latLng) async {
     try {
-      _mapController?.animateCamera(CameraUpdate.newLatLngZoom(latLng, 15));
+      setState(() {
+        _selectedLatLng = latLng;
+      });
+
+      _mapController?.animateCamera(CameraUpdate.newLatLngZoom(latLng, 15)); // Center the map at the new location
       final placemarks = await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
       final place = placemarks.first;
 
+      // Dynamically create address by including available components
+      List<String> addressParts = [];
+
+      // Check and add each component if it's not null or empty
+      if (place.name != null && place.name!.isNotEmpty) {
+        addressParts.add(place.name!);
+      }
+      if (place.locality != null && place.locality!.isNotEmpty) {
+        addressParts.add(place.locality!);
+      }
+      if (place.subAdministrativeArea != null && place.subAdministrativeArea!.isNotEmpty) {
+        addressParts.add(place.subAdministrativeArea!);
+      }
+      if (place.street != null && place.street!.isNotEmpty) {
+        addressParts.add(place.street!);
+      }
+      if (place.country != null && place.country!.isNotEmpty) {
+        addressParts.add(place.country!);
+      }
+
+      // Join all the available components with a comma
       setState(() {
-        _selectedLatLng = latLng;
-        _currentAddress =
-            "${place.country}, ${place.subAdministrativeArea ?? ''} ${place.street ?? ''}".trim();
-        _searchController.text = _currentAddress;
-        _suggestions.clear();
+        _currentAddress = addressParts.join(', ').trim();
+        _searchController.text = _currentAddress; // Update the search field with the address
       });
+
+      // Add marker on map with the dynamic address
+      setState(() {
+        _marker = Marker(
+          markerId: const MarkerId("selected"),
+          position: latLng,
+          infoWindow: InfoWindow(title: _currentAddress),
+          draggable: true, // Allow dragging the marker
+          onDragEnd: (newPosition) {
+            _onMarkerDragEnd(newPosition); // Handle marker drag
+          },
+        );
+      });
+      _suggestions.clear(); // Clear suggestions after setting location
     } catch (e) {
       debugPrint("Set location error: $e");
     }
   }
 
+  // Handle marker drag end
+  Future<void> _onMarkerDragEnd(LatLng newPosition) async {
+    await _setLocation(newPosition); // Update location and address after marker drag
+  }
+
+  // Fetch location suggestions from Google Places API
   Future<void> _getSuggestions(String input) async {
     if (input.isEmpty) {
-      setState(() => _suggestions = []);
+      setState(() => _suggestions = []); // Clear suggestions if input is empty
       return;
     }
 
     try {
       final url =
-          'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=$googleApiKey&components=country:kh';
+          'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=$googleApiKey'; // Removed country filter
       final response = await http.get(Uri.parse(url));
       final data = jsonDecode(response.body);
 
@@ -103,15 +152,16 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
               .toList();
         });
       } else {
-        debugPrint("Autocomplete error: ${data['status']}");
+        debugPrint("Autocomplete error: ${data}");
       }
     } catch (e) {
       debugPrint("Autocomplete fetch error: $e");
     }
   }
 
+  // Select a suggestion and update the map location
   Future<void> _selectSuggestion(String placeId) async {
-    setState(() => _suggestions = []);
+    setState(() => _suggestions = []); // Clear suggestions after selection
     try {
       final url =
           'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$googleApiKey';
@@ -122,7 +172,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
         final location = data['result']['geometry']['location'];
         final lat = location['lat'];
         final lng = location['lng'];
-        await _setLocation(LatLng(lat, lng));
+        await _setLocation(LatLng(lat, lng)); // Update the map and address with the selected location
       } else {
         debugPrint("Place details error: ${data['status']}");
       }
@@ -131,18 +181,17 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
     }
   }
 
+  // Handle map drag to move the marker and update address
+  Future<void> _onMapTapped(LatLng latLng) async {
+    await _setLocation(latLng); // Update the marker and center map at the new position
+  }
+
   @override
   Widget build(BuildContext context) {
     final radius = BorderRadius.circular(20);
 
     return Scaffold(
-      appBar: AppBar(
-        leading: const BackButton(color: Colors.black),
-        centerTitle: true,
-        title: const Text('Select Location', style: TextStyle(color: Colors.black)),
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
+      appBar: customAppBar(type: this, title: "Select Location", context: context),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
@@ -152,7 +201,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
                 ClipRRect(
                   borderRadius: radius,
                   child: SizedBox(
-                    height: 300,
+                    height: MediaQuery.sizeOf(context).height / 1.6,
                     width: double.infinity,
                     child: GoogleMap(
                       initialCameraPosition: CameraPosition(
@@ -160,14 +209,8 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
                         zoom: 15,
                       ),
                       onMapCreated: (controller) => _mapController = controller,
-                      markers: _selectedLatLng != null
-                          ? {
-                        Marker(
-                          markerId: const MarkerId("selected"),
-                          position: _selectedLatLng!,
-                        )
-                      }
-                          : {},
+                      markers: _marker != null ? {_marker!} : {},
+                      onTap: _onMapTapped, // Allow tapping on map to move marker
                     ),
                   ),
                 ),
@@ -182,7 +225,6 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Find your location',
-                suffixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(borderRadius: radius),
               ),
             ),
@@ -205,42 +247,23 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
                   ),
                 ),
               ),
-            const SizedBox(height: 12),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text("Location Now", style: TextStyle(fontWeight: FontWeight.bold)),
-            ),
-            const SizedBox(height: 6),
-            TextField(
-              enabled: false,
-              controller: TextEditingController(text: _currentAddress),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(borderRadius: radius),
-              ),
-            ),
-            const Spacer(),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red[700],
-                  shape: RoundedRectangleBorder(borderRadius: radius),
-                ),
-                onPressed: () {
-                  if (_selectedLatLng != null) {
-                    print("Selected: $_currentAddress (${_selectedLatLng!.latitude}, ${_selectedLatLng!.longitude})");
-                    Navigator.pop(context, {
-                      'address': _currentAddress,
-                      'latLng': _selectedLatLng,
-                    });
-                  }
-                },
-                child: const Text("Select", style: TextStyle(fontWeight: FontWeight.bold)),
-              ),
-            ),
             const SizedBox(height: 20),
           ],
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(18.0),
+        child: SizedBox(
+          width: double.infinity,
+          height: 50,
+          child: CustomButtonWidget(
+            title: "Selected",
+            action: () {
+              if (_selectedLatLng != null) {
+                print("Selected: $_currentAddress (${_selectedLatLng!.latitude}, ${_selectedLatLng!.longitude})");
+              }
+            },
+          ),
         ),
       ),
     );
