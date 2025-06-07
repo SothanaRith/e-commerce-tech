@@ -37,7 +37,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   void _showAddToCartQuantityDialog() {
     _dialogQuantity = productItem?.cartQuantity == 0 ? 1 : productItem?.cartQuantity ?? 1;
-
     AwesomeDialog(
       context: context,
       dialogType: DialogType.info,
@@ -133,7 +132,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           if (controller.isLoading || productItem == null) {
             return const Center(child: CircularProgressIndicator());
           }
-
+          var product = controller.product;
           return Stack(
             children: [
               SingleChildScrollView(
@@ -173,9 +172,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 horizontalPadding: 4,
                                 height: 60,
                                 items: List.generate(
-                                  productItem!.imageUrl?.length ?? 0,
+                                  product.imageUrl?.length ?? 0,
                                       (index) {
-                                    final url = productItem!.imageUrl![index];
+                                    final url = product.imageUrl![index];
                                     return GestureDetector(
                                       onTap: () {
                                         setState(() {
@@ -216,18 +215,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   context: context,
                                   type: DialogType.info,
                                   title:
-                                  "Are you sure you want to ${productItem?.isInWishlist == 'true' ? "remove" : "add"} ${productItem?.name} to wishlist ?",
+                                  "Are you sure you want to ${product.isInWishlist == 'true' ? "remove" : "add"} ${product.name} to wishlist ?",
                                   okOnPress: () {
-                                    if (productItem?.isInWishlist == 'true') {
+                                    if (product.isInWishlist == 'true') {
                                       wishlistController.deleteWishlist(
                                           context: context,
                                           userId: UserStorage.currentUser?.id.toString() ?? '',
-                                          productId: productItem?.id ?? '');
+                                          productId: product.id ?? '');
                                     } else {
                                       wishlistController.createWishlist(
                                           context: context,
                                           userId: UserStorage.currentUser?.id.toString() ?? '',
-                                          productId: productItem?.id ?? '');
+                                          productId: product.id ?? '');
                                     }
                                   },
                                   cancelOnPress: () {},
@@ -239,11 +238,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     padding: const EdgeInsets.all(12),
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: productItem?.isInWishlist == 'true'
+                                      color: product.isInWishlist == 'true'
                                           ? theme.primaryColor
                                           : Colors.white.withAlpha(150),
                                     ),
-                                    child: productItem?.isInWishlist == 'true'
+                                    child: product.isInWishlist == 'true'
                                         ? SvgPicture.asset(
                                       "assets/images/icons/heart.svg",
                                       width: 20,
@@ -277,14 +276,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     AppText.h3(
-                                      productItem?.name ?? "",
+                                      product.name ?? "",
                                       maxLines: 2,
                                     ),
                                     SizedBox(
                                       height: 10,
                                     ),
                                     AppText.caption(
-                                      productItem?.description ?? "",
+                                      product.description ?? "",
                                       maxLines: 4,
                                     ),
                                   ],
@@ -297,7 +296,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   AppText.h3(
-                                    productItem?.price ?? "",
+                                    "\$${product.price}",
                                     customStyle: TextStyle(color: theme.primaryColor),
                                   ),
                                   GestureDetector(
@@ -311,17 +310,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                           margin: EdgeInsets.all(2),
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
-                                            color: productItem?.isInCart == true
+                                            color: product.isInCart == true
                                                 ? theme.primaryColor
                                                 : theme.primaryColor.withAlpha(30),
                                           ),
                                           child: SvgPicture.asset(
                                             "assets/images/icons/add_store.svg",
                                             width: 20,
-                                            color: productItem?.isInCart == true ? Colors.white : theme.primaryColor,
+                                            color: product.isInCart == true ? Colors.white : theme.primaryColor,
                                           ),
                                         ),
-                                        if (productItem?.isInCart == true)
+                                        if (product.isInCart == true)
                                           Positioned(
                                             top: 0,
                                             right: 0,
@@ -332,7 +331,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                                 color: Colors.red,
                                               ),
                                               child: AppText.caption(
-                                                '${productItem?.cartQuantity}',
+                                                '${product.cartQuantity}',
                                                 customStyle: TextStyle(
                                                   color: theme.secondaryHeaderColor,
                                                   overflow: TextOverflow.ellipsis,
@@ -356,8 +355,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
                     const SizedBox(height: 32),
 
-                    if (productItem!.reviews != null &&
-                        productItem!.reviews!.isNotEmpty) ...[
+                    if (product.reviews != null &&
+                        product.reviews!.isNotEmpty) ...[
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12.0),
                         child: AppText.title("Reviews"),
@@ -365,9 +364,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       const SizedBox(height: 12),
                       ListViewHorizontalWidget(
                         height: 160,
-                        items: List.generate(productItem!.reviews?.length ?? 0,
+                        items: List.generate(product.reviews?.length ?? 0,
                                 (index) {
-                              final review = productItem!.reviews![index];
+                              final review = product.reviews![index];
                               return Container(
                                 padding: const EdgeInsets.all(12),
                                 width: 300,
@@ -432,8 +431,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       ),
                     ],
 
-                    if (productItem!.variants != null &&
-                        productItem!.variants!.isNotEmpty) ...[
+                    if (product.variants != null &&
+                        product.variants!.isNotEmpty) ...[
                       const SizedBox(height: 24),
                       Padding(
                         padding: const EdgeInsets.all(12.0),
@@ -442,16 +441,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       const SizedBox(height: 24),
                     ],
 
-                    if (productItem!.relatedProducts != null &&
-                        productItem!.relatedProducts!.isNotEmpty) ...[
+                    if (product.relatedProducts != null &&
+                        product.relatedProducts!.isNotEmpty) ...[
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12.0),
                         child: AppText.title1("Related Products"),
                       ),
                       GridCustomWidget(
                         items: List.generate(
-                            productItem!.relatedProducts?.length ?? 0, (index) {
-                          final related = productItem!.relatedProducts![index];
+                            product.relatedProducts?.length ?? 0, (index) {
+                          final related = product.relatedProducts![index];
                           return ItemCardWidget(product: related);
                         }),
                       ),
