@@ -16,9 +16,10 @@ class ItemCardWidget extends StatefulWidget {
   final ProductModel product;
   final VoidCallback? onUpdateWishlist;
   final VoidCallback? onUpdateCheckOut;
+  final BuildContext parentContext;
   const ItemCardWidget({
     super.key,
-    required this.product, this.onUpdateWishlist, this.onUpdateCheckOut,
+    required this.product, this.onUpdateWishlist, this.onUpdateCheckOut, required this.parentContext,
   });
 
   @override
@@ -33,9 +34,8 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
 
   void _showAddToCartQuantityDialog() {
     _dialogQuantity = widget.product.cartQuantity == 0 ? 1 : widget.product.cartQuantity ?? 1;
-
     AwesomeDialog(
-      context: context,
+      context: widget.parentContext,
       dialogType: DialogType.info,
       animType: AnimType.bottomSlide,
       title: 'Select Quantity',
@@ -95,7 +95,7 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
       btnCancelOnPress: () {},
       btnOkOnPress: () {
         cartController.addItemToCart(
-          context: context,
+          context: widget.parentContext,
           userId: UserStorage.currentUser?.id.toString() ?? '',
           productId: widget.product.id ?? '0',
           quantity: _dialogQuantity.toString(),
@@ -137,20 +137,20 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                       ? GestureDetector(
                     onTap: () {
                       showCustomDialog(
-                        context: context,
+                        context: widget.parentContext,
                         type: DialogType.info,
                         title:
                         "Are you sure you want to ${widget.product.isInWishlist == 'true' ? "remove" : "add"} ${widget.product.name} to wishlist ?",
                           okOnPress: () {
                             if (widget.product.isInWishlist == 'true') {
                               wishlistController.deleteWishlist(
-                                context: context,
+                                context: widget.parentContext,
                                 userId: UserStorage.currentUser?.id.toString() ?? '',
                                 productId: widget.product.id ?? '',
                               ).then((_) => widget.onUpdateWishlist?.call());
                             } else {
                               wishlistController.createWishlist(
-                                context: context,
+                                context: widget.parentContext,
                                 userId: UserStorage.currentUser?.id.toString() ?? '',
                                 productId: widget.product.id ?? '',
                               ).then((_) => widget.onUpdateWishlist?.call());

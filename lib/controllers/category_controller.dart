@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/models/category_model.dart';
+import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,13 +14,14 @@ import '../widgets/custom_dialog.dart';
 class CategoryController extends GetxController {
 
   final apiRepository = ApiRepository();
-  RxList<ProductModel> productByCategories = <ProductModel>[].obs;
+  List<ProductModel> productByCategories = [];
   CategoryResponse? category;
-  RxBool isLoadingProducts = false.obs;
+  bool isLoadingProducts = false;
 
   Future<void> fetchAllCategory({required BuildContext context}) async {
     try {
-      isLoadingProducts.value = true;
+      isLoadingProducts = true;
+      update();
 
       final response = await apiRepository.fetchData(
         '$mainPoint/api/category/get-all-categories',
@@ -47,16 +49,19 @@ class CategoryController extends GetxController {
         desc: e.toString(),
       );
     } finally {
-      isLoadingProducts.value = false;
+      isLoadingProducts = false;
+      update();
     }
   }
 
   Future<void> listProByCategory({required String categoryId, required BuildContext context}) async {
     try {
-      isLoadingProducts.value = true;
+      isLoadingProducts = true;
+      update();
 
+      // Fetch products by category
       final response = await apiRepository.fetchData(
-        '$mainPoint/api/category/categories/$categoryId',
+        '$mainPoint/api/category/categories/$categoryId/userId/${UserStorage.currentUser?.id}',  // Ensure this endpoint returns products and user-specific data like Cart and Wishlist
         headers: {'Content-Type': 'application/json'},
         context: context,
       );
@@ -64,8 +69,10 @@ class CategoryController extends GetxController {
       if (response.data != null) {
         final jsonData = jsonDecode(response.data!);
         final productResponse = ProductsResponse.fromJson(jsonData);
+
+        // Assuming productResponse.data is a list of product objects
         productByCategories.assignAll(productResponse.data);
-        print("product::::::${productByCategories.length}");
+        update();
       } else {
         showCustomDialog(
           context: context,
@@ -81,7 +88,8 @@ class CategoryController extends GetxController {
         desc: e.toString(),
       );
     } finally {
-      isLoadingProducts.value = false;
+      isLoadingProducts = false;
+      update();
     }
   }
 }

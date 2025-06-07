@@ -27,7 +27,7 @@ class _WishListScreenState extends State<WishListScreen> {
     Future.delayed(Duration.zero, () async {
       await wishlistController.getAllWishlist(
         context: context,
-        userId: UserStorage.currentUser?.id.toString() ?? '', // 🔁 Replace with dynamic user ID
+        userId: UserStorage.currentUser?.id.toString() ?? '',
       );
     });
   }
@@ -41,7 +41,7 @@ class _WishListScreenState extends State<WishListScreen> {
             context: context,
             haveArrowBack: false),
         body: logic.isLoading
-            ? Center(child: Text("data"),)
+            ? Center(child: Text("no data"),)
             : SingleChildScrollView(
           child: Column(
             children: [
@@ -52,6 +52,7 @@ class _WishListScreenState extends State<WishListScreen> {
                   if (product != null) {
                     return ItemCardWidget(
                       product: product,
+                      parentContext: context,
                       onUpdateWishlist: () {
                         fetchWishlist();
                       },

@@ -113,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                         onUpdateWishlist: () {
                           homeController.loadHome(page: 1, userId: UserStorage.currentUser?.id.toString() ?? '', context: context);
-                        },);
+                        }, parentContext: context,);
                     } else {
                       return const Center(
                         child: Padding(

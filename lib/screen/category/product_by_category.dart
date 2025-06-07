@@ -16,17 +16,19 @@ class ProductByCategoryScreen extends StatefulWidget {
   });
 
   @override
-  State<ProductByCategoryScreen> createState() => _ProductByCategoryScreenState();
+  State<ProductByCategoryScreen> createState() =>
+      _ProductByCategoryScreenState();
 }
 
 class _ProductByCategoryScreenState extends State<ProductByCategoryScreen> {
-  final CategoryController controller = Get.put(CategoryController());
+  final CategoryController categoryController = Get.put(CategoryController());
 
   @override
   void initState() {
     // TODO: implement initState
     Future.delayed(Duration.zero, () {
-      controller.listProByCategory(categoryId: widget.categoryId, context: context);
+      categoryController.listProByCategory(
+          categoryId: widget.categoryId, context: context);
     });
     super.initState();
   }
@@ -34,9 +36,10 @@ class _ProductByCategoryScreenState extends State<ProductByCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(type: this, title: widget.categoryName, context: context),
-      body: Obx(() {
-        if (controller.isLoadingProducts.value) {
+      appBar: customAppBar(
+          type: this, title: widget.categoryName, context: context),
+      body: GetBuilder<CategoryController>(builder: (controller) {
+        if (controller.isLoadingProducts) {
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -53,10 +56,22 @@ class _ProductByCategoryScreenState extends State<ProductByCategoryScreen> {
             mainAxisSpacing: 12,
             childAspectRatio: 0.75,
           ),
-          itemBuilder: (context, index) {
+          itemBuilder: (contextList, index) {
             final product = controller.productByCategories[index];
             return ItemCardWidget(
-              product: product,
+              product: product, parentContext: context,
+              onUpdateCheckOut: () {
+                Future.delayed(Duration.zero, () {
+                  controller.listProByCategory(
+                      categoryId: widget.categoryId, context: context);
+                });
+              },
+              onUpdateWishlist: () {
+                Future.delayed(Duration.zero, () {
+                  controller.listProByCategory(
+                      categoryId: widget.categoryId, context: context);
+                });
+              },
             );
           },
         );

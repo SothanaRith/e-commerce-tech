@@ -314,7 +314,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   onUpdateCheckOut: () {
                                     _searchProducts(
                                         page: 1); // refresh search result
-                                  }))
+                                  }, parentContext: context,))
                               .toList(),
                         ),
                         if (searchController.isLoading &&

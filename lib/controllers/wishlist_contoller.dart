@@ -43,7 +43,6 @@ class WishlistController extends GetxController {
           .toList();
 
       wishlistData = wishlist;
-      print("dsjhjhsdjsdj ${wishlistData}");
       isLoading = false;
       update();
       return wishlist;
