@@ -18,9 +18,9 @@ class CategoryHomeScreenWidget extends StatelessWidget {
     return Column(
       children: [
         _buildHeader(context),
-        SizedBox(height: 4),
-        Obx(() {
-          return SizedBox(
+        const SizedBox(height: 4),
+        GetBuilder<HomeController>(
+          builder: (controller) => SizedBox(
             height: 110,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -30,9 +30,9 @@ class CategoryHomeScreenWidget extends StatelessWidget {
                 return _categoryItem(category);
               },
             ),
-          );
-        }),
-        SizedBox(height: 6),
+          ),
+        ),
+        const SizedBox(height: 6),
       ],
     );
   }
@@ -45,7 +45,7 @@ class CategoryHomeScreenWidget extends StatelessWidget {
         children: [
           AppText.title2(
             "Category",
-            customStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            customStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
         ],
       ),
@@ -54,11 +54,11 @@ class CategoryHomeScreenWidget extends StatelessWidget {
 
   Widget _categoryItem(CategoryModel category) {
     return Padding(
-      padding: const EdgeInsets.only(right: 10, left: 10), // Padding for spacing between items
+      padding: const EdgeInsets.only(right: 10, left: 10),
       child: InkWell(
         splashColor: Colors.transparent,
-        onTap: (){
-          goTo(this, (ProductByCategoryScreen(categoryId: category.id, categoryName: category.name)));
+        onTap: () {
+          goTo(this, ProductByCategoryScreen(categoryId: category.id, categoryName: category.name));
         },
         child: Column(
           children: [
@@ -71,16 +71,16 @@ class CategoryHomeScreenWidget extends StatelessWidget {
               ),
               child: ClipOval(
                 child: Image.network(
-                  "${mainPoint}${category.imageUrl}",
+                  "$mainPoint${category.imageUrl}",
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Icon(Icons.image, size: 40, color: Colors.blue),
+                  errorBuilder: (_, __, ___) => const Icon(Icons.image, size: 40, color: Colors.blue),
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             AppText.body2(
               category.name,
-              customStyle: TextStyle(fontWeight: FontWeight.bold),
+              customStyle: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         ),
