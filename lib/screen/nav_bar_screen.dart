@@ -10,7 +10,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final int currentPageIndex;
+  const MainScreen({super.key, this.currentPageIndex = 0});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -25,6 +26,15 @@ class _MainScreenState extends State<MainScreen> {
     const WishListScreen(),
     const ProfileScreen(),
   ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    setState(() {
+      currentPageIndex = widget.currentPageIndex;
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +64,7 @@ class _MainScreenState extends State<MainScreen> {
                   activeColor: theme.disabledColor,
                   tabBackgroundColor: theme.secondaryHeaderColor,
                   padding: const EdgeInsets.all(12),
+                  selectedIndex: currentPageIndex,
                   gap: 8,
                   tabs: [
                     GButton(

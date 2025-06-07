@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:async';
+import 'package:e_commerce_tech/controllers/lacation_controller.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_button_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_text_field_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -20,6 +22,8 @@ class LocationSelectScreen extends StatefulWidget {
 }
 
 class _LocationSelectScreenState extends State<LocationSelectScreen> {
+  final locationController = Get.put(LocationController());
+
   LatLng? _selectedLatLng;
   String _currentAddress = '';
   List<Map<String, String>> _suggestions = [];
@@ -31,8 +35,10 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
   @override
   void initState() {
     super.initState();
-    _checkAndFetchCurrentLocation();
-    _searchController.addListener(_onSearchChanged); // Listen for text changes
+    Future.delayed(Duration.zero, () {
+      _checkAndFetchCurrentLocation();
+      _searchController.addListener(_onSearchChanged);
+    });
   }
 
   @override
@@ -43,15 +49,13 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
     super.dispose();
   }
 
-  // Debounce function for the search
   void _onSearchChanged() {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
-      _getSuggestions(_searchController.text); // Fetch suggestions based on input
+      _getSuggestions(_searchController.text);
     });
   }
 
-  // Check and fetch current location of the user
   Future<void> _checkAndFetchCurrentLocation() async {
     try {
       LocationPermission permission = await Geolocator.checkPermission();
@@ -60,9 +64,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
       }
 
       if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
-        final position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high,
-        );
+        final position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
         await _setLocation(LatLng(position.latitude, position.longitude));
       }
     } catch (e) {
@@ -70,88 +72,61 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
     }
   }
 
-  // Set the location on the map and update the search controller
-  // Dynamically build the address string based on available components
   Future<void> _setLocation(LatLng latLng) async {
     try {
-      setState(() {
-        _selectedLatLng = latLng;
-      });
-
-      _mapController?.animateCamera(CameraUpdate.newLatLngZoom(latLng, 15)); // Center the map at the new location
+      setState(() => _selectedLatLng = latLng);
+      _mapController?.animateCamera(CameraUpdate.newLatLngZoom(latLng, 15));
       final placemarks = await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
       final place = placemarks.first;
 
-      // Dynamically create address by including available components
       List<String> addressParts = [];
+      if (place.name != null && place.name!.isNotEmpty) addressParts.add(place.name!);
+      if (place.locality != null && place.locality!.isNotEmpty) addressParts.add(place.locality!);
+      if (place.subAdministrativeArea != null && place.subAdministrativeArea!.isNotEmpty) addressParts.add(place.subAdministrativeArea!);
+      if (place.street != null && place.street!.isNotEmpty) addressParts.add(place.street!);
+      if (place.country != null && place.country!.isNotEmpty) addressParts.add(place.country!);
 
-      // Check and add each component if it's not null or empty
-      if (place.name != null && place.name!.isNotEmpty) {
-        addressParts.add(place.name!);
-      }
-      if (place.locality != null && place.locality!.isNotEmpty) {
-        addressParts.add(place.locality!);
-      }
-      if (place.subAdministrativeArea != null && place.subAdministrativeArea!.isNotEmpty) {
-        addressParts.add(place.subAdministrativeArea!);
-      }
-      if (place.street != null && place.street!.isNotEmpty) {
-        addressParts.add(place.street!);
-      }
-      if (place.country != null && place.country!.isNotEmpty) {
-        addressParts.add(place.country!);
-      }
-
-      // Join all the available components with a comma
       setState(() {
         _currentAddress = addressParts.join(', ').trim();
-        _searchController.text = _currentAddress; // Update the search field with the address
-      });
-
-      // Add marker on map with the dynamic address
-      setState(() {
+        _searchController.text = _currentAddress;
         _marker = Marker(
           markerId: const MarkerId("selected"),
           position: latLng,
           infoWindow: InfoWindow(title: _currentAddress),
-          draggable: true, // Allow dragging the marker
-          onDragEnd: (newPosition) {
-            _onMarkerDragEnd(newPosition); // Handle marker drag
-          },
+          draggable: true,
+          onDragEnd: _onMarkerDragEnd,
         );
+        _suggestions.clear();
       });
-      _suggestions.clear(); // Clear suggestions after setting location
     } catch (e) {
       debugPrint("Set location error: $e");
     }
   }
 
-  // Handle marker drag end
   Future<void> _onMarkerDragEnd(LatLng newPosition) async {
-    await _setLocation(newPosition); // Update location and address after marker drag
+    await _setLocation(newPosition);
   }
 
-  // Fetch location suggestions from Google Places API
   Future<void> _getSuggestions(String input) async {
     if (input.isEmpty) {
-      setState(() => _suggestions = []); // Clear suggestions if input is empty
+      setState(() => _suggestions = []);
       return;
     }
 
     try {
       final url =
-          'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=$googleApiKey'; // Removed country filter
+          'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=$googleApiKey';
       final response = await http.get(Uri.parse(url));
       final data = jsonDecode(response.body);
 
       if (data['status'] == 'OK') {
         setState(() {
-          _suggestions = (data['predictions'] as List)
-              .map<Map<String, String>>((item) => {
-            "description": item['description'] ?? '',
-            "place_id": item['place_id'] ?? '',
-          })
-              .toList();
+          _suggestions = (data['predictions'] as List).map<Map<String, String>>((item) {
+            return {
+              "description": item['description'] ?? '',
+              "place_id": item['place_id'] ?? '',
+            };
+          }).toList();
         });
       } else {
         debugPrint("Autocomplete error: ${data}");
@@ -161,9 +136,8 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
     }
   }
 
-  // Select a suggestion and update the map location
   Future<void> _selectSuggestion(String placeId) async {
-    setState(() => _suggestions = []); // Clear suggestions after selection
+    setState(() => _suggestions = []);
     try {
       final url =
           'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$googleApiKey';
@@ -172,9 +146,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
 
       if (data['status'] == 'OK') {
         final location = data['result']['geometry']['location'];
-        final lat = location['lat'];
-        final lng = location['lng'];
-        await _setLocation(LatLng(lat, lng)); // Update the map and address with the selected location
+        await _setLocation(LatLng(location['lat'], location['lng']));
       } else {
         debugPrint("Place details error: ${data['status']}");
       }
@@ -183,9 +155,8 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
     }
   }
 
-  // Handle map drag to move the marker and update address
   Future<void> _onMapTapped(LatLng latLng) async {
-    await _setLocation(latLng); // Update the marker and center map at the new position
+    await _setLocation(latLng);
   }
 
   @override
@@ -212,7 +183,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
                       ),
                       onMapCreated: (controller) => _mapController = controller,
                       markers: _marker != null ? {_marker!} : {},
-                      onTap: _onMapTapped, // Allow tapping on map to move marker
+                      onTap: _onMapTapped,
                     ),
                   ),
                 ),
@@ -223,9 +194,10 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
               ],
             ),
             const SizedBox(height: 12),
-            CustomTextField(label: "Find your location",
-            controller: _searchController,
-              rightIcon: Icon(Icons.search, color: theme.primaryColor,),
+            CustomTextField(
+              label: "Find your location",
+              controller: _searchController,
+              rightIcon: Icon(Icons.search, color: theme.primaryColor),
             ),
             if (_suggestions.isNotEmpty)
               Material(
@@ -257,8 +229,16 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
           child: CustomButtonWidget(
             title: "Selected",
             action: () {
-              if (_selectedLatLng != null) {
-                print("Selected: $_currentAddress (${_selectedLatLng!.latitude}, ${_selectedLatLng!.longitude})");
+              if (_selectedLatLng != null && _currentAddress.isNotEmpty) {
+                locationController.createAddress(
+                  street: _currentAddress,
+                  isDefault: false,
+                  context: context,
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Please select a valid location")),
+                );
               }
             },
           ),

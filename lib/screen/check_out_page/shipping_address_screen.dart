@@ -1,457 +1,204 @@
 import 'package:dotted_border/dotted_border.dart';
+import 'package:e_commerce_tech/controllers/lacation_controller.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/location_page/location_select_screen.dart';
+import 'package:e_commerce_tech/screen/nav_bar_screen.dart';
+import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/list_view_custom_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ShippingAddressScreen extends StatefulWidget {
-  const ShippingAddressScreen({super.key});
+  final bool backHome;
+  const ShippingAddressScreen({super.key, this.backHome = true});
 
   @override
   State<ShippingAddressScreen> createState() => _ShippingAddressScreenState();
 }
 
 class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
+  final locationController = Get.put(LocationController());
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      locationController.getUserAddresses(context: context);
+    });
+  }
+
+  void _showAddressDialog(
+      String id, String fullName, String street, bool isDefault) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Manage Address"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Full name: $fullName"),
+              Text("Address: $street"),
+              if (!isDefault)
+                TextButton.icon(
+                  icon: Icon(Icons.star),
+                  label: Text("Set as Default"),
+                  onPressed: () {
+                    Future.delayed(Duration.zero, () {
+                      locationController.updateAddress(
+                        id: id,
+                        fullName: fullName,
+                        phoneNumber: UserStorage.currentUser?.phone ?? '',
+                        street: street,
+                        isDefault: true,
+                        context: context,
+                      );
+                    });
+                  },
+                ),
+              if (!isDefault)
+              TextButton.icon(
+                icon: Icon(Icons.delete, color: Colors.red),
+                label: Text("Delete", style: TextStyle(color: Colors.red)),
+                onPressed: () {
+                  Future.delayed(Duration.zero, () {
+                    locationController.deleteAddress(id: id, context: context);
+                  });
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: Text("Close"),
+              onPressed: () => Navigator.pop(context),
+            )
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(type: this, title: "Select Delivery", context: context),
+      appBar: customAppBar(
+        type: this,
+        title: "Select Delivery",
+        context: context,
+        onBackAction: widget.backHome
+            ? () => goOff(this, MainScreen(currentPageIndex: 3))
+            : null,
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            ListViewCustomWidget(items: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 24,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.location_on_outlined),
-                            SizedBox(
-                              width: 6,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AppText.caption(
-                                  "Workplace",
-                                  customStyle:
-                                      TextStyle(color: theme.primaryColor),
-                                ),
-                                Row(
-                                  children: [
-                                    AppText.caption(
-                                        "1901 Cili. Shiloh, Hawaii 81092"),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          color: theme.highlightColor,
-                          size: 20,
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Divider(
-                      thickness: 0.2,
-                      color: theme.highlightColor,
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.location_on_outlined),
-                            SizedBox(
-                              width: 6,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AppText.caption(
-                                  "Workplace",
-                                  customStyle:
-                                      TextStyle(color: theme.primaryColor),
-                                ),
-                                Row(
-                                  children: [
-                                    AppText.caption(
-                                        "1901 Cili. Shiloh, Hawaii 81092"),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          color: theme.highlightColor,
-                          size: 20,
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Divider(
-                      thickness: 0.2,
-                      color: theme.highlightColor,
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.location_on_outlined),
-                            SizedBox(
-                              width: 6,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AppText.caption(
-                                  "Workplace",
-                                  customStyle:
-                                      TextStyle(color: theme.primaryColor),
-                                ),
-                                Row(
-                                  children: [
-                                    AppText.caption(
-                                        "1901 Cili. Shiloh, Hawaii 81092"),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          color: theme.highlightColor,
-                          size: 20,
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Divider(
-                      thickness: 0.2,
-                      color: theme.highlightColor,
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.location_on_outlined),
-                            SizedBox(
-                              width: 6,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AppText.caption(
-                                  "Workplace",
-                                  customStyle:
-                                      TextStyle(color: theme.primaryColor),
-                                ),
-                                Row(
-                                  children: [
-                                    AppText.caption(
-                                        "1901 Cili. Shiloh, Hawaii 81092"),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          color: theme.highlightColor,
-                          size: 20,
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Divider(
-                      thickness: 0.2,
-                      color: theme.highlightColor,
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.location_on_outlined),
-                            SizedBox(
-                              width: 6,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AppText.caption(
-                                  "Workplace",
-                                  customStyle:
-                                      TextStyle(color: theme.primaryColor),
-                                ),
-                                Row(
-                                  children: [
-                                    AppText.caption(
-                                        "1901 Cili. Shiloh, Hawaii 81092"),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          color: theme.highlightColor,
-                          size: 20,
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Divider(
-                      thickness: 0.2,
-                      color: theme.highlightColor,
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.location_on_outlined),
-                            SizedBox(
-                              width: 6,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AppText.caption(
-                                  "Workplace",
-                                  customStyle:
-                                      TextStyle(color: theme.primaryColor),
-                                ),
-                                Row(
-                                  children: [
-                                    AppText.caption(
-                                        "1901 Cili. Shiloh, Hawaii 81092"),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          color: theme.highlightColor,
-                          size: 20,
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Divider(
-                      thickness: 0.2,
-                      color: theme.highlightColor,
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.location_on_outlined),
-                            SizedBox(
-                              width: 6,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AppText.caption(
-                                  "Workplace",
-                                  customStyle:
-                                      TextStyle(color: theme.primaryColor),
-                                ),
-                                Row(
-                                  children: [
-                                    AppText.caption(
-                                        "1901 Cili. Shiloh, Hawaii 81092"),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          color: theme.highlightColor,
-                          size: 20,
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Divider(
-                      thickness: 0.2,
-                      color: theme.highlightColor,
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.location_on_outlined),
-                            SizedBox(
-                              width: 6,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AppText.caption(
-                                  "Workplace",
-                                  customStyle:
-                                      TextStyle(color: theme.primaryColor),
-                                ),
-                                Row(
-                                  children: [
-                                    AppText.caption(
-                                        "1901 Cili. Shiloh, Hawaii 81092"),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          color: theme.highlightColor,
-                          size: 20,
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 12,
-                    ),
-                  ],
-                ),
-              ),
-            ]),
-            SizedBox(
-              height: 24,
-            ),
-            GestureDetector(
-              onTap: () {
-                goTo(this, LocationSelectScreen());
-              },
-              child: DottedBorder(
-                  borderType: BorderType.RRect,
-                  radius: Radius.circular(12),
-                  dashPattern: [6, 4],
-                  color: Colors.black,
-                  strokeWidth: 1.5,
-                  child: Container(
-                    width: MediaQuery.sizeOf(context).width * 0.8,
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    child: Center(
-                      child: Text(
-                        '+ Add New Shipping Address',
-                        style: TextStyle(fontSize: 16, color: Colors.black),
+            Obx(() => ListViewCustomWidget(
+                  items: locationController.addresses.map((item) {
+                    final isDefault = item.isDefault == 'true';
+                    return InkWell(
+                      hoverColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () => _showAddressDialog(
+                        item.id ?? '',
+                        item.fullName ?? '---',
+                        item.street ?? '',
+                        isDefault,
                       ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: isDefault ? theme.primaryColor.withOpacity(0.05) : Colors.transparent,
+                            border: Border.all(
+                              color: isDefault ? theme.primaryColor : Colors.grey.shade300,
+                              width: isDefault ? 1.5 : 1,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Icon(Icons.location_on_outlined, color: isDefault ? theme.primaryColor : null),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          AppText.caption(
+                                            item.fullName ?? '---',
+                                            customStyle: TextStyle(
+                                              color: theme.primaryColor,
+                                              fontWeight: isDefault ? FontWeight.bold : null,
+                                            ),
+                                          ),
+                                          AppText.body2(
+                                            item.street ?? 'N/A',
+                                            maxLines: 2,
+                                          ),
+                                          if (isDefault)
+                                            AppText.caption(
+                                              "(Default Address)",
+                                              customStyle: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.green,
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                color: theme.highlightColor,
+                                size: 20,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                )),
+            const SizedBox(height: 24),
+            GestureDetector(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const LocationSelectScreen()),
+              ),
+              child: DottedBorder(
+                borderType: BorderType.RRect,
+                radius: const Radius.circular(12),
+                dashPattern: [6, 4],
+                color: Colors.black,
+                strokeWidth: 1.5,
+                child: Container(
+                  width: MediaQuery.sizeOf(context).width * 0.8,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: const Center(
+                    child: Text(
+                      '+ Add New Shipping Address',
+                      style: TextStyle(fontSize: 16, color: Colors.black),
                     ),
-                  )),
-            )
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

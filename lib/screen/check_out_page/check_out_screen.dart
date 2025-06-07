@@ -1,9 +1,9 @@
 import 'package:e_commerce_tech/controllers/cart_controller.dart';
+import 'package:e_commerce_tech/controllers/lacation_controller.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/check_out_page/payment_method_screen.dart';
 import 'package:e_commerce_tech/screen/check_out_page/payment_verify_screen.dart';
-import 'package:e_commerce_tech/screen/check_out_page/select_delivery_option_screen.dart';
 import 'package:e_commerce_tech/screen/check_out_page/shipping_address_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
@@ -23,13 +23,16 @@ class CheckOutScreen extends StatefulWidget {
 
 class _CheckOutScreenState extends State<CheckOutScreen> {
   final CartController cartController = Get.put(CartController());
+  final LocationController locationController = Get.put(LocationController());
 
   @override
   void initState() {
     super.initState();
     // Fetch cart once when screen initializes
     Future.delayed(Duration.zero, () {
-      cartController.fetchAllCart(context: context, userId: UserStorage.currentUser?.id.toString() ?? '');
+      cartController.fetchAllCart(context: context,
+          userId: UserStorage.currentUser?.id.toString() ?? '');
+      locationController.getDefaultAddresses(context: context);
     });
   }
 
@@ -53,74 +56,56 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                 const SizedBox(height: 20),
                 AppText.title1("Shipping Address"),
                 const SizedBox(height: 12),
-                GestureDetector(
-                  onTap: () => goTo(this, const ShippingAddressScreen()),
+                InkWell(
+                  hoverColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onTap: () =>
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ShippingAddressScreen(
+                              backHome: false,)),
+                      ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            const Icon(Icons.location_on_outlined),
-                            const SizedBox(width: 6),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                        GetBuilder<LocationController>(builder: (locationLogic) {
+                          return Expanded(
+                            child: Row(
                               children: [
-                                AppText.caption("Workplace",
-                                    customStyle:
-                                    TextStyle(color: theme.primaryColor)),
-                                const SizedBox(height: 4),
-                                const Text("1901 Cili. Shiloh, Hawaii 81092"),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Icon(Icons.arrow_forward_ios_rounded,
-                            color: theme.highlightColor, size: 20),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                AppText.title1("Delivery Type"),
-                const SizedBox(height: 12),
-                GestureDetector(
-                  onTap: () => goTo(this, const SelectDeliveryOptionScreen()),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(Icons.delivery_dining),
-                            const SizedBox(width: 6),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AppText.caption("Free shipping",
-                                    customStyle:
-                                    TextStyle(color: theme.primaryColor)),
-                                Row(
-                                  children: const [
-                                    Text("Estimate: "),
-                                    Text("2-30 Days",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                  ],
+                                Icon(Icons.location_on_outlined, color: theme.primaryColor),
+                                const SizedBox(width: 6),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      AppText.caption(
+                                        locationLogic.addressesDefault?.phoneNumber ?? '---',
+                                        customStyle: TextStyle(color: theme.primaryColor),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      AppText.body1(
+                                        locationLogic.addressesDefault?.street ?? 'N/A',
+                                        maxLines: 2,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
-                          ],
-                        ),
+                          );
+                        }),
                         Icon(Icons.arrow_forward_ios_rounded,
                             color: theme.highlightColor, size: 20),
                       ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 12),
                 const Divider(thickness: 0.2),
                 const SizedBox(height: 24),
                 AppText.title1("Order List"),
@@ -129,10 +114,11 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                   items: logic.cartList.map((item) {
                     final product = item.product;
                     if (product != null) {
-                      double price = double.tryParse(product.price ?? '') ?? 0.0;
+                      double price = double.tryParse(product.price ?? '') ??
+                          0.0;
                       int quantity = int.tryParse(item.quantity ?? '') ?? 0;
-                      final totalPrice = "\$${(price * quantity).toStringAsFixed(2)}";
-
+                      final totalPrice = "\$${(price * quantity)
+                          .toStringAsFixed(2)}";
                       return Dismissible(
                         key: Key(item.id.toString()),
                         direction: DismissDirection.endToStart,
@@ -146,24 +132,36 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                           // Show confirmation dialog
                           return await showDialog<bool>(
                             context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text('Confirm Delete'),
-                              content: Text('Are you sure you want to delete "${product.name}" from your cart?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.of(context).pop(false), // Cancel
-                                  child: const Text('Cancel'),
+                            builder: (context) =>
+                                AlertDialog(
+                                  title: const Text('Confirm Delete'),
+                                  content: Text(
+                                      'Are you sure you want to delete "${product
+                                          .name}" from your cart?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(false),
+                                      // Cancel
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(true),
+                                      // Confirm
+                                      child: const Text('Delete',
+                                          style: TextStyle(color: Colors.red)),
+                                    ),
+                                  ],
                                 ),
-                                TextButton(
-                                  onPressed: () => Navigator.of(context).pop(true), // Confirm
-                                  child: const Text('Delete', style: TextStyle(color: Colors.red)),
-                                ),
-                              ],
-                            ),
-                          ) ?? false; // Return false if dialog dismissed by other means
+                          ) ??
+                              false; // Return false if dialog dismissed by other means
                         },
                         onDismissed: (direction) {
-                          cartController.removeItemToCart(context: context, productId: product.id ?? '', userId: UserStorage.currentUser?.id.toString() ?? '');
+                          cartController.removeItemToCart(context: context,
+                              productId: product.id ?? '',
+                              userId: UserStorage.currentUser?.id.toString() ??
+                                  '');
                         },
                         child: GestureDetector(
                           child: ItemSelectWidget(
@@ -174,7 +172,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                           ),
                         ),
                       );
-                      ;
                     } else {
                       return const SizedBox();
                     }
@@ -218,15 +215,18 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => PaymentMethodScreen(cart: logic.cartList,),
+                        builder: (context) =>
+                            PaymentMethodScreen(cart: logic.cartList,),
                       ),
                     );
                   },
-                  child: AppText.title2("check out", customStyle: TextStyle(color: theme.secondaryHeaderColor),),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: theme.primaryColor,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
                   ),
+                  child: AppText.title2("check out",
+                    customStyle: TextStyle(color: theme.secondaryHeaderColor),),
                 )
               ],
             ),

@@ -11,6 +11,7 @@ PreferredSizeWidget customAppBar({
   Color? backgroundColor,
   Color? surfaceTintColor,
   bool haveArrowBack = true,
+  Function()? onBackAction,
   PreferredSizeWidget? bottom,
   required BuildContext context,
 }) {
@@ -26,7 +27,7 @@ PreferredSizeWidget customAppBar({
       children: [
         if(haveArrowBack)
         GestureDetector(
-          onTap: () {
+          onTap: onBackAction ?? () {
             popBack(type);
           },
           child: Container(

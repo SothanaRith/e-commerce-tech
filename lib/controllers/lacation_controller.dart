@@ -1,112 +1,208 @@
 import 'dart:convert';
-import 'dart:async';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:e_commerce_tech/helper/global.dart';
+import 'package:e_commerce_tech/helper/rest_api_helper.dart';
+import 'package:e_commerce_tech/models/delivery_address_model.dart';
+import 'package:e_commerce_tech/screen/check_out_page/shipping_address_screen.dart';
+import 'package:e_commerce_tech/utils/app_constants.dart';
+import 'package:e_commerce_tech/utils/tap_routes.dart';
+import 'package:e_commerce_tech/widgets/custom_dialog.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:http/http.dart' as http;
-
-const String googleApiKey = "AIzaSyCeg1mvZuONTxxAJZtPJnqdPZfBf2CqpV4"; // Replace with your real key
 
 class LocationController extends GetxController {
-  Rx<LatLng?> selectedLatLng = Rx<LatLng?>(null);
-  RxString currentAddress = ''.obs;
-  RxList<Map<String, String>> suggestions = <Map<String, String>>[].obs;
-  Timer? debounce;
-  Rx<Marker?> marker = Rx<Marker?>(null);
+  late final ApiRepository apiRepository;
 
-  // Fetch current location of the user
-  Future<void> fetchCurrentLocation() async {
-    try {
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-      }
+  RxList<DeliveryAddress> addresses = <DeliveryAddress>[].obs;
+  DeliveryAddress? addressesDefault;
 
-      if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
-        final position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high,
-        );
-        await setLocation(LatLng(position.latitude, position.longitude));
-      }
-    } catch (e) {
-      print("Location error: $e");
-    }
+  LocationController() {
+    apiRepository = ApiRepository();
   }
 
-  // Set location and update address and marker
-  Future<void> setLocation(LatLng latLng) async {
-    try {
-      selectedLatLng.value = latLng;
+  Future<void> createAddress({
+    required String street,
+    bool isDefault = false,
+    required BuildContext context,
+  }) async {
+    final response = await apiRepository.postData(
+      '$mainPoint/api/delivery-addresses',
+      headers: {
+        'Authorization': TokenStorage.token ?? '',
+        'Content-Type': 'application/json'
+      },
+      body: {
+        'userId': UserStorage.currentUser?.id,
+        'fullName': UserStorage.currentUser?.name,
+        'phoneNumber': UserStorage.currentUser?.phone,
+        'street': street,
+        'isDefault': isDefault
+      },
+      context: context,
+    );
 
-      // Fetch the address from coordinates
-      final placemarks = await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
-      final place = placemarks.first;
-
-      List<String> addressParts = [];
-      if (place.name != null) addressParts.add(place.name!);
-      if (place.locality != null) addressParts.add(place.locality!);
-      if (place.subAdministrativeArea != null) addressParts.add(place.subAdministrativeArea!);
-      if (place.street != null) addressParts.add(place.street!);
-      if (place.country != null) addressParts.add(place.country!);
-
-      currentAddress.value = addressParts.join(', ').trim();
-
-      // Update marker
-      marker.value = Marker(
-        markerId: const MarkerId("selected"),
-        position: latLng,
-        infoWindow: InfoWindow(title: currentAddress.value),
+    if (response.data != null) {
+      var jsonData = jsonDecode(response.data!);
+      if (jsonData['address'] != null) {
+        addresses.add(DeliveryAddress.fromJson(jsonData['address']));
+      }
+      showCustomDialog(
+        context: context,
+        type: DialogType.success,
+        title: "${jsonData["message"]}",
+        desc: "${jsonData["address"]['street']}",
+        okOnPress: () => goTo(context, ShippingAddressScreen()),
       );
-    } catch (e) {
-      print("Set location error: $e");
+    } else {
+      showCustomDialog(
+        context: context,
+        type: DialogType.error,
+        title: "Error: ${response.error}",
+      );
     }
   }
 
-  // Fetch suggestions from Google Places API
-  Future<void> fetchSuggestions(String input) async {
-    if (input.isEmpty) {
-      suggestions.clear();
-      return;
-    }
+  Future<void> getUserAddresses({
+    required BuildContext context,
+  }) async {
+    final response = await apiRepository.fetchData(
+      '$mainPoint/api/delivery-addresses/user/${UserStorage.currentUser?.id}',
+      headers: {
+        'Authorization': TokenStorage.token ?? '',
+        'Content-Type': 'application/json'
+      },
+      context: context,
+    );
 
-    try {
-      final url = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=$googleApiKey';
-      final response = await http.get(Uri.parse(url));
-      final data = jsonDecode(response.body);
-
-      if (data['status'] == 'OK') {
-        suggestions.value = (data['predictions'] as List)
-            .map<Map<String, String>>((item) => {
-          "description": item['description'] ?? '',
-          "place_id": item['place_id'] ?? '',
-        })
-            .toList();
-      } else {
-        print("Autocomplete error: ${data}");
+    if (response.data != null) {
+      try {
+        final List<dynamic> data = jsonDecode(response.data!);
+        addresses.value =
+            data.map((e) => DeliveryAddress.fromJson(e)).toList();
+      } catch (e) {
+        showCustomDialog(
+          context: context,
+          type: DialogType.error,
+          title: "Invalid response: ${e.toString()}",
+        );
       }
-    } catch (e) {
-      print("Autocomplete fetch error: $e");
+    } else {
+      showCustomDialog(
+        context: context,
+        type: DialogType.error,
+        title: "Error: ${response.error}",
+      );
     }
   }
 
-  // Select a suggestion from the list
-  Future<void> selectSuggestion(String placeId) async {
-    try {
-      final url = 'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$googleApiKey';
-      final response = await http.get(Uri.parse(url));
-      final data = jsonDecode(response.body);
+  Future<void> getDefaultAddresses({
+    required BuildContext context,
+  }) async {
+    final response = await apiRepository.fetchData(
+      '$mainPoint/api/delivery-addresses/default/${UserStorage.currentUser?.id}',
+      headers: {
+        'Authorization': TokenStorage.token ?? '',
+        'Content-Type': 'application/json'
+      },
+      context: context,
+    );
 
-      if (data['status'] == 'OK') {
-        final location = data['result']['geometry']['location'];
-        final lat = location['lat'];
-        final lng = location['lng'];
-        await setLocation(LatLng(lat, lng));
-      } else {
-        print("Place details error: ${data['status']}");
+    if (response.data != null) {
+      try {
+        final data = jsonDecode(response.data!);
+        addressesDefault = DeliveryAddress.fromJson(data);
+        update();
+      } catch (e) {
+        showCustomDialog(
+          context: context,
+          type: DialogType.error,
+          title: "Invalid response: ${e.toString()}",
+        );
       }
-    } catch (e) {
-      print("Place details fetch error: $e");
+    } else {
+      showCustomDialog(
+        context: context,
+        type: DialogType.error,
+        title: "Error: ${response.error}",
+      );
+    }
+  }
+
+  Future<void> updateAddress({
+    required String id,
+    required String fullName,
+    required String phoneNumber,
+    required String street,
+    bool isDefault = false,
+    required BuildContext context,
+  }) async {
+    final response = await apiRepository.putData(
+      '$mainPoint/api/delivery-addresses/$id',
+      headers: {
+        'Authorization': TokenStorage.token ?? '',
+        'Content-Type': 'application/json'
+      },
+      body: {
+        'fullName': fullName,
+        'phoneNumber': phoneNumber,
+        'street': street,
+        'isDefault': isDefault
+      },
+      context: context,
+    );
+
+    if (response.data != null) {
+      final jsonData = jsonDecode(response.data!);
+      final index = addresses.indexWhere((e) => e.id == id);
+      if (index != -1 && jsonData['address'] != null) {
+        addresses[index] = DeliveryAddress.fromJson(jsonData['address']);
+      }
+      showCustomDialog(
+        context: context,
+        type: DialogType.success,
+        title: "${jsonData["message"]}",
+        okOnPress: () async => await getDefaultAddresses(context: context).then((_) async {
+          await getUserAddresses(context: context);
+          Get.back();
+        },),
+      );
+    } else {
+      showCustomDialog(
+        context: context,
+        type: DialogType.error,
+        title: "Error: ${response.error}",
+      );
+    }
+  }
+
+  Future<void> deleteAddress({
+    required String id,
+    required BuildContext context,
+  }) async {
+    final response = await apiRepository.deleteData(
+      '$mainPoint/api/delivery-addresses/$id',
+      headers: {
+        'Authorization': TokenStorage.token ?? '',
+        'Content-Type': 'application/json'
+      },
+      context: context,
+    );
+
+    if (response.data != null) {
+      addresses.removeWhere((element) => element.id == id);
+      final jsonData = jsonDecode(response.data!);
+      showCustomDialog(
+        context: context,
+        type: DialogType.success,
+        title: "${jsonData["message"]}",
+        okOnPress: () => Get.back(),
+      );
+    } else {
+      showCustomDialog(
+        context: context,
+        type: DialogType.error,
+        title: "Error: ${response.error}",
+      );
     }
   }
 }
