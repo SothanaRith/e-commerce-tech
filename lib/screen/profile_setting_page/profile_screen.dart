@@ -26,55 +26,55 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final List<MenuItem> menuItems = [
     MenuItem(
-      title: 'Your profile',
+      title: 'your_profile'.tr,
       iconName: "assets/images/icons/person.svg",
       screen: const CheckOutScreen(),
       hasSpecialAction: false,
     ),
     MenuItem(
-      title: 'CheckOut',
+      title: 'check_out'.tr,
       iconName:"assets/images/icons/shopping_bag.svg",
       screen: const CheckOutScreen(),
       hasSpecialAction: false,
     ),
     MenuItem(
-      title: 'My Orders',
+      title: 'my_orders'.tr,
       iconName:"assets/images/icons/shopping_bag.svg",
       screen: const MyOrderScreen(),
       hasSpecialAction: false,
     ),
     MenuItem(
-      title: 'My Delivery Address',
+      title: 'my_delivery_address'.tr,
       iconName:"assets/images/icons/shopping_bag.svg",
       screen: const ShippingAddressScreen(),
       hasSpecialAction: false,
     ),
     MenuItem(
-      title: 'My Language',
+      title: 'my_language'.tr,
       iconName:"assets/images/icons/shopping_bag.svg",
       screen: const LanguageScreen(),
       hasSpecialAction: false,
     ),
     MenuItem(
-      title: 'Password Manager',
+      title: 'password_manager'.tr,
       iconName: 'assets/images/icons/key.svg',
       screen: const ForgetPasswordScreen(),
       hasSpecialAction: false,
     ),
     MenuItem(
-      title: 'Help Center',
+      title: 'help_center'.tr,
       iconName: "assets/images/icons/warning.svg",
       screen: const HelpCenter(),
       hasSpecialAction: false,
     ),
     MenuItem(
-      title: 'Privacy Policy',
+      title: 'privacy_policy'.tr,
       iconName: "assets/images/icons/lock.svg",
       screen: const PrivacyScreen(),
       hasSpecialAction: false,
     ),
     MenuItem(
-      title: 'Log out',
+      title: 'log_out'.tr,
       iconName: "assets/images/icons/logout.svg",
       hasSpecialAction: true, // Flag for special action (bottom sheet)
     ),
@@ -95,16 +95,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Log Out',
+              Text(
+                'log_out'.tr,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 10),
-              const Text(
-                'Are you sure you want to log out?',
+               Text(
+               'are_you_sure_you_want_to_log_out_?'.tr,
                 style: TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 20),
@@ -122,8 +122,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: const Text(
-                        'Cancel',
+                      child: Text(
+                        'cancel'.tr,
                         style: TextStyle(color: Colors.black),
                       ),
                     ),
@@ -140,8 +140,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: const Text(
-                        'Log Out',
+                      child: Text(
+                        'log_out'.tr,
                         style: TextStyle(color: Colors.white),
                       ),
                     ),

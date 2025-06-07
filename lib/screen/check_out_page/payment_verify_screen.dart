@@ -6,6 +6,7 @@ import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_button_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class PaymentVerifyScreen extends StatefulWidget {
   final List<CartModel> cart;
@@ -35,11 +36,11 @@ class _PaymentVerifyScreenState extends State<PaymentVerifyScreen> {
               child: Icon(Icons.verified, color: theme.primaryColor, size: 120,),
             ),
             SizedBox(height: 30,),
-            AppText.h3("Payment Successful!"),
+            AppText.h3("payment_successful".tr),
             SizedBox(height: 20,),
-            AppText.body2("Thank you for your purchase. \nHave a good day", textAlign: TextAlign.center,),
+            AppText.body2("thank_you_for_your_purchase_n_have_a_good_day".tr, textAlign: TextAlign.center,),
             SizedBox(height: 30,),
-            CustomButtonWidget(title: "Let's get started!", action: (){
+            CustomButtonWidget(title: "let_s_get_started_!".tr, action: (){
               goOff(this, MainScreen());
             }, buttonStyle: BtnStyle.normal,)
           ],

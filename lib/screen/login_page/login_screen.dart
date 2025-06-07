@@ -36,20 +36,20 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-              AppText.h1("Sign In"),
+              AppText.h1("sign_in".tr),
               SizedBox(height: 10),
-              AppText.caption("Hi welcome back, you’ve been Missed"),
+              AppText.caption("hi_welcome_back_you’ve_been_issed".tr),
               SizedBox(height: 50),
               CustomTextField(
-                label: "Email",
-                title: "Email",
+                label: "email".tr,
+                title: "email".tr,
                 subtitle: emailError,
                 controller: emailTextField,
               ),
               SizedBox(height: 12),
               CustomTextField(
-                label: "Password",
-                title: "Password",
+                label: "password".tr,
+                title: "password".tr,
                 subtitle: passwordError,
                 controller: passwordTextField,
                 isObscureText: true,
@@ -63,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       goTo(this, ForgetPasswordScreen());
                     },
                     child: AppText.caption(
-                      "Forget password?",
+                      "forget_password_?",
                       customStyle: TextStyle(
                           color: theme.primaryColor,
                           fontWeight: FontWeight.w600,
@@ -76,17 +76,17 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 30),
               CustomButtonWidget(
-                title: "Login",
+                title: "login".tr,
                 action: () {
                   emailError = "";
                   passwordError = "";
                   if (emailTextField.text == "") {
                     setState(() {
-                      emailError = "email is require!";
+                      emailError = "email_is_require_!".tr;
                     });
                   } else if (passwordTextField.text == "") {
                     setState(() {
-                      passwordError = "password is require!";
+                      passwordError = "password_is_require_!".tr;
                     });
                   } else {
                     authController.signIn(
@@ -108,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     color: theme.highlightColor,
                   ),
                   SizedBox(width: 8),
-                  AppText.caption("Or sign in with"),
+                  AppText.caption("or_sign_in_with".tr),
                   SizedBox(width: 8),
                   Container(
                     height: 0.2,
@@ -141,12 +141,12 @@ class _LoginScreenState extends State<LoginScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  AppText.body2("Don’t have an Account? "),
+                  AppText.body2("don’t_have_an_account_?".tr),
                   GestureDetector(
                     onTap: () {
                       goOff(this, SignUpScreen());
                     },
-                    child: AppText.title2("Sign Up"),
+                    child: AppText.title2("sign_up".tr),
                   ),
                 ],
               ),

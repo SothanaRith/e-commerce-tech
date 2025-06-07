@@ -8,6 +8,7 @@ import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_button_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -68,17 +69,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         AppText.h3(" Snap Buy", customStyle: TextStyle(color: theme.primaryColor),),
                       ],
                     ),
-                    AppText.h3("makes you look your Best"),
+                    AppText.h3("makes_you_look_your_best".tr),
                   ],
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 27),
-                child: AppText.body2("take all in store to make sure you can get all of this from your hand but it’s just your per reviews", customStyle: TextStyle(color: theme.highlightColor), textAlign: TextAlign.center,),
+                child: AppText.body2("take_all_in_store_to_make_sure_you_can_get_all_of_this_from_your_hand_but_it’s_just_your_per_reviews".tr, customStyle: TextStyle(color: theme.highlightColor), textAlign: TextAlign.center,),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: CustomButtonWidget(title: "Let's get started!", action: (){
+                child: CustomButtonWidget(title: "let_s_get_started_!".tr, action: (){
                   goOff(this, LocationScreen());
                 }, buttonStyle: BtnStyle.action,),
               ),
@@ -87,12 +88,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    AppText.title2("Already have an account? ", customStyle: TextStyle(color: theme.highlightColor),),
+                    AppText.title2("already_have_an_account_?".tr, customStyle: TextStyle(color: theme.highlightColor),),
                     GestureDetector(
                         onTap: () {
                           goOff(this, LoginScreen());
                         },
-                        child: AppText.title2('Sign in', customStyle: TextStyle(color: theme.primaryColor),))
+                        child: AppText.title2('sign_in'.tr, customStyle: TextStyle(color: theme.primaryColor),))
                   ],
                 ),
               ),

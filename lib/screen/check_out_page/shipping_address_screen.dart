@@ -36,17 +36,17 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("Manage Address"),
+          title: Text("manage_address".tr),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Full name: $fullName"),
-              Text("Address: $street"),
+              Text("${"full_name_:".tr} $fullName"),
+              Text("${"address_:".tr} $street"),
               if (!isDefault)
                 TextButton.icon(
                   icon: Icon(Icons.star),
-                  label: Text("Set as Default"),
+                  label: Text("set_as_default".tr),
                   onPressed: () {
                     Future.delayed(Duration.zero, () {
                       locationController.updateAddress(
@@ -63,7 +63,7 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
               if (!isDefault)
               TextButton.icon(
                 icon: Icon(Icons.delete, color: Colors.red),
-                label: Text("Delete", style: TextStyle(color: Colors.red)),
+                label: Text("delete".tr, style: TextStyle(color: Colors.red)),
                 onPressed: () {
                   Future.delayed(Duration.zero, () {
                     locationController.deleteAddress(id: id, context: context);
@@ -74,7 +74,7 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
           ),
           actions: [
             TextButton(
-              child: Text("Close"),
+              child: Text("close".tr),
               onPressed: () => Navigator.pop(context),
             )
           ],
@@ -88,7 +88,7 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
     return Scaffold(
       appBar: customAppBar(
         type: this,
-        title: "Select Delivery",
+        title: "select_delivery".tr,
         context: context,
         onBackAction: widget.backHome
             ? () => goOff(this, MainScreen(currentPageIndex: 3))
@@ -150,7 +150,7 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                                           ),
                                           if (isDefault)
                                             AppText.caption(
-                                              "(Default Address)",
+                                              "(_default_address_)".tr,
                                               customStyle: TextStyle(
                                                 fontSize: 12,
                                                 color: Colors.green,
@@ -190,9 +190,9 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                 child: Container(
                   width: MediaQuery.sizeOf(context).width * 0.8,
                   padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: const Center(
+                  child: Center(
                     child: Text(
-                      '+ Add New Shipping Address',
+                      '+_add_new_shipping_address'.tr,
                       style: TextStyle(fontSize: 16, color: Colors.black),
                     ),
                   ),

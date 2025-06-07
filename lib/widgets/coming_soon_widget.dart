@@ -2,6 +2,7 @@ import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ComingSoonScreen extends StatelessWidget {
   const ComingSoonScreen({super.key});
@@ -34,7 +35,7 @@ class ComingSoonScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 30),
                 AppText.h4(
-                  "Coming Soon",
+                  "coming_soon".tr,
                   textAlign: TextAlign.center,
                   customStyle: TextStyle(
                     fontSize: 32,
@@ -45,7 +46,7 @@ class ComingSoonScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 AppText.body2(
-                  "We're working hard to bring you something amazing. Stay tuned!",
+                  "we're_working_hard_to_bring_you_something_amazing_stay_tuned_!".tr,
                   textAlign: TextAlign.center,
                   customStyle: TextStyle(
                     fontSize: 16,
@@ -62,7 +63,7 @@ class ComingSoonScreen extends StatelessWidget {
                     border: Border.all(color: Colors.white24),
                   ),
                   child: AppText.body2(
-                    "🚧 Under Development",
+                    "🚧_Under_development",
                     customStyle: TextStyle(
                       fontSize: 14,
                       color: Colors.white,
@@ -82,8 +83,8 @@ class ComingSoonScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30),
                       border: Border.all(color: Colors.white24),
                     ),
-                    child: const AppText.body(
-                      "< Back Home />",
+                    child: AppText.body(
+                      "<_back_home_/>".tr,
                       customStyle: TextStyle(
                         fontSize: 14,
                         color: Colors.white,

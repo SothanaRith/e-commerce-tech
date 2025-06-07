@@ -101,10 +101,10 @@ class _OtpScreenState extends State<OtpScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      AppText.h2('Enter Verification Code', textAlign: TextAlign.center),
+                      AppText.h2('enter_verification_code'.tr, textAlign: TextAlign.center),
                       const SizedBox(height: 8),
                       AppText.title2(
-                        'We are automatically detecting the OTP sent to your email',
+                        'we_are_automatically_detecting_the_otp_sent_to_your_email'.tr,
                         textAlign: TextAlign.center,
                         maxLines: 2,
                       ),
@@ -118,7 +118,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       const SizedBox(height: 32),
                       CustomButtonWidget(
                         action: isOtpFilled ? () => _submitOtp(_otpController.text) : null,
-                        title: "Verify OTP",
+                        title: "verify_otp".tr,
                         buttonStyle: isOtpFilled ? BtnStyle.action : BtnStyle.normal,
                       ),
                       const SizedBox(height: 16),
@@ -130,7 +130,7 @@ class _OtpScreenState extends State<OtpScreen> {
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              AppText.body2("Didn't receive OTP? "),
+                              AppText.body2("didn't_receive_otp_?".tr),
                               GestureDetector(
                                 onTap: canResend ? _resendOtp : null,
                                 child: AppText.body2(

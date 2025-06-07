@@ -26,7 +26,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     return Scaffold(
       appBar: customAppBar(
           type: GestureDetector(),
-          title: "Password Manager",
+          title: "password_manager".tr,
           haveArrowBack: false,
           context: context),
       body: SafeArea(
@@ -38,13 +38,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8),
-                    child: AppText.title1("Your password"),
+                    child: AppText.title1("your_password".tr),
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       CustomTextField(
-                        label: "Your password here",
+                        label: "your_password_here".tr,
                         rightIcon: Icon(Icons.key),
                         controller: passwordTextField,
                         isObscureText: true,
@@ -52,7 +52,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       ),
                       SizedBox(height: 16,),
                       CustomTextField(
-                        label: "Confirm password here",
+                        label: "confirm_password_here".tr,
                         rightIcon: Icon(Icons.key),
                         controller: confirmPasswordTextField,
                         isObscureText: true,
@@ -63,25 +63,25 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 30),
                     child: CustomButtonWidget(
-                      title: "Save",
+                      title: "save".tr,
                       action: () {
                         passwordError = "";
                         confirmPasswordError = "";
                         if (passwordTextField.text == "") {
                           setState(() {
-                            passwordError = "password is require";
+                            passwordError = "password_is_require_!";
                           });
                         } else if (confirmPasswordTextField.text == "") {
                           setState(() {
                             confirmPasswordError =
-                                "confirm password is require";
+                                "confirm_password_is_require";
                           });
                         } else if (passwordTextField.text !=
                             confirmPasswordTextField.text) {
                           showCustomDialog(
                               context: context,
                               type: DialogType.error,
-                              title: "Error: Confirm password is wrong!");
+                              title: "error_confirm_password_is_wrong_!".tr);
                         } else {
                           authController.resetPassword(newPassword: passwordTextField.text, context: context);
                         }

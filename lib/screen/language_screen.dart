@@ -30,7 +30,7 @@ class LanguageScreen extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: CustomButtonWidget(
-                  title: "continues",
+                  title: "continues".tr,
                   width: MediaQuery.of(context).size.width - 30,
                   action: () async {
                     final prefs = await SharedPreferences.getInstance();

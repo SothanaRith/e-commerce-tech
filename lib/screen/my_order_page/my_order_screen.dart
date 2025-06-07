@@ -59,12 +59,12 @@ class _MyOrderScreenState extends State<MyOrderScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(type: this, title: "Checkout", context: context, bottom: TabBar(
+      appBar: customAppBar(type: this, title: "checkout".tr, context: context, bottom: TabBar(
         controller: _tabController,
-        tabs: const [
-          Tab(text: "Pending"),
-          Tab(text: "Complete"),
-          Tab(text: "Cancel"),
+        tabs: [
+          Tab(text: "pending".tr),
+          Tab(text: "complete".tr),
+          Tab(text: "cancel".tr),
         ],
       ),),
       body: TabBarView(
@@ -102,7 +102,7 @@ class _OrdersTabState extends State<OrdersTab> {
           orderController.transactionsByStatus[widget.status] ?? [];
 
       if (items.isEmpty) {
-        return const Center(child: Text('No orders found.'));
+        return Center(child: Text('no_orders_found'.tr));
       }
 
       return Padding(

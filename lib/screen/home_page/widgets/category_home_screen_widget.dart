@@ -13,7 +13,6 @@ class CategoryHomeScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<HomeController>(); // Get the controller
 
     return Column(
       children: [
@@ -44,7 +43,7 @@ class CategoryHomeScreenWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           AppText.title2(
-            "Category",
+            "category".tr,
             customStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
         ],

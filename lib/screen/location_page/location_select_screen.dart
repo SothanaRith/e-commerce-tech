@@ -164,7 +164,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
     final radius = BorderRadius.circular(20);
 
     return Scaffold(
-      appBar: customAppBar(type: this, title: "Select Location", context: context),
+      appBar: customAppBar(type: this, title: "select_location".tr, context: context),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
@@ -195,7 +195,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
             ),
             const SizedBox(height: 12),
             CustomTextField(
-              label: "Find your location",
+              label: "find_your_location".tr,
               controller: _searchController,
               rightIcon: Icon(Icons.search, color: theme.primaryColor),
             ),
@@ -227,7 +227,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
           width: double.infinity,
           height: 50,
           child: CustomButtonWidget(
-            title: "Selected",
+            title: "selected".tr,
             action: () {
               if (_selectedLatLng != null && _currentAddress.isNotEmpty) {
                 locationController.createAddress(
@@ -237,7 +237,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
                 );
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Please select a valid location")),
+                  SnackBar(content: Text("please_select_a_valid_location".tr)),
                 );
               }
             },

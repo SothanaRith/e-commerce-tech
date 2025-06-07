@@ -1,12 +1,9 @@
 import 'package:e_commerce_tech/controllers/cart_controller.dart';
 import 'package:e_commerce_tech/controllers/lacation_controller.dart';
-import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/check_out_page/payment_method_screen.dart';
-import 'package:e_commerce_tech/screen/check_out_page/payment_verify_screen.dart';
 import 'package:e_commerce_tech/screen/check_out_page/shipping_address_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
-import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/item_select_widget.dart';
@@ -39,14 +36,14 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(type: this, title: "Checkout", context: context),
+      appBar: customAppBar(type: this, title: "checkout".tr, context: context),
       body: GetBuilder<CartController>(
         builder: (logic) {
           if (logic.isLoadingProducts.value) {
             return const Center(child: CircularProgressIndicator());
           }
           if (logic.cartList.isEmpty) {
-            return const Center(child: Text("Your cart is empty."));
+            return Center(child: Text("your_cart_is_empty".tr));
           }
           return SingleChildScrollView(
             padding: const EdgeInsets.all(12.0),
@@ -54,7 +51,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 20),
-                AppText.title1("Shipping Address"),
+                AppText.title1("shipping_address".tr),
                 const SizedBox(height: 12),
                 InkWell(
                   hoverColor: Colors.transparent,
@@ -108,7 +105,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                 const SizedBox(height: 12),
                 const Divider(thickness: 0.2),
                 const SizedBox(height: 24),
-                AppText.title1("Order List"),
+                AppText.title1("order_list".tr),
                 const SizedBox(height: 12),
                 ListViewCustomWidget(
                   items: logic.cartList.map((item) {
@@ -134,7 +131,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                             context: context,
                             builder: (context) =>
                                 AlertDialog(
-                                  title: const Text('Confirm Delete'),
+                                  title: Text('confirm_delete'.tr),
                                   content: Text(
                                       'Are you sure you want to delete "${product
                                           .name}" from your cart?'),
@@ -143,13 +140,13 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                       onPressed: () =>
                                           Navigator.of(context).pop(false),
                                       // Cancel
-                                      child: const Text('Cancel'),
+                                      child: Text('cancel'.tr),
                                     ),
                                     TextButton(
                                       onPressed: () =>
                                           Navigator.of(context).pop(true),
                                       // Confirm
-                                      child: const Text('Delete',
+                                      child: Text('delete'.tr,
                                           style: TextStyle(color: Colors.red)),
                                     ),
                                   ],
@@ -225,7 +222,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 24, vertical: 12),
                   ),
-                  child: AppText.title2("check out",
+                  child: AppText.title2("check_out".tr,
                     customStyle: TextStyle(color: theme.secondaryHeaderColor),),
                 )
               ],

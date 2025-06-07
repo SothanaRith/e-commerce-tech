@@ -8,6 +8,7 @@ import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class PaymentMethodScreen extends StatefulWidget {
   final List<CartModel> cart;
@@ -69,7 +70,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(type: this, title: "Payment method", context: context),
+      appBar: customAppBar(type: this, title: "payment_method".tr, context: context),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -86,14 +87,14 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  AppText.title1("Total Amount:"),
+                  AppText.title1("total_amount_:".tr),
                   AppText.title1("\$${totalPrice.toStringAsFixed(2)}"),
                 ],
               ),
             ),
             const SizedBox(height: 20),
             paymentMethods.isEmpty
-                ? Center(child: Text("No payment methods available.", style: TextStyle(color: Colors.red)))
+                ? Center(child: Text("no_payment_methods_available".tr, style: TextStyle(color: Colors.red)))
                 : ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -191,7 +192,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 40),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
-              child: AppText.title1("Proceed to Payment", customStyle: const TextStyle(color: Colors.white)),
+              child: AppText.title1("proceed_to_payment".tr, customStyle: const TextStyle(color: Colors.white)),
             ),
           ],
         ),

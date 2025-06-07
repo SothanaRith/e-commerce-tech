@@ -45,20 +45,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                AppText.h1("Sign Up"),
+                AppText.h1("sign_up".tr),
                 SizedBox(
                   height: 10,
                 ),
                 AppText.caption(
-                  "Fill your information below or register \nwith your social account.",
+                  "fill_your_information_below_or_register_with_your_social_account".tr,
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(
                   height: 50,
                 ),
                 CustomTextField(
-                  label: "label",
-                  title: "Name",
+                  label: "put_your_name_here".tr,
+                  title: "name".tr,
                   subtitle: nameErrorText,
                   controller: nameTextField,
                 ),
@@ -66,8 +66,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 12,
                 ),
                 CustomTextField(
-                  label: "label",
-                  title: "Email",
+                  label: "put_your_email_here".tr,
+                  title: "email".tr,
                   subtitle: emailErrorText,
                   controller: emailTextField,
                 ),
@@ -75,8 +75,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 12,
                 ),
                 CustomTextField(
-                  label: "label",
-                  title: "Phone number",
+                  label: "put_your_phone_number_here".tr,
+                  title: "phone_number".tr,
                   subtitle: phoneErrorText,
                   controller: phoneNumberTextField,
                 ),
@@ -84,8 +84,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 12,
                 ),
                 CustomTextField(
-                  label: "label",
-                  title: "Password",
+                  label: "put_your_password_here".tr,
+                  title: "password".tr,
                   subtitle: passwordErrorText,
                   controller: passwordTextField,
                 ),
@@ -103,14 +103,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       width: 5,
                     ),
                     AppText.caption(
-                      "Agree with ",
+                      "agree_with".tr,
                       customStyle: TextStyle(
                           color: theme.highlightColor,
                           fontWeight: FontWeight.w600,
                           fontSize: 12),
                     ),
                     AppText.caption(
-                      "Terms & Condition",
+                      "terms_&_condition".tr,
                       customStyle: TextStyle(
                           color: theme.primaryColor,
                           fontWeight: FontWeight.w600,
@@ -124,7 +124,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 30,
                 ),
                 CustomButtonWidget(
-                  title: "Sign Up",
+                  title: "sign_up".tr,
                   action: () {
                     nameErrorText = "";
                     emailErrorText = "";
@@ -132,19 +132,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     phoneErrorText = "";
                     if (nameTextField.text == "") {
                       setState(() {
-                        nameErrorText = "name is require";
+                        nameErrorText = "name_is_require_!";
                       });
                     } else if (emailTextField.text == "") {
                       setState(() {
-                        emailErrorText = "email is require";
+                        emailErrorText = "email_is_require_!";
                       });
                     } else if (passwordTextField.text == "") {
                       setState(() {
-                        passwordErrorText = "password is require";
+                        passwordErrorText = "password_is_require_!";
                       });
                     } else if (phoneNumberTextField.text == "") {
                       setState(() {
-                        phoneErrorText = "phone is require";
+                        phoneErrorText = "phone_is_require_!";
                       });
                     } else {
                       authController
@@ -178,7 +178,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(
                       width: 8,
                     ),
-                    AppText.caption("Or sign in with"),
+                    AppText.caption("or_sign_in_with".tr),
                     SizedBox(
                       width: 8,
                     ),
@@ -222,12 +222,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    AppText.body2("Already have an Account? "),
+                    AppText.body2("already_have_an_account_?".tr),
                     GestureDetector(
                         onTap: () {
                           goOff(this, LoginScreen());
                         },
-                        child: AppText.title2("Sign In")),
+                        child: AppText.title2("sign_in".tr)),
                   ],
                 ),
               ],

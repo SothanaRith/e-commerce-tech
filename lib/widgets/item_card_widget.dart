@@ -39,16 +39,16 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
       context: widget.parentContext,
       dialogType: DialogType.info,
       animType: AnimType.bottomSlide,
-      title: 'Select Quantity',
+      title: 'select_quantity'.tr,
       body: StatefulBuilder(
         builder: (context, setState) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
             child: Column(
               children: [
-                AppText.title('Select Quantity'),
+                AppText.title('select_quantity'.tr),
                 SizedBox(height: 10,),
-                AppText.body2('Before add to cart you need to insert quantity'),
+                AppText.body2('before_add_to_cart_you_need_to_insert_quantity'.tr),
                 SizedBox(height: 10,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

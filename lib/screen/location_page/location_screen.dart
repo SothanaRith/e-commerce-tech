@@ -6,6 +6,7 @@ import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_button_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class LocationScreen extends StatefulWidget {
   const LocationScreen({super.key});
@@ -33,11 +34,11 @@ class _LocationScreenState extends State<LocationScreen> {
              child: Icon(Icons.location_on, color: theme.primaryColor, size: 120,),
           ),
           SizedBox(height: 30,),
-          AppText.h3("Where is your Location?"),
+          AppText.h3("where_is_your_location_?".tr),
           SizedBox(height: 20,),
-          AppText.body2("take all  in store to make sure you can get all of this from your hand but it's just your per reviews", textAlign: TextAlign.center,),
+          AppText.body2("take_all_in_store_to_make_sure_you_can_get_all_of_this_from_your_hand_but_it_s_just_your_per_reviews".tr, textAlign: TextAlign.center,),
           SizedBox(height: 30,),
-          CustomButtonWidget(title: "Let's get started!", action: (){
+          CustomButtonWidget(title: "let_s_get_started_!".tr, action: (){
             goOff(this, LocationSelectScreen());
           }, buttonStyle: BtnStyle.normal,)
         ],

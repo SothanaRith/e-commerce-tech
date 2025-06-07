@@ -44,7 +44,7 @@ class _ProductByCategoryScreenState extends State<ProductByCategoryScreen> {
         }
 
         if (controller.productByCategories.isEmpty) {
-          return const Center(child: Text("No products found."));
+          return Center(child: Text("no_products_found".tr));
         }
 
         return GridView.builder(

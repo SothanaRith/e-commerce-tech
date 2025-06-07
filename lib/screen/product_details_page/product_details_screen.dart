@@ -364,7 +364,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         product.reviews!.isNotEmpty) ...[
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                        child: AppText.title("Reviews"),
+                        child: AppText.title("reviews".tr),
                       ),
                       const SizedBox(height: 12),
                       ListViewHorizontalWidget(
@@ -441,7 +441,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       const SizedBox(height: 24),
                       Padding(
                         padding: const EdgeInsets.all(12.0),
-                        child: AppText.title1("Store Contacts"),
+                        child: AppText.title1("store_contacts".tr),
                       ),
                       const SizedBox(height: 24),
                     ],
@@ -450,7 +450,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         product.relatedProducts!.isNotEmpty) ...[
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                        child: AppText.title1("Related Products"),
+                        child: AppText.title1("related_products".tr),
                       ),
                       GridCustomWidget(
                         items: List.generate(

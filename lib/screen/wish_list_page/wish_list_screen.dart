@@ -37,11 +37,11 @@ class _WishListScreenState extends State<WishListScreen> {
     return GetBuilder<WishlistController>(builder: (logic) {
       return Scaffold(
         appBar: customAppBar(type: this,
-            title: "Wish list",
+            title: "wish_list".tr,
             context: context,
             haveArrowBack: false),
         body: logic.isLoading
-            ? Center(child: Text("no data"),)
+            ? Center(child: Text("no_data".tr),)
             : SingleChildScrollView(
           child: Column(
             children: [

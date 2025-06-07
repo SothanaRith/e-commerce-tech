@@ -21,7 +21,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(type: GestureDetector(), title: "Password Manager" , haveArrowBack: true, context: context),
+      appBar: customAppBar(type: GestureDetector(), title: "password_manager".tr , haveArrowBack: true, context: context),
       body:
           SafeArea(
             child: SingleChildScrollView(
@@ -32,22 +32,22 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8),
-                      child: AppText.title1("Your Email"),
+                      child: AppText.title1("your_email".tr),
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        CustomTextField(label: "Your Email here", rightIcon: Icon(Icons.mail), controller: emailTextField,
+                        CustomTextField(label: "your_email_here".tr, rightIcon: Icon(Icons.mail), controller: emailTextField,
                           subtitle: emailError,
                         ),
                       ],
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 30),
-                      child: CustomButtonWidget(title: "Send OTP", action: (){
+                      child: CustomButtonWidget(title: "send_otp".tr, action: (){
                         if (emailTextField.text == "") {
                           setState(() {
-                            emailError = "email is require";
+                            emailError = "email_is_require_!".tr;
                           });
                         } else {
                           authController.checkMail(email: emailTextField.text, context: context);

@@ -154,7 +154,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         width: MediaQuery.sizeOf(context).width - 80,
                         child: CustomTextField(
                           controller: searchText,
-                          label: "Search something...",
+                          label: "search_something...".tr,
                           onSubmitted: (value) {
                             _searchProducts(page: 1);
                           },
@@ -181,7 +181,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(12.0),
-                                child: AppText.title1("Category"),
+                                child: AppText.title1("category".tr),
                               ),
                               categoryController.category == null
                                   ? const Center(
@@ -205,7 +205,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                     ),
                               Padding(
                                 padding: const EdgeInsets.all(12.0),
-                                child: AppText.title1("Pricing Range"),
+                                child: AppText.title1("pricing_range".tr),
                               ),
                               RangeSliderWidget(
                                 min: 0,
@@ -220,7 +220,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12.0, vertical: 6),
-                                child: AppText.title1("Reviews"),
+                                child: AppText.title1("reviews".tr),
                               ),
                               Row(
                                 children: List.generate(5, (index) {
@@ -265,9 +265,9 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: GetBuilder<SearchingController>(
                     builder: (_) {
                       final queryText = searchText.text.isEmpty
-                          ? 'all products'
+                          ? 'all_products'.tr
                           : searchText.text;
-                      return AppText.title1("Result for '$queryText'");
+                      return AppText.title1("${"result_for".tr} '$queryText'");
                     },
                   ),
                 ),
@@ -294,7 +294,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       return const Center(
                         child: Padding(
                           padding: EdgeInsets.all(20),
-                          child: Text("No results found."),
+                          child: Text("no_results_found"),
                         ),
                       );
                     }
