@@ -96,6 +96,16 @@ Widget selectLanguage() {
             ),
             languageButton(
                 languageCode: "CN", languageName: "中文", onClickIndex: 2),
+            const SizedBox(
+              height: 10,
+            ),
+            languageButton(
+                languageCode: "FN", languageName: "French", onClickIndex: 2),
+            const SizedBox(
+              height: 10,
+            ),
+            languageButton(
+                languageCode: "JA", languageName: "Japan", onClickIndex: 2),
           ],
         ),
       ),

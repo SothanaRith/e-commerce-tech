@@ -12,6 +12,8 @@ class AppConstants{
     LanguageModel(imageUrl: "en.png", languageName: "English", languageCode: "en", countryCode: "US"),
     LanguageModel(imageUrl: "kh.png", languageName: "ខ្មែរ", languageCode: "kh", countryCode: "KH"),
     LanguageModel(imageUrl: "ja.png", languageName: "日本", languageCode: "ja", countryCode: "JA"),
+    LanguageModel(imageUrl: "fr.png", languageName: "Français", languageCode: "fr", countryCode: "FR"),
+    LanguageModel(imageUrl: "cn.png", languageName: "中文", languageCode: "zh", countryCode: "CN"),
   ];
 }
 
