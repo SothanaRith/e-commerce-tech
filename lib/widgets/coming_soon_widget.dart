@@ -1,3 +1,6 @@
+import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/utils/tap_routes.dart';
+import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:flutter/material.dart';
 
 class ComingSoonScreen extends StatelessWidget {
@@ -11,9 +14,9 @@ class ComingSoonScreen extends StatelessWidget {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF6A11CB), Color(0xFF2575FC)],
+            colors: [theme.primaryColor, theme.primaryColor.withAlpha(400)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -30,10 +33,10 @@ class ComingSoonScreen extends StatelessWidget {
                   color: Colors.white,
                 ),
                 const SizedBox(height: 30),
-                const Text(
+                AppText.h4(
                   "Coming Soon",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  customStyle: TextStyle(
                     fontSize: 32,
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -41,10 +44,10 @@ class ComingSoonScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                const Text(
+                AppText.body2(
                   "We're working hard to bring you something amazing. Stay tuned!",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  customStyle: TextStyle(
                     fontSize: 16,
                     color: Colors.white70,
                     height: 1.5,
@@ -58,12 +61,34 @@ class ComingSoonScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30),
                     border: Border.all(color: Colors.white24),
                   ),
-                  child: const Text(
+                  child: AppText.body2(
                     "🚧 Under Development",
-                    style: TextStyle(
+                    customStyle: TextStyle(
                       fontSize: 14,
                       color: Colors.white,
                       letterSpacing: 1,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                GestureDetector(
+                  onTap: () {
+                    popBack(this);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(color: Colors.white24),
+                    ),
+                    child: const AppText.body(
+                      "< Back Home />",
+                      customStyle: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                        letterSpacing: 1,
+                      ),
                     ),
                   ),
                 ),

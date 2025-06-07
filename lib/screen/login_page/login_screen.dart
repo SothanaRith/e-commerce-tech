@@ -123,17 +123,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   socialBtn(
                       icons: "assets/images/icons/apple.png", action: () {
-                    goOff(this, ComingSoonScreen());
+                    goTo(this, ComingSoonScreen());
                   }),
                   SizedBox(width: 10),
                   socialBtn(
                       icons: "assets/images/icons/google.png", action: () {
-                    goOff(this, ComingSoonScreen());
+                    goTo(this, ComingSoonScreen());
                   }),
                   SizedBox(width: 10),
                   socialBtn(
                       icons: "assets/images/icons/facebook.png", action: () {
-                    goOff(this, ComingSoonScreen());
+                    goTo(this, ComingSoonScreen());
                   }),
                 ],
               ),

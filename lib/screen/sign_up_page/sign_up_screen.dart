@@ -3,6 +3,7 @@ import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/login_page/login_screen.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
+import 'package:e_commerce_tech/widgets/coming_soon_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_button_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_text_field_widget.dart';
 import 'package:flutter/material.dart';
@@ -195,18 +196,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     socialBtn(
-                        icons: "assets/images/icons/apple.png", action: () {}),
+                        icons: "assets/images/icons/apple.png", action: () {
+                      goTo(this, ComingSoonScreen());
+                    }),
                     SizedBox(
                       width: 10,
                     ),
                     socialBtn(
-                        icons: "assets/images/icons/google.png", action: () {}),
+                        icons: "assets/images/icons/google.png", action: () {
+                      goTo(this, ComingSoonScreen());
+                    }),
                     SizedBox(
                       width: 10,
                     ),
                     socialBtn(
                         icons: "assets/images/icons/facebook.png",
-                        action: () {}),
+                        action: () {
+                          goTo(this, ComingSoonScreen());
+                        }),
                   ],
                 ),
                 SizedBox(
