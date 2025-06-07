@@ -127,7 +127,6 @@ class _OtpScreenState extends State<OtpScreen> {
                         builder: (context, snapshot) {
                           final remaining = snapshot.data ?? 0;
                           final canResend = !_streamController.hasListener || remaining <= 0;
-
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
