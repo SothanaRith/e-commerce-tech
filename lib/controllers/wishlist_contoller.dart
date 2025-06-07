@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/controllers/home_controller.dart';
+import 'package:e_commerce_tech/controllers/product_controller.dart';
 import 'package:e_commerce_tech/controllers/search_controller.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/helper/rest_api_helper.dart';
@@ -15,6 +16,8 @@ class WishlistController extends GetxController {
   List<WishlistModel> wishlistData = [];
   final SearchingController searchController = Get.put(SearchingController());
   final HomeController homeController = Get.put(HomeController());
+  final ProductController productController = Get.put(ProductController());
+
   WishlistController() {
     apiRepository = ApiRepository();
   }
@@ -74,9 +77,6 @@ class WishlistController extends GetxController {
           type: DialogType.success,
           title: "${jsonData["message"]}",
           okOnPress: () {
-            getAllWishlist(context: context, userId: userId.toString());
-            searchController.searchProduct(context: context, userId: userId.toString());
-            homeController.loadHome(page: 1, userId: userId.toString(), context: context);
           });
     } else {
       showCustomDialog(
@@ -101,9 +101,6 @@ class WishlistController extends GetxController {
           type: DialogType.success,
           title: "${jsonData["message"]}",
           okOnPress: () {
-            getAllWishlist(context: context, userId: userId.toString());
-            searchController.searchProduct(context: context, userId: userId.toString());
-            homeController.loadHome(page: 1, userId: userId.toString(), context: context);
           });
     } else {
       var jsonData = jsonDecode(response.error!);

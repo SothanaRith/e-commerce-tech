@@ -2,11 +2,7 @@ import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/helper/rest_api_helper.dart';
-import 'package:e_commerce_tech/models/product_by_category.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
-import 'package:e_commerce_tech/screen/forget_password_page/reset_password_screen.dart';
-import 'package:e_commerce_tech/screen/home_page/home_screen.dart';
-import 'package:e_commerce_tech/screen/location_page/location_screen.dart';
 import 'package:e_commerce_tech/screen/verify_code_page/verify_code_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
@@ -18,7 +14,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ProductController extends GetxController {
   late final ApiRepository apiRepository;
   bool isLoading = false;
-
+  ProductModel product = ProductModel();
+  List<ProductModel> listProduct = [];
   // late final String mainPoint = "http://192.168.1.6:6000";
   ProductController() {
     apiRepository = ApiRepository();
@@ -39,11 +36,12 @@ class ProductController extends GetxController {
       print("Fetched Data: $jsonData");
 
       // Assuming the data is a list of products
-      List<ProductModel> products = (jsonData as List)
+      listProduct = (jsonData as List)
           .map((item) => ProductModel.fromJson(item))
           .toList();
 
-      return products;
+      update();
+      return listProduct;
     } else {
       showCustomDialog(
         context: context,
@@ -77,7 +75,8 @@ class ProductController extends GetxController {
       print("Fetched Data: $jsonData");
 
       // Convert JSON to ProductModel
-      ProductModel product = ProductModel.fromJson(jsonData);
+      product = ProductModel.fromJson(jsonData);
+      update();
       return product;
     } else {
       showCustomDialog(
@@ -191,59 +190,6 @@ class ProductController extends GetxController {
           okOnPress: () {
 
           });
-    } else {
-      showCustomDialog(
-          context: context,
-          type: DialogType.error,
-          title: "Error: ${response.error}");
-    }
-  }
-
-  Future<void> checkOut(
-      {required String otp,
-        required ScreenVerifyType type,
-        required BuildContext context}) async {
-    final response = await apiRepository.postData(
-        '$mainPoint/api/product/verify-otp',
-        body: {"otp": otp},
-        headers: {
-          'Productorization': TokenStorage.token ?? "",
-          'Content-Type': 'application/json'
-        }, context: context
-    );
-    if (response.data != null) {
-      var jsonData = jsonDecode(response.data!);
-      TokenStorage.saveToken(jsonData["accessToken"]).then(
-            (value) async {
-          if (type == ScreenVerifyType.signup) {
-            showCustomDialog(
-                context: context,
-                type: DialogType.success,
-                title: "${jsonData["message"]}",
-                okOnPress: () {
-                  goOff(this, LocationScreen());
-                });
-          } else if (type == ScreenVerifyType.signinPhoneNumber) {
-            final prefs = await SharedPreferences.getInstance();
-            await prefs.setBool('isLoggedIn', true);
-            showCustomDialog(
-                context: context,
-                type: DialogType.success,
-                title: "${jsonData["message"]}",
-                okOnPress: () {
-                  goOff(this, HomeScreen());
-                });
-          } else if (type == ScreenVerifyType.forgetPassword) {
-            showCustomDialog(
-                context: context,
-                type: DialogType.success,
-                title: "${jsonData["message"]}",
-                okOnPress: () {
-                  goOff(this, ResetPasswordScreen());
-                });
-          }
-        },
-      );
     } else {
       showCustomDialog(
           context: context,

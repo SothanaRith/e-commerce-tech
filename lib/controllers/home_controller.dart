@@ -12,41 +12,24 @@ import '../helper/rest_api_helper.dart';
 import '../utils/app_constants.dart';
 
 class HomeController extends GetxController {
-  final ScrollController scrollController = ScrollController();
   final apiRepository = ApiRepository();
 
   int currentPage = 1;
   final int pageSize = 10;
+  bool isLoading = false;
+  bool hasMore = true;
 
-  RxBool isLoading = false.obs;
-  RxBool hasMore = true.obs;
-
-  RxList<CategoryModel> categories = <CategoryModel>[].obs;
-  RxList<ProductModel> products = <ProductModel>[].obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    Future.delayed(Duration.zero, () {
-      loadHome(page: currentPage, context: Get.context!, userId: UserStorage.currentUser?.id.toString() ?? '');
-      // loadCategory(context: Get.context!);
-
-      scrollController.addListener(() {
-        if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - 200) {
-          if (!isLoading.value && hasMore.value) {
-            currentPage++;
-            loadHome(page: currentPage, context: Get.context!, userId: UserStorage.currentUser?.id.toString()  ?? '');
-          }
-        }
-      });
-    });
-  }
+  List<CategoryModel> categories = [];
+  List<ProductModel> products = [];
 
   Future<void> loadHome({required int page, required String userId, required BuildContext context}) async {
-    isLoading.value = true;
+    if (isLoading) return; // Prevent reloading while data is being fetched
+    isLoading = true;
+    update();
 
+    log('Loading page: $page'); // Debugging line: Check page being loaded
     final response = await apiRepository.fetchData(
-      "$mainPoint/api/home/loadHome/?page=$page&size=$pageSize&userId=$userId",
+      "$mainPoint/api/home/loadHome/?page=${page}&size=$pageSize&userId=$userId",
       headers: {
         'Authorization': TokenStorage.token ?? "",
         'Content-Type': 'application/json',
@@ -58,45 +41,31 @@ class HomeController extends GetxController {
       var jsonData = jsonDecode(response.data!);
       final homeResponse = HomeModel.fromJson(jsonData['data']);
 
+      // Debugging: Check the response data structure
+      log('Home response: ${jsonData['data']}');
+
       if (page == 1) {
-        products.assignAll(homeResponse.products);
+        products = homeResponse.products;
       } else {
         if (homeResponse.products.isEmpty) {
-          hasMore.value = false;
+          hasMore = false; // No more data to load
         } else {
-          products.addAll(homeResponse.products);
+          products.addAll(homeResponse.products); // Append new products
         }
       }
 
       if (categories.isEmpty) {
-        categories.addAll(homeResponse.categories);
+        categories = homeResponse.categories;
       }
+
+      // Debugging: Check if hasMore flag is set correctly
+      log('Has more data: $hasMore');
     } else {
-      hasMore.value = false;
+      hasMore = false; // If no data, mark as no more data
+      log('No data received, hasMore set to false');
     }
 
-    isLoading.value = false;
-  }
-
-  // Future<void> loadCategory({required BuildContext context}) async {
-  //   final response = await apiRepository.fetchData(
-  //     "$mainPoint/api/category/get-all-categories",
-  //     headers: {
-  //       'Authorization': TokenStorage.token ?? "",
-  //       'Content-Type': 'application/json',
-  //     },
-  //     context: context,
-  //   );
-  //
-  //   if (response.data != null) {
-  //     final categoryResponse = CategoryResponse.fromJson(jsonDecode(response.data!));
-  //     categories.assignAll(categoryResponse.categories);
-  //   }
-  // }
-
-  @override
-  void onClose() {
-    scrollController.dispose();
-    super.onClose();
+    isLoading = false;
+    update();
   }
 }

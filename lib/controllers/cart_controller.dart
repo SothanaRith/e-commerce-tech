@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/controllers/home_controller.dart';
+import 'package:e_commerce_tech/controllers/product_controller.dart';
 import 'package:e_commerce_tech/controllers/search_controller.dart';
 import 'package:e_commerce_tech/controllers/wishlist_contoller.dart';
 import 'package:e_commerce_tech/models/cart_model.dart';
+import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,6 +21,7 @@ class CartController extends GetxController {
   final WishlistController wishlistController = Get.put(WishlistController());
   final SearchingController searchController = Get.put(SearchingController());
   final HomeController homeController = Get.put(HomeController());
+  final ProductController productController = Get.put(ProductController());
   Future<List<CartModel>?> fetchAllCart({required BuildContext context, required String userId}) async {
     try {
       isLoadingProducts.value = true;
@@ -78,6 +81,12 @@ class CartController extends GetxController {
     );
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
+      showCustomDialog(
+          context: context,
+          type: DialogType.success,
+          title: "${jsonData["message"]}",
+          okOnPress: () async {
+          });
     } else {
       showCustomDialog(
           context: context,
@@ -101,12 +110,6 @@ class CartController extends GetxController {
           type: DialogType.success,
           title: "${jsonData["message"]}",
           okOnPress: () async {
-            await wishlistController.getAllWishlist(
-              context: context,
-              userId: userId.toString(), // 🔁 Replace with dynamic user ID
-            );
-            await searchController.searchProduct(context: context, userId: userId.toString());
-            await homeController.loadHome(page: 1, userId: userId.toString(), context: context);
           });
     } else {
       var jsonData = jsonDecode(response.error!);
