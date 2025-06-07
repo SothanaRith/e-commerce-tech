@@ -17,9 +17,10 @@ class ItemCardWidget extends StatefulWidget {
   final VoidCallback? onUpdateWishlist;
   final VoidCallback? onUpdateCheckOut;
   final BuildContext parentContext;
+  final Function() onBackAction;
   const ItemCardWidget({
     super.key,
-    required this.product, this.onUpdateWishlist, this.onUpdateCheckOut, required this.parentContext,
+    required this.product, this.onUpdateWishlist, this.onUpdateCheckOut, required this.parentContext, required this.onBackAction,
   });
 
   @override
@@ -111,7 +112,7 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProductDetailsScreen(id: widget.product.id.toString()),
+            builder: (context) => ProductDetailsScreen(id: widget.product.id.toString(), onBackAction: () { widget.onBackAction.call();}),
           ),
         );
       },

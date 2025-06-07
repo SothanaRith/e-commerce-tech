@@ -33,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     });
 
+
     scrollController.addListener(() {
       if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - 200) {
         if (!homeController.isLoading && homeController.hasMore) {
@@ -108,7 +109,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemBuilder: (context, index) {
                     if (index < controller.products.length) {
                       final product = controller.products[index];
-                      return ItemCardWidget(product: product, onUpdateCheckOut: () {
+                      return ItemCardWidget(product: product,
+                        onBackAction: () {
+                          homeController.loadHome(page: 1, userId: UserStorage.currentUser?.id.toString() ?? '', context: context);
+                        },
+                        onUpdateCheckOut: () {
                         homeController.loadHome(page: 1, userId: UserStorage.currentUser?.id.toString() ?? '', context: context);
                       },
                         onUpdateWishlist: () {

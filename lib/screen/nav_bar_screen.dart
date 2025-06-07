@@ -74,6 +74,7 @@ class _MainScreenState extends State<MainScreen> {
                   tabBackgroundColor: theme.secondaryHeaderColor,
                   padding: const EdgeInsets.all(12),
                   selectedIndex: currentPageIndex,
+
                   gap: 8,
                   tabs: [
                     GButton(

@@ -17,8 +17,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
-  const ProductDetailsScreen({super.key, required this.id});
+  const ProductDetailsScreen({super.key, required this.id, this.onBackAction});
   final String id;
+  final Function()? onBackAction;
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
@@ -27,7 +28,6 @@ class ProductDetailsScreen extends StatefulWidget {
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   final ProductController productController = Get.put(ProductController());
   final WishlistController wishlistController = Get.put(WishlistController());
-  ProductModel? productItem;
 
   String? selectedImageUrl; // Track current main image
 
@@ -36,7 +36,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   int _dialogQuantity = 1;
 
   void _showAddToCartQuantityDialog() {
-    _dialogQuantity = productItem?.cartQuantity == 0 ? 1 : productItem?.cartQuantity ?? 1;
+    _dialogQuantity = productController.product.cartQuantity == 0 ? 1 : productController.product.cartQuantity ?? 1;
     AwesomeDialog(
       context: context,
       dialogType: DialogType.info,
@@ -100,9 +100,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         cartController.addItemToCart(
           context: context,
           userId: UserStorage.currentUser?.id.toString() ?? '',
-          productId: productItem?.id ?? '0',
+          productId: productController.product.id ?? '0',
           quantity: _dialogQuantity.toString(),
-        );
+        ).then((value) {
+          productController.getProductById(context: context, id: widget.id, userId: UserStorage.currentUser?.id ?? '');
+        },);
       },
     ).show();
   }
@@ -111,14 +113,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      ProductModel product = await productController.getProductById(
+      await productController.getProductById(
         context: context,
         id: widget.id, userId: UserStorage.currentUser?.id.toString() ?? '',
       );
       setState(() {
-        productItem = product;
-        if (product.imageUrl != null && product.imageUrl!.isNotEmpty) {
-          selectedImageUrl = product.imageUrl!.first;
+        if (productController.product.imageUrl != null && productController.product.imageUrl!.isNotEmpty) {
+          selectedImageUrl = productController.product.imageUrl!.first;
         }
       });
     });
@@ -129,7 +130,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     return Scaffold(
       body: GetBuilder<ProductController>(
         builder: (controller) {
-          if (controller.isLoading || productItem == null) {
+          if (controller.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
           var product = controller.product;
@@ -221,12 +222,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                       wishlistController.deleteWishlist(
                                           context: context,
                                           userId: UserStorage.currentUser?.id.toString() ?? '',
-                                          productId: product.id ?? '');
+                                          productId: product.id ?? '').then((value) {
+                                            productController.getProductById(context: context, id: widget.id, userId: UserStorage.currentUser?.id ?? "");
+                                          },);
                                     } else {
                                       wishlistController.createWishlist(
                                           context: context,
                                           userId: UserStorage.currentUser?.id.toString() ?? '',
-                                          productId: product.id ?? '');
+                                          productId: product.id ?? '').then((value) {
+                                        productController.getProductById(context: context, id: widget.id, userId: UserStorage.currentUser?.id ?? "");
+
+                                      });
                                     }
                                   },
                                   cancelOnPress: () {},
@@ -354,7 +360,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     ),
 
                     const SizedBox(height: 32),
-
                     if (product.reviews != null &&
                         product.reviews!.isNotEmpty) ...[
                       Padding(
@@ -451,7 +456,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         items: List.generate(
                             product.relatedProducts?.length ?? 0, (index) {
                           final related = product.relatedProducts![index];
-                          return ItemCardWidget(product: related, parentContext: context,);
+                          return ItemCardWidget(product: related, parentContext: context,
+                           onUpdateWishlist: () {
+                            productController.getProductById(context: context, id: widget.id, userId: UserStorage.currentUser?.id ?? '');
+                           },
+                            onUpdateCheckOut: () {
+                              productController.getProductById(context: context, id: widget.id, userId: UserStorage.currentUser?.id ?? '');
+                            }, onBackAction: () {
+                            productController.getProductById(context: context, id: widget.id, userId: UserStorage.currentUser?.id ?? '');
+                            },
+                          );
                         }),
                       ),
                       const SizedBox(height: 24),
@@ -465,7 +479,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 top: 50,
                 left: 25,
                 child: InkWell(
-                  onTap: () => popBack(this),
+                  onTap: () => {
+                    widget.onBackAction?.call(),
+                    popBack(this)
+                  },
                   child: Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(

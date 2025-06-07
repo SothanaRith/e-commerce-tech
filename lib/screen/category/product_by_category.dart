@@ -71,7 +71,12 @@ class _ProductByCategoryScreenState extends State<ProductByCategoryScreen> {
                   controller.listProByCategory(
                       categoryId: widget.categoryId, context: context);
                 });
-              },
+              }, onBackAction: () {
+              Future.delayed(Duration.zero, () {
+                controller.listProByCategory(
+                    categoryId: widget.categoryId, context: context);
+              });
+            },
             );
           },
         );

@@ -58,7 +58,9 @@ class _WishListScreenState extends State<WishListScreen> {
                       },
                       onUpdateCheckOut: () {
                         fetchWishlist();
-                      },
+                      }, onBackAction: () {
+                      fetchWishlist();
+                    },
                     );
                   } else {
                     return SizedBox();
