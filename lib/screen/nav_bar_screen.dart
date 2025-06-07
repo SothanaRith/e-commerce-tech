@@ -1,12 +1,18 @@
+import 'dart:math';
+
+import 'package:e_commerce_tech/controllers/home_controller.dart';
+import 'package:e_commerce_tech/controllers/search_controller.dart';
+import 'package:e_commerce_tech/controllers/wishlist_contoller.dart';
 import 'package:e_commerce_tech/main.dart';
-import 'package:e_commerce_tech/screen/check_out_page/check_out_screen.dart';
 import 'package:e_commerce_tech/screen/home_page/home_screen.dart';
 import 'package:e_commerce_tech/screen/profile_setting_page/profile_screen.dart';
 import 'package:e_commerce_tech/screen/search_page/search_screen.dart';
 import 'package:e_commerce_tech/screen/wish_list_page/wish_list_screen.dart';
+import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 class MainScreen extends StatefulWidget {
@@ -20,6 +26,9 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int currentPageIndex = 0;
 
+  HomeController homeController = Get.put(HomeController());
+  WishlistController wishlistController = Get.put(WishlistController());
+  SearchingController searchController = Get.put(SearchingController());
   final pagesList = [
     const HomeScreen(),
     const SearchScreen(),
@@ -89,6 +98,14 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ],
                   onTabChange: (value) {
+                    print(value);
+                    if (value == 0) {
+                      homeController.loadHome(page: 1, userId: UserStorage.currentUser?.id ?? '', context: context);
+                    } else if (value == 1) {
+                      searchController.searchProduct(context: context, userId: UserStorage.currentUser?.id ?? '');
+                    } else if (value == 2) {
+                      wishlistController.getAllWishlist(context: context, userId: UserStorage.currentUser?.id ?? '');
+                    } else if (value == 3) {}
                     setState(() {
                       currentPageIndex = value;
                     });
