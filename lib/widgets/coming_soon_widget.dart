@@ -63,7 +63,7 @@ class ComingSoonScreen extends StatelessWidget {
                     border: Border.all(color: Colors.white24),
                   ),
                   child: AppText.body2(
-                    "🚧_Under_development",
+                    "🚧 Under Development",
                     customStyle: TextStyle(
                       fontSize: 14,
                       color: Colors.white,

@@ -63,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       goTo(this, ForgetPasswordScreen());
                     },
                     child: AppText.caption(
-                      "forget_password_?",
+                      "forget_password_?".tr,
                       customStyle: TextStyle(
                           color: theme.primaryColor,
                           fontWeight: FontWeight.w600,
