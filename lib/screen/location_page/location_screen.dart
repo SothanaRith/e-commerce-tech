@@ -1,5 +1,6 @@
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/location_page/location_select_screen.dart';
+import 'package:e_commerce_tech/screen/login_page/login_screen.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_button_widget.dart';
@@ -34,7 +35,7 @@ class _LocationScreenState extends State<LocationScreen> {
     // If the permission is granted, navigate to the location select screen
     if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
       // User has granted permission, navigate to LocationSelectScreen
-      goOff(this, LocationSelectScreen());
+      goOff(this, LoginScreen());
     } else {
       // User has denied permission
       ScaffoldMessenger.of(context).showSnackBar(
