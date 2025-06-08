@@ -72,12 +72,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: HomeTopBarScreenWidget(),
               ),
               const SizedBox(height: 12),
-              const ImageSlider(
-                imageUrls: [
-                  'https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg',
-                  'https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg',
-                  'https://i.pinimg.com/736x/43/61/09/4361091dd491bacbbcdbaa0be7a2d2be.jpg',
-                ],
+              ImageSlider(
+                imageUrls: homeController.imagesSlide,
                 height: 200,
               ),
               const SizedBox(height: 12),

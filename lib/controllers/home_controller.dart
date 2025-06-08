@@ -5,6 +5,7 @@ import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/models/category_model.dart';
 import 'package:e_commerce_tech/models/home_model.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
+import 'package:e_commerce_tech/models/slide_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
@@ -21,6 +22,8 @@ class HomeController extends GetxController {
 
   List<CategoryModel> categories = [];
   List<ProductModel> products = [];
+  List<SliderModel> slides = [];
+  List<String> imagesSlide = [];
 
   Future<void> loadHome({required int page, required String userId, required BuildContext context}) async {
     if (isLoading) return; // Prevent reloading while data is being fetched
@@ -56,6 +59,12 @@ class HomeController extends GetxController {
 
       if (categories.isEmpty) {
         categories = homeResponse.categories;
+      }
+
+      slides = homeResponse.slides;
+      imagesSlide = [];
+      for(var item in slides) {
+        imagesSlide.add(item.imageUrl ?? '');
       }
 
       // Debugging: Check if hasMore flag is set correctly
