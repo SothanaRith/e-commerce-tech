@@ -13,7 +13,9 @@ import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class AuthController extends GetxController {
   late final ApiRepository apiRepository;
@@ -61,6 +63,119 @@ class AuthController extends GetxController {
         context: context,
         type: DialogType.error,
         title: "Error: ${response.error}",
+      );
+    }
+  }
+
+  Future<void> updateUser(
+      {required String name,
+        required String email,
+        required String password,
+        required String phone,
+        required String role,
+        required BuildContext context}) async {
+    final response = await apiRepository.postData(
+        '$mainPoint/api/users/updateProfile/${UserStorage.currentUser?.id}',
+        body: {
+          "name": name,
+          "email": email,
+          "password": password,
+          "phone": phone,
+          "role": role
+        },
+        headers: {
+          'Authorization': TokenStorage.token ?? "",
+          'Content-Type': 'application/json'
+        }, context: context
+    );
+    if (response.data != null) {
+      var jsonData = jsonDecode(response.data!);
+      TokenStorage.saveToken(jsonData["accessToken"]).then(
+            (value) {
+          showCustomDialog(
+              context: context,
+              type: DialogType.success,
+              title: "${jsonData["message"]}",
+              okOnPress: () async {
+                await getUser(context: context);
+                await UserStorage.loadUser();
+                goOff(
+                    this,
+                    OtpScreen(
+                      type: ScreenVerifyType.signup,
+                    ));
+              });
+        },
+      );
+    } else {
+      showCustomDialog(
+          context: context,
+          type: DialogType.error,
+          title: "Error: ${response.error}");
+    }
+  }
+
+  Future<void> updateUserProfilePicture(BuildContext context, XFile? imageFile) async {
+    // Create request URL
+    String url = '$mainPoint/api/users/updateProfilePicture/${UserStorage.currentUser?.id}'; // Replace with your API URL
+
+    // Prepare the file for upload if selected
+    var request = http.MultipartRequest('POST', Uri.parse(url));
+
+    // Add Authorization header with token
+    String? token = TokenStorage.token; // Assuming token is stored in TokenStorage
+    if (token != null) {
+      request.headers.addAll({
+        'Authorization': 'Bearer $token', // Adding Bearer token in the Authorization header
+      });
+    }
+
+    if (imageFile != null) {
+      // Send only the first image path as a single string
+      String imagePath = imageFile.path;  // Ensure it's a string
+      request.files.add(await http.MultipartFile.fromPath(
+        'profilePicture', // This should match the server-side field name
+        imagePath,
+      ));
+    }
+
+    try {
+      // Send the request and get the response
+      final response = await request.send();
+      final responseData = await http.Response.fromStream(response);
+
+      if (response.statusCode == 200) {
+        var jsonData = jsonDecode(responseData.body);
+        TokenStorage.saveToken(jsonData["accessToken"]).then(
+              (value) {
+            showCustomDialog(
+              context: context,
+              type: DialogType.success,
+              title: "${jsonData["message"]}",
+              okOnPress: () async {
+                await getUser(context: context);
+                await UserStorage.loadUser();
+                goOff(
+                  this,
+                  MainScreen(currentPageIndex: 3),
+                );
+              },
+            );
+          },
+        );
+      } else {
+        showCustomDialog(
+          context: context,
+          type: DialogType.error,
+          title: "Something went wrong",
+        );
+      }
+    } catch (e) {
+      print('Exception: $e');
+      showCustomDialog(
+        context: context,
+        type: DialogType.error,
+        title: 'Error: $e',
       );
     }
   }

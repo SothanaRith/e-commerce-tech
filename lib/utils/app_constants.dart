@@ -74,6 +74,7 @@ class UserStorage {
       'isFollower': user.isFollower,
       'isBlock': user.isBlock,
       'phone': user.phone,
+      'coverImage': user.coverImage,
       'role': user.role,
       'status': user.status,
       'createdAt': user.createdAt,

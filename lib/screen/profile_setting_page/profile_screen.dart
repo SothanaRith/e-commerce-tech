@@ -11,9 +11,12 @@ import 'package:e_commerce_tech/screen/my_order_page/my_order_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
+import 'package:e_commerce_tech/widgets/select_image_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import '../forget_password_page/privacy.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -156,6 +159,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  void showOptionsSheet(
+      BuildContext context
+      ) {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        cancelButton: CupertinoActionSheetAction(
+          isDefaultAction: true,
+          onPressed: () {
+            Navigator.pop(context, 'Cancel');
+          },
+          child: Text(
+            'cancel'.tr,
+            style: const TextStyle(color: Colors.red),
+          ),
+        ),
+        actions: <Widget>[
+          buildActionSheetAction('from_gallery'.tr, Colors.blue, () {
+            cropGallery(context).then((image) {
+              if (image != null) {
+                authController.updateUserProfilePicture(context, XFile(image.path));
+              }
+            });
+          }),
+          buildActionSheetAction('from_camera'.tr, Colors.red, () {
+            cropCamera(context).then((image) {
+              if (image != null) {
+                authController.updateUserProfilePicture(context, XFile(image.path));
+              }
+            });
+          }),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -174,27 +213,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Stack(
                     alignment: Alignment.bottomRight,
                     children: [
-                      CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.grey[300], // Placeholder color
-                        backgroundImage: NetworkImage(
-                          user?.coverImage != null
-                              ? "$mainPoint${user!.coverImage}"
-                              : 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740',
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.grey,
-                            width: 1.0,
+                      GestureDetector(
+                        onTap: () {
+                          showOptionsSheet(context);
+                        },
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundColor: Colors.grey[300], // Placeholder color
+                          backgroundImage: NetworkImage(
+                            user?.coverImage != null
+                                ? "$mainPoint${user!.coverImage}"
+                                : 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740',
                           ),
                         ),
-                        child: CircleAvatar(
-                          radius: 12,
-                          backgroundColor: Colors.white,
-                          child: SvgPicture.asset("assets/images/icons/edit-2.svg")
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          showOptionsSheet(context);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.grey,
+                              width: 1.0,
+                            ),
+                          ),
+                          child: CircleAvatar(
+                            radius: 12,
+                            backgroundColor: Colors.white,
+                            child: SvgPicture.asset("assets/images/icons/edit-2.svg")
+                          ),
                         ),
                       ),
                     ],
@@ -233,7 +282,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       onTap: () {
                         if (menuItems[index].hasSpecialAction) {
                           // Handle special actions like showing a bottom sheet
-                          if (menuItems[index].title == 'Log out') {
+                          if (menuItems[index].title == 'log_out'.tr) {
                             _showLogoutBottomSheet(context);
                           }
                         } else if (menuItems[index].screen != null) {
