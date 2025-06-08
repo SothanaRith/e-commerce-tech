@@ -33,7 +33,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ),
     MenuItem(
       title: 'check_out'.tr,
-      iconName:"assets/images/icons/shopping_bag.svg",
+      iconName:"assets/images/icons/store.svg",
       screen: const CheckOutScreen(),
       hasSpecialAction: false,
     ),
@@ -45,13 +45,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ),
     MenuItem(
       title: 'my_delivery_address'.tr,
-      iconName:"assets/images/icons/shopping_bag.svg",
+      iconName:"assets/images/icons/delivery.svg",
       screen: const ShippingAddressScreen(),
       hasSpecialAction: false,
     ),
     MenuItem(
       title: 'my_language'.tr,
-      iconName:"assets/images/icons/shopping_bag.svg",
+      iconName: "assets/images/icons/language.svg",
       screen: const LanguageScreen(),
       hasSpecialAction: false,
     ),
