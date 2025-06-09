@@ -62,7 +62,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const ShippingAddressScreen(
+                            builder: (context) =>
+                            const ShippingAddressScreen(
                               backHome: false,)),
                       ),
                   child: Padding(
@@ -70,23 +71,29 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        GetBuilder<LocationController>(builder: (locationLogic) {
+                        GetBuilder<LocationController>(builder: (
+                            locationLogic) {
                           return Expanded(
                             child: Row(
                               children: [
-                                Icon(Icons.location_on_outlined, color: theme.primaryColor),
+                                Icon(Icons.location_on_outlined,
+                                    color: theme.primaryColor),
                                 const SizedBox(width: 6),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
                                     children: [
                                       AppText.caption(
-                                        locationLogic.addressesDefault?.phoneNumber ?? '---',
-                                        customStyle: TextStyle(color: theme.primaryColor),
+                                        locationLogic.addressesDefault
+                                            ?.phoneNumber ?? '---',
+                                        customStyle: TextStyle(
+                                            color: theme.primaryColor),
                                       ),
                                       const SizedBox(height: 2),
                                       AppText.body1(
-                                        locationLogic.addressesDefault?.street ?? 'N/A',
+                                        locationLogic.addressesDefault
+                                            ?.street ?? 'N/A',
                                         maxLines: 2,
                                       ),
                                     ],
@@ -206,25 +213,29 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 AppText.title1('Total: \$${totalPrice.toStringAsFixed(2)}'),
-                ElevatedButton(
-                  onPressed: () {
-                    // Proceed to payment or order confirmation
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            PaymentMethodScreen(cart: logic.cartList,),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.primaryColor,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 12),
-                  ),
-                  child: AppText.title2("check_out".tr,
-                    customStyle: TextStyle(color: theme.secondaryHeaderColor),),
-                )
+                GetBuilder<LocationController>(builder: (logicLocation) {
+                  return ElevatedButton(
+                    onPressed: () {
+                      // Proceed to payment or order confirmation
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PaymentMethodScreen(
+                                cart: logic.cartList, addressId: logicLocation.addressesDefault?.id ?? '',),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.primaryColor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
+                    ),
+                    child: AppText.title2("check_out".tr,
+                      customStyle: TextStyle(color: theme
+                          .secondaryHeaderColor),),
+                  );
+                })
               ],
             ),
           );

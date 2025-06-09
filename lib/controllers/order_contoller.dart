@@ -62,7 +62,7 @@ class OrderController extends GetxController {
     }
   }
 
-  /// Place an order method remains unchanged
+  /// Place an order method updated to include addressId
   RxBool isPlacingOrder = false.obs;
 
   Future<bool> placeOrder({
@@ -70,6 +70,7 @@ class OrderController extends GetxController {
     required String userId,
     required List<Map<String, dynamic>> items,
     required String paymentType,
+    required String addressId,  // Added addressId parameter
   }) async {
     try {
       isPlacingOrder.value = true;
@@ -79,6 +80,7 @@ class OrderController extends GetxController {
         "userId": userId,
         "items": items,
         "paymentType": paymentType,
+        "deliveryAddressId": addressId,  // Add addressId to the request body
       };
 
       final response = await apiRepository.postData(
@@ -144,3 +146,4 @@ class OrderController extends GetxController {
     ];
   }
 }
+

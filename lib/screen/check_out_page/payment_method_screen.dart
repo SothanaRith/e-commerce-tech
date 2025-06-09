@@ -12,7 +12,8 @@ import 'package:get/get.dart';
 
 class PaymentMethodScreen extends StatefulWidget {
   final List<CartModel> cart;
-  const PaymentMethodScreen({super.key, required this.cart});
+  final String addressId;
+  const PaymentMethodScreen({super.key, required this.cart, required this.addressId});
 
   @override
   State<PaymentMethodScreen> createState() => _PaymentMethodScreenState();
@@ -172,7 +173,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
               onPressed: selectedMethodIndex == null
                   ? null
                   : () {
-                orderController.placeOrder(context: context, userId: UserStorage.currentUser?.id.toString() ?? '', items: items, paymentType: paymentMethods[selectedMethodIndex ?? 0]['bankName'] ?? "").then((value) {
+                orderController.placeOrder(context: context, userId: UserStorage.currentUser?.id.toString() ?? '', items: items, paymentType: paymentMethods[selectedMethodIndex ?? 0]['bankName'] ?? "", addressId: widget.addressId).then((value) {
                   if (value) {
                     Navigator.push(
                       context,
