@@ -3,49 +3,65 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationService {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
 
-  // Initialize Firebase Messaging
+  // Initialize the service
   Future<void> initialize() async {
-    // For iOS, request permission
+    // Request permission for iOS notifications
     NotificationSettings settings = await _firebaseMessaging.requestPermission();
     print("Notification Permission: ${settings.authorizationStatus}");
 
-    // Handle background messages
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    // Get the FCM token after permission is granted
+    String? fcmToken = await _firebaseMessaging.getToken();
+    print("FCM Token: $fcmToken");
 
-    // Foreground notifications
-    FirebaseMessaging.onMessage.listen(_onMessageReceived);
+    // Configure local notifications plugin for iOS and Android
+    var initializationSettingsAndroid = AndroidInitializationSettings('app_icon'); // Android icon
 
-    // Get the FCM token
-    String? token = await _firebaseMessaging.getToken();
-    print("FCM Token: $token");
-
-    // Configure local notifications plugin
-    var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+    // Initialize for iOS without `IOSInitializationSettings`
     var initializationSettings = InitializationSettings(
-        android: initializationSettingsAndroid);
+      android: initializationSettingsAndroid,
+    );
+
+    // Initialize the plugin
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    // Handle foreground notifications
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("Received message in foreground: ${message.notification?.title}");
+      _showNotification(message.notification?.title, message.notification?.body);
+    });
+
+    // Handle background notifications
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   }
 
-  // Handle incoming foreground messages
-  Future<void> _onMessageReceived(RemoteMessage message) async {
-    print("Received notification: ${message.notification?.title}, ${message.notification?.body}");
-
-    // Show notification
-    showNotification(message.notification?.title, message.notification?.body);
-  }
-
-  // Show notification using flutter_local_notifications
-  Future<void> showNotification(String? title, String? body) async {
+  // Handle foreground notifications
+  Future<void> _showNotification(String? title, String? body) async {
     var androidDetails = AndroidNotificationDetails(
-        'channel_id', 'channel_name', importance: Importance.max);
+      'channel_id',
+      'channel_name',
+      importance: Importance.max,
+    );
     var notificationDetails = NotificationDetails(android: androidDetails);
-    await flutterLocalNotificationsPlugin.show(0, title, body, notificationDetails);
+
+    await flutterLocalNotificationsPlugin.show(
+      0, // Notification ID
+      title, // Notification title
+      body, // Notification body
+      notificationDetails,
+    );
   }
 
   // Background handler
   static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-    print("Handling a background message: ${message.notification?.title}, ${message.notification?.body}");
+    print("Handling background message: ${message.notification?.title}, ${message.notification?.body}");
+  }
+
+  // iOS local notification handler (required for iOS)
+  Future<void> onDidReceiveLocalNotification(
+      int id, String? title, String? body, String? payload) async {
+    print('iOS Local Notification received: $title, $body');
   }
 }

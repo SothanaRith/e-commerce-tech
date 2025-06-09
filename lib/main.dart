@@ -1,6 +1,6 @@
 import 'package:e_commerce_tech/controllers/theme_controller.dart';
-import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/widgets/all_get_binding.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,7 +10,7 @@ import 'package:e_commerce_tech/utils/dep.dart' as dep;
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/app_route.dart';
 import 'package:e_commerce_tech/utils/messages.dart';
-
+import 'firebase_options.dart';
 // Setup theme color and text
 final ThemeController themeController = Get.find<ThemeController>();
 ThemeData get theme => themeController.theme;
@@ -18,6 +18,9 @@ ThemeData get theme => themeController.theme;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   // Initialize languages
   Map<String, Map<String, String>> _languages = await dep.init();
 
