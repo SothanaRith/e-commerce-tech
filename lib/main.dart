@@ -11,21 +11,26 @@ import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/app_route.dart';
 import 'package:e_commerce_tech/utils/messages.dart';
 
-// setup theme color and text
+// Setup theme color and text
 final ThemeController themeController = Get.find<ThemeController>();
 ThemeData get theme => themeController.theme;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize languages
   Map<String, Map<String, String>> _languages = await dep.init();
+
+  // Load token and user data
   await TokenStorage.loadToken();
   await UserStorage.loadUser();
+
+  // Initialize theme controller
   Get.put(ThemeController());
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((_) {
-    runApp(MyApp(
-      languages: _languages,
-    ));
+
+  // Set preferred orientation to portrait mode
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {
+    runApp(MyApp(languages: _languages)); // Start the app after initialization
   });
 }
 
@@ -37,28 +42,24 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<LocalizationController>(
         builder: (localizationController) {
-      return ScreenUtilInit(
-          designSize:
-              const Size(375, 812), // Reference screen size (width x height)
-          minTextAdapt: true, // Adapts text size
-          splitScreenMode: true,
-          builder: (context, child) {
-            return GetMaterialApp(
-              title: 'Flutter Demo',
-              debugShowCheckedModeBanner: false,
-              initialBinding: AllBinding(),
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-                useMaterial3: true,
-              ),
-              locale: localizationController.locale,
-              translations: Messages(languages: languages),
-              fallbackLocale: Locale(AppConstants.language[0].languageCode,
-                  AppConstants.language[0].countryCode),
-              initialRoute: RouteHelper.getSplashRoute(),
-              getPages: RouteHelper.routes,
-            );
-          });
-    });
+          return ScreenUtilInit(
+              designSize: const Size(375, 812), // Reference screen size (width x height)
+              minTextAdapt: true, // Adapts text size to screen size
+              splitScreenMode: true, // Enable split screen mode for larger screens
+              builder: (context, child) {
+                return GetMaterialApp(
+                  title: 'Flutter Demo',
+                  debugShowCheckedModeBanner: false, // Hide the debug banner
+                  initialBinding: AllBinding(), // Initialize dependencies
+                  theme: theme, // Use the dynamically set theme
+                  locale: localizationController.locale, // Set the current locale
+                  translations: Messages(languages: languages), // Language translations
+                  fallbackLocale: Locale(AppConstants.language[0].languageCode,
+                      AppConstants.language[0].countryCode), // Fallback locale
+                  initialRoute: RouteHelper.getSplashRoute(), // Initial route
+                  getPages: RouteHelper.routes, // Define your app routes
+                );
+              });
+        });
   }
 }
