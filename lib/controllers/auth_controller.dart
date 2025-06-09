@@ -69,19 +69,13 @@ class AuthController extends GetxController {
 
   Future<void> updateUser(
       {required String name,
-        required String email,
-        required String password,
         required String phone,
-        required String role,
         required BuildContext context}) async {
     final response = await apiRepository.postData(
         '$mainPoint/api/users/updateProfile/${UserStorage.currentUser?.id}',
         body: {
           "name": name,
-          "email": email,
-          "password": password,
           "phone": phone,
-          "role": role
         },
         headers: {
           'Authorization': TokenStorage.token ?? "",
@@ -100,10 +94,9 @@ class AuthController extends GetxController {
                 await getUser(context: context);
                 await UserStorage.loadUser();
                 goOff(
-                    this,
-                    OtpScreen(
-                      type: ScreenVerifyType.signup,
-                    ));
+                  this,
+                  MainScreen(currentPageIndex: 3),
+                );
               });
         },
       );
