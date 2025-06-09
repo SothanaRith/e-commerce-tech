@@ -25,4 +25,15 @@ class DeliveryAddress {
       isDefault: json['isDefault'].toString(),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['id'] = id;
+    data['userId'] = userId;
+    data['fullName'] = fullName;
+    data['phoneNumber'] = phoneNumber;
+    data['street'] = street;
+    data['isDefault'] = isDefault;
+    return data;
+  }
 }

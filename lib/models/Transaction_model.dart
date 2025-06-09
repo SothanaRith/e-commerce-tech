@@ -1,3 +1,4 @@
+import 'package:e_commerce_tech/models/delivery_address_model.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
 
 class TransactionModel {
@@ -65,6 +66,7 @@ class OrderModel {
   String? createdAt;
   String? updatedAt;
   List<OrderItem>? orderItems;
+  DeliveryAddress? address;
 
   OrderModel({
     this.id,
@@ -75,6 +77,7 @@ class OrderModel {
     this.createdAt,
     this.updatedAt,
     this.orderItems,
+    this.address,
   });
 
   OrderModel.fromJson(Map<String, dynamic> json) {
@@ -85,6 +88,7 @@ class OrderModel {
     status = json['status'].toString();
     createdAt = json['createdAt'].toString();
     updatedAt = json['updatedAt'].toString();
+    address = json['address'] != null ? DeliveryAddress.fromJson(json['address']) : null;
     if (json['orderItems'] != null) {
       orderItems = <OrderItem>[];
       json['orderItems'].forEach((v) {
@@ -104,6 +108,9 @@ class OrderModel {
     data['updatedAt'] = updatedAt;
     if (orderItems != null) {
       data['orderItems'] = orderItems!.map((v) => v.toJson()).toList();
+    }
+    if (address != null) {
+      data['address'] = address!.toJson();
     }
     return data;
   }

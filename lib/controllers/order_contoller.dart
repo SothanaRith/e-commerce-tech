@@ -44,8 +44,6 @@ class OrderController extends GetxController {
       List<TransactionModel> transactions = jsonData
           .map((item) => TransactionModel.fromJson(item))
           .toList();
-
-      print("prodhsjd$transactions");
       // Save transactions for this status
       transactionsByStatus[status] = transactions;
       update();
