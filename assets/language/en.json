@@ -105,5 +105,8 @@
   "please_choose_language": "Please choose language",
   "take_all_in_store_to_make_sure_you_can_get_all_of_this_from_your_hand_but_it’s_just_your_per_reviews": "take all in store to make sure you can get all of this from your hand but it’s just your per reviews",
   "makes_you_look_your_best": "makes you look your best",
-  "send_otp": "Send OTP"
+
+  "send_otp": "Send OTP",
+  "update_user": "Update user",
+  "user_profile": "User Profile"
 }
