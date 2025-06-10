@@ -1,5 +1,6 @@
-import 'package:e_commerce_tech/models/delivery_address_model.dart';
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
+import 'package:e_commerce_tech/models/delivery_address_model.dart';
 
 class TransactionModel {
   String? id;
@@ -13,6 +14,7 @@ class TransactionModel {
   String? updatedAt;
   OrderModel? order;
 
+  // Constructor
   TransactionModel({
     this.id,
     this.orderId,
@@ -26,6 +28,7 @@ class TransactionModel {
     this.order,
   });
 
+  // From JSON Constructor
   TransactionModel.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
     orderId = json['orderId'].toString();
@@ -34,11 +37,21 @@ class TransactionModel {
     transactionId = json['transactionId'].toString();
     amount = json['amount'].toString();
     notes = json['notes'].toString();
-    createdAt = json['createdAt'].toString();
-    updatedAt = json['updatedAt'].toString();
+    createdAt = formatDateString(json['createdAt'].toString());
+    updatedAt = formatDateString(json['updatedAt'].toString());
     order = json['Order'] != null ? OrderModel.fromJson(json['Order']) : null;
   }
 
+  // Getter for formatted createdAt and updatedAt
+  String get formattedCreatedAt {
+    return createdAt != null ? formatDateString(createdAt!) : '';
+  }
+
+  String get formattedUpdatedAt {
+    return updatedAt != null ? formatDateString(updatedAt!) : '';
+  }
+
+  // To JSON Method
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['id'] = id;
@@ -80,14 +93,15 @@ class OrderModel {
     this.address,
   });
 
+  // From JSON Constructor
   OrderModel.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
     userId = json['userId'].toString();
     totalAmount = json['totalAmount'].toString();
     paymentType = json['paymentType'].toString();
     status = json['status'].toString();
-    createdAt = json['createdAt'].toString();
-    updatedAt = json['updatedAt'].toString();
+    createdAt = formatDateString(json['createdAt'].toString());
+    updatedAt = formatDateString(json['updatedAt'].toString());
     address = json['address'] != null ? DeliveryAddress.fromJson(json['address']) : null;
     if (json['orderItems'] != null) {
       orderItems = <OrderItem>[];
@@ -97,6 +111,7 @@ class OrderModel {
     }
   }
 
+  // To JSON Method
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['id'] = id;
@@ -135,6 +150,7 @@ class OrderItem {
     this.product,
   });
 
+  // From JSON Constructor
   OrderItem.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
     orderId = json['orderId'].toString();
@@ -145,6 +161,7 @@ class OrderItem {
     product = json['Product'] != null ? ProductModel.fromJson(json['Product']) : null;
   }
 
+  // To JSON Method
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['id'] = id;

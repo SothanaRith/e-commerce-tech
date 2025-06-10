@@ -1,3 +1,4 @@
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/models/user_model.dart';
 
 class ProductModel {
@@ -61,8 +62,8 @@ class ProductModel {
         ? List<String>.from(json['imageUrl'])
         : [];
     storeId = json['storeId'].toString();
-    createdAt = json['createdAt'].toString();
-    updatedAt = json['updatedAt'].toString();
+    createdAt = formatDateString(json['createdAt'].toString());
+    updatedAt = formatDateString(json['updatedAt'].toString());
     isInWishlist = json['isInWishlist'].toString();
     category =
     json['Category'] != null ? Category.fromJson(json['Category']) : null;

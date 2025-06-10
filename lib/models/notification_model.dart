@@ -1,4 +1,5 @@
-import 'package:e_commerce_tech/models/product_model.dart';  // Replace with any related model if necessary
+
+import 'package:e_commerce_tech/helper/global.dart';
 
 class NotificationModel {
   String? id;
@@ -24,7 +25,7 @@ class NotificationModel {
     userId = json['userId'].toString();
     title = json['title'].toString();
     body = json['body'].toString();
-    sentAt = json['sentAt'].toString();
+    sentAt = formatDateString(json['sentAt'].toString());
     status = json['status'].toString();
   }
 

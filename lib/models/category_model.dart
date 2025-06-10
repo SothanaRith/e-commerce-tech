@@ -1,3 +1,6 @@
+
+import 'package:e_commerce_tech/helper/global.dart';
+
 class CategoryResponse {
   final List<CategoryModel> categories;
 
@@ -29,14 +32,15 @@ class CategoryModel {
     required this.updatedAt,
   });
 
+
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
       id: json['id'].toString(),
       name: json['name'].toString(),
       description: json['description'].toString(),
       imageUrl: json['imageUrl'].toString(),
-      createdAt: json['createdAt'].toString(),
-      updatedAt: json['updatedAt'].toString(),
+      createdAt: formatDateString(json['createdAt'].toString()),
+      updatedAt: formatDateString(json['updatedAt'].toString())
     );
   }
 }

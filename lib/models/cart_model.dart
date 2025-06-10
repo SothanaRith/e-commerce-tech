@@ -1,3 +1,4 @@
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
 
 class CartModel {
@@ -11,16 +12,17 @@ class CartModel {
   String? updatedAt;
   ProductModel? product;
 
-  CartModel(
-      {this.id,
-        this.userId,
-        this.productId,
-        this.variantId,
-        this.priceAtPurchase,
-        this.quantity,
-        this.createdAt,
-        this.updatedAt,
-        this.product});
+  CartModel({
+    this.id,
+    this.userId,
+    this.productId,
+    this.variantId,
+    this.priceAtPurchase,
+    this.quantity,
+    this.createdAt,
+    this.updatedAt,
+    this.product,
+  });
 
   CartModel.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
@@ -29,10 +31,9 @@ class CartModel {
     variantId = json['variantId'].toString();
     priceAtPurchase = json['priceAtPurchase'].toString();
     quantity = json['quantity'].toString();
-    createdAt = json['createdAt'].toString();
-    updatedAt = json['updatedAt'].toString();
-    product =
-    json['Product'] != null ? ProductModel.fromJson(json['Product']) : null;
+    createdAt = formatDateString(json['createdAt'].toString());
+    updatedAt = formatDateString(json['updatedAt'].toString());
+    product = json['Product'] != null ? ProductModel.fromJson(json['Product']) : null;
   }
 
   Map<String, dynamic> toJson() {

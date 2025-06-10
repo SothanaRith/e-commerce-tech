@@ -1,4 +1,6 @@
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
+import 'package:intl/intl.dart';  // For date formatting
 
 class WishlistModel {
   int? id;
@@ -17,15 +19,17 @@ class WishlistModel {
     this.product,
   });
 
+  // From JSON constructor
   WishlistModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     userId = json['userId'];
     productId = json['productId'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
+    createdAt = formatDateString(json['createdAt'].toString());
+    updatedAt = formatDateString(json['updatedAt'].toString());
     product = json['product'] != null ? ProductModel.fromJson(json['product']) : null;
   }
 
+  // To JSON method
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['id'] = id;

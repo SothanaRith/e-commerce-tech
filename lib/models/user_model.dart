@@ -1,3 +1,6 @@
+
+import 'package:e_commerce_tech/helper/global.dart';
+
 class UserModel {
   bool? success;
   String? message;
@@ -52,6 +55,7 @@ class User {
   final String? createdAt;
   final String? updatedAt;
 
+  // Constructor
   User({
     required this.id,
     required this.name,
@@ -79,39 +83,37 @@ class User {
     this.lastActive,
   });
 
+  // From JSON Constructor
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'].toString(),
       name: json['name'].toString(),
       email: json['email'].toString(),
-      phone: json['phone'].toString(),
+      phone: json['phone']?.toString(),
       role: json['role'].toString(),
       status: json['status'].toString(),
-
-      isVerify: json['isVerify'].toString(),
-      isMuted: json['isMuted'].toString(),
-      hasStory: json['hasStory'].toString(),
-      isFriend: json['isFriend'].toString(),
-      isFollowing: json['isFollowing'].toString(),
-      isFollower: json['isFollower'].toString(),
-      isBlock: json['isBlock'].toString(),
-
-      bio: json['bio'].toString(),
-      statusTitle: json['statusTitle'].toString(),
-      coverImage: json['coverImage'].toString(),
-      thumbnailImage: json['thumbnailImage'].toString(),
+      isVerify: json['isVerify']?.toString(),
+      isMuted: json['isMuted']?.toString(),
+      hasStory: json['hasStory']?.toString(),
+      isFriend: json['isFriend']?.toString(),
+      isFollowing: json['isFollowing']?.toString(),
+      isFollower: json['isFollower']?.toString(),
+      isBlock: json['isBlock']?.toString(),
+      bio: json['bio']?.toString(),
+      statusTitle: json['statusTitle']?.toString(),
+      coverImage: json['coverImage']?.toString(),
+      thumbnailImage: json['thumbnailImage']?.toString(),
       userQR: json['userQR'],
-
-      latLongLat: json['LatLong_lat'].toString(),
-      latLongLong: json['LatLong_long'].toString(),
-
-      friendSince: json['friendSince'].toString(),
-      lastActive: json['lastActive'].toString(),
-      createdAt: json['createdAt'].toString(),
-      updatedAt: json['updatedAt'].toString(),
+      latLongLat: json['LatLong_lat']?.toString(),
+      latLongLong: json['LatLong_long']?.toString(),
+      friendSince: json['friendSince']?.toString(),
+      lastActive: json['lastActive']?.toString(),
+      createdAt: formatDateString(json['createdAt'].toString()),
+      updatedAt: formatDateString(json['updatedAt'].toString()),
     );
   }
 
+  // To JSON Method
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -120,7 +122,6 @@ class User {
       'phone': phone,
       'role': role,
       'status': status,
-
       'isVerify': isVerify,
       'isMuted': isMuted,
       'hasStory': hasStory,
@@ -128,16 +129,13 @@ class User {
       'isFollowing': isFollowing,
       'isFollower': isFollower,
       'isBlock': isBlock,
-
       'bio': bio,
       'statusTitle': statusTitle,
       'coverImage': coverImage,
       'thumbnailImage': thumbnailImage,
       'userQR': userQR,
-
       'LatLong_lat': latLongLat,
       'LatLong_long': latLongLong,
-
       'friendSince': friendSince,
       'lastActive': lastActive,
       'createdAt': createdAt,

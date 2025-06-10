@@ -1,6 +1,5 @@
 import 'package:country_flags/country_flags.dart';
 import 'package:e_commerce_tech/main.dart';
-import 'package:e_commerce_tech/screen/login_page/login_screen.dart';
 import 'package:e_commerce_tech/screen/nav_bar_screen.dart';
 import 'package:e_commerce_tech/screen/welcome_screen.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
@@ -42,7 +41,7 @@ class LanguageScreen extends StatelessWidget {
                     } else {
                       if (isLoggedIn != null && isLoggedIn == true) {
                         // Already logged in
-                        goOff(this, const MainScreen());
+                        goOff(this, const MainScreen(currentPageIndex: 3,));
                       } else {
                         // Not logged in
                         goOff(this, const WelcomeScreen());
