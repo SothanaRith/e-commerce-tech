@@ -228,7 +228,18 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
           height: 50,
           child: CustomButtonWidget(
             title: "selected".tr,
-            action: () {
+            buttonStyle: BtnStyle.action,
+            action: () async {
+              if (_selectedLatLng != null) {
+                final placemarks = await placemarkFromCoordinates(_selectedLatLng!.latitude, _selectedLatLng!.longitude);
+                final place = placemarks.first;
+                if (place.country?.toLowerCase() != 'Cambodia'.toLowerCase()) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("your delivery location must be in cambodia".tr)),
+                  );
+                  return;
+                }
+              }
               if (_selectedLatLng != null && _currentAddress.isNotEmpty) {
                 locationController.createAddress(
                   street: _currentAddress,
