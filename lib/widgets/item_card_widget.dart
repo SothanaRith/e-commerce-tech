@@ -205,7 +205,7 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                       '\$${widget.product.price}',
                       customStyle: TextStyle(
                         color: theme.primaryColor,
-                        fontSize: 14,
+                        fontSize: 12,
                         overflow: TextOverflow.ellipsis,
                       ),
                       maxLines: 1,
