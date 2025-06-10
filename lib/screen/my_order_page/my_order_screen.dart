@@ -61,7 +61,7 @@ class _MyOrderScreenState extends State<MyOrderScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(type: this, title: "checkout".tr, context: context, bottom: TabBar(
+      appBar: customAppBar(type: this, title: "my_order".tr, context: context, bottom: TabBar(
         controller: _tabController,
         tabs: [
           Tab(text: "pending".tr),
@@ -124,8 +124,8 @@ class _OrdersTabState extends State<OrdersTab> {
             }
             return ItemSelectWidget(
               imageUrl: imageList,
-              onTap: () {
-                goTo(this, OrderTransactionDetailScreen());
+              onTap: () async {
+                goTo(this, OrderTransactionDetailScreen(data: tx.order ?? OrderModel(),));
               },
               title: tx.createdAt ?? 'No Title',
               prices: '\$${tx.amount ?? '0.00'}',

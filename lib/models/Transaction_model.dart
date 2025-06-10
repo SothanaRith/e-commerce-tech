@@ -1,4 +1,5 @@
 import 'package:e_commerce_tech/helper/global.dart';
+import 'package:e_commerce_tech/models/order_tracking_model.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
 import 'package:e_commerce_tech/models/delivery_address_model.dart';
 
@@ -69,7 +70,6 @@ class TransactionModel {
     return data;
   }
 }
-
 class OrderModel {
   String? id;
   String? userId;
@@ -80,6 +80,7 @@ class OrderModel {
   String? updatedAt;
   List<OrderItem>? orderItems;
   DeliveryAddress? address;
+  List<OrderTrackingModel>? trackingSteps; // ✅ added
 
   OrderModel({
     this.id,
@@ -91,9 +92,9 @@ class OrderModel {
     this.updatedAt,
     this.orderItems,
     this.address,
+    this.trackingSteps,
   });
 
-  // From JSON Constructor
   OrderModel.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
     userId = json['userId'].toString();
@@ -102,16 +103,26 @@ class OrderModel {
     status = json['status'].toString();
     createdAt = formatDateString(json['createdAt'].toString());
     updatedAt = formatDateString(json['updatedAt'].toString());
-    address = json['address'] != null ? DeliveryAddress.fromJson(json['address']) : null;
+
+    address = json['address'] != null
+        ? DeliveryAddress.fromJson(json['address'])
+        : null;
+
     if (json['orderItems'] != null) {
       orderItems = <OrderItem>[];
       json['orderItems'].forEach((v) {
         orderItems!.add(OrderItem.fromJson(v));
       });
     }
+
+    if (json['trackingSteps'] != null) {
+      trackingSteps = <OrderTrackingModel>[];
+      json['trackingSteps'].forEach((v) {
+        trackingSteps!.add(OrderTrackingModel.fromJson(v));
+      });
+    }
   }
 
-  // To JSON Method
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['id'] = id;
@@ -121,12 +132,19 @@ class OrderModel {
     data['status'] = status;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
+
     if (orderItems != null) {
       data['orderItems'] = orderItems!.map((v) => v.toJson()).toList();
     }
+
     if (address != null) {
       data['address'] = address!.toJson();
     }
+
+    if (trackingSteps != null) {
+      data['trackingSteps'] = trackingSteps!.map((v) => v.toJson()).toList();
+    }
+
     return data;
   }
 }

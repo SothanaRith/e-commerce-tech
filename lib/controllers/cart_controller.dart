@@ -5,6 +5,7 @@ import 'package:e_commerce_tech/controllers/product_controller.dart';
 import 'package:e_commerce_tech/controllers/search_controller.dart';
 import 'package:e_commerce_tech/controllers/wishlist_contoller.dart';
 import 'package:e_commerce_tech/models/cart_model.dart';
+import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -86,6 +87,7 @@ class CartController extends GetxController {
           type: DialogType.success,
           title: "${jsonData["message"]}",
           okOnPress: () async {
+            await fetchAllCart(context: context, userId: UserStorage.currentUser?.id ?? '');
           });
     } else {
       showCustomDialog(

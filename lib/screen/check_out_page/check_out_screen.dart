@@ -3,7 +3,9 @@ import 'package:e_commerce_tech/controllers/lacation_controller.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/check_out_page/payment_method_screen.dart';
 import 'package:e_commerce_tech/screen/check_out_page/shipping_address_screen.dart';
+import 'package:e_commerce_tech/screen/product_details_page/product_details_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
+import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/item_select_widget.dart';
@@ -167,13 +169,14 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                               userId: UserStorage.currentUser?.id.toString() ??
                                   '');
                         },
-                        child: GestureDetector(
-                          child: ItemSelectWidget(
-                            imageUrl: product.imageUrl ?? [],
-                            title: product.name ?? '',
-                            prices: totalPrice,
-                            countNumber: quantity.toString(),
-                          ),
+                        child: ItemSelectWidget(
+                          imageUrl: product.imageUrl ?? [],
+                          title: product.name ?? '',
+                          prices: totalPrice,
+                          onTap: () {
+                            goTo(this, ProductDetailsScreen(id: product.id ?? ''));
+                          },
+                          countNumber: quantity.toString(),
                         ),
                       );
                     } else {

@@ -1,16 +1,48 @@
+import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/models/Transaction_model.dart';
+import 'package:e_commerce_tech/models/order_tracking_model.dart';
+import 'package:e_commerce_tech/screen/product_details_page/product_details_screen.dart';
+import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/item_select_widget.dart';
+import 'package:e_commerce_tech/widgets/list_view_custom_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class OrderTransactionDetailScreen extends StatelessWidget {
-  final List<TrackingStep> steps = [
-    TrackingStep("Order Placed", "03. 07. 2025 .6:30AM", Colors.purple[100]!, Colors.purple),
-    TrackingStep("In Progress", "03. 07. 2025 .6:30AM", Colors.orange[100]!, Colors.orange),
-    TrackingStep("Delivery", "03. 07. 2025 .6:30AM", Colors.teal[100]!, Colors.teal),
-    TrackingStep("Delivered", "03. 07. 2025 .6:30AM", Colors.green[100]!, Colors.green),
-  ];
+class OrderTransactionDetailScreen extends StatefulWidget {
+  final OrderModel data;
+  const OrderTransactionDetailScreen({super.key, required this.data});
+  @override
+  State<OrderTransactionDetailScreen> createState() => _OrderTransactionDetailScreenState();
+}
+
+class _OrderTransactionDetailScreenState extends State<OrderTransactionDetailScreen> {
+
+  bool showAllItems = false;
+  
+  MaterialColor stepColor ({required String status}) {
+    if (status == "Order Placed") {
+      return Colors.purple;
+    } else if (status == "In Progress") {
+      return Colors.orange;
+      
+    } else if (status == "Delivery") {
+      return Colors.teal;
+      
+    } else if (status == "Delivered") {
+      return Colors.green;
+    }
+    return Colors.grey;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    print(widget.data.trackingSteps?[0].status);
+    print(widget.data.trackingSteps?[0].timestamp);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,20 +51,36 @@ class OrderTransactionDetailScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          ItemSelectWidget(
-            imageUrl: [],
-            title: 'No Title',
-            prices: '\$${'0.00'}',
-            countNumber: '0',
-          ),
-          const SizedBox(height: 20),
+          ListViewCustomWidget(
+            items: (showAllItems ? widget.data.orderItems : widget.data.orderItems?.take(3))!.map((item) {
+              return ItemSelectWidget(
+              imageUrl: item.product?.imageUrl ?? [],
+              onTap: () {
+                goTo(this, ProductDetailsScreen(id: item.product?.id ?? ''));
+              },
+              title: item.product?.name ?? '--',
+              prices: '\$${item.product?.price}',
+              countNumber: item.quantity ?? '0',
+            );
+          }).toList(),),
+          const SizedBox(height: 6),
+          if (widget.data.orderItems!.length > 3)
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  showAllItems = !showAllItems;
+                });
+              },
+              child: AppText.title2(showAllItems ? 'show_less'.tr : 'show_all'.tr, customStyle: TextStyle(color: theme.primaryColor),),
+            ),
+          const SizedBox(height: 26),
           AppText.title1("order_detail".tr, customStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               AppText.body1("expected_delivery_date".tr),
-              AppText.body2("03. 07. 2025"),
+              AppText.body2(widget.data.updatedAt ?? ''),
             ],
           ),
           const SizedBox(height: 5),
@@ -40,21 +88,21 @@ class OrderTransactionDetailScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               AppText.body1("tracking_id".tr),
-              AppText.body2("RGJ289KH12"),
+              AppText.body2(widget.data.id ?? ''),
             ],
           ),
           const SizedBox(height: 20),
-          ...steps.asMap().entries.map((entry) {
+          ...widget.data.trackingSteps!.asMap().entries.map((entry) {
             int idx = entry.key;
-            TrackingStep step = entry.value;
+            OrderTrackingModel step = entry.value;
             return buildStepItem(
               context,
-              title: step.title,
-              time: step.time,
-              bgColor: step.bgColor,
-              textColor: step.textColor,
+              title: step.status ?? 'N/A',
+              time: step.timestamp ?? '',
+              bgColor: stepColor(status: step.status ?? ''),
+              textColor: stepColor(status: step.status ?? ''),
               isFirst: idx == 0,
-              isLast: idx == steps.length - 1,
+              isLast: idx == widget.data.trackingSteps!.length - 1,
             );
           }),
         ],
@@ -102,7 +150,7 @@ class OrderTransactionDetailScreen extends StatelessWidget {
                 margin: const EdgeInsets.only(top: 2),
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: bgColor,
+                  color: bgColor.withAlpha(50),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: AppText.title2(title, customStyle: TextStyle(color: textColor, fontWeight: FontWeight.w500)),
@@ -117,13 +165,4 @@ class OrderTransactionDetailScreen extends StatelessWidget {
       ],
     );
   }
-}
-
-class TrackingStep {
-  final String title;
-  final String time;
-  final Color bgColor;
-  final Color textColor;
-
-  TrackingStep(this.title, this.time, this.bgColor, this.textColor);
 }

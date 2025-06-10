@@ -134,7 +134,21 @@ class ItemSelectWidget extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _buildStackedImages(),
+            if (imageUrl.length >= 2) ...[
+              _buildStackedImages(),
+            ] else ...[
+              ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    "$mainPoint${imageUrl.isEmpty ? '' : imageUrl[0]}",
+                    width: 90.w,
+                    height: 90.w,
+                    fit: BoxFit.cover,
+                  )),
+              SizedBox(
+                width: 12,
+              ),
+            ],
             SizedBox(width: 12.w),
             Expanded(
               child: Column(
