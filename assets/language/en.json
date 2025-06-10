@@ -108,5 +108,9 @@
 
   "send_otp": "Send OTP",
   "update_user": "Update user",
-  "user_profile": "User Profile"
+  "user_profile": "User Profile",
+  "order_detail": "Order detail",
+  "transaction_detail": "Transaction Detail",
+  "expected_delivery_date": "Expected Delivery Date",
+  "tracking_id": "Tracking ID",
 }

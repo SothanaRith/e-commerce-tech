@@ -10,6 +10,7 @@ class ItemSelectWidget extends StatelessWidget {
   final String prices;
   final String countNumber;
   final Function(bool isIncrement)? count;
+  final Function()? onTap;
 
   const ItemSelectWidget({
     super.key,
@@ -17,7 +18,7 @@ class ItemSelectWidget extends StatelessWidget {
     required this.title,
     required this.prices,
     required this.countNumber,
-    this.count,
+    this.count, this.onTap,
   });
 
   Widget _buildStackedImages() {
@@ -122,43 +123,50 @@ class ItemSelectWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _buildStackedImages(),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(child: _buildPriceSection()),
-                    if (count != null)
-                      Expanded(child: _buildCounter())
-                    else
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: theme.primaryColor,
-                          shape: BoxShape.circle,
-                        ),
-                        child: AppText.body1(
-                          countNumber,
-                          customStyle: TextStyle(
-                            color: theme.secondaryHeaderColor,
+    return InkWell(
+      highlightColor: Colors.transparent,
+      focusColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      onTap: onTap ?? () {},
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 8.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildStackedImages(),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(child: _buildPriceSection()),
+                      if (count != null)
+                        Expanded(child: _buildCounter())
+                      else
+                        Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: theme.primaryColor,
+                            shape: BoxShape.circle,
+                          ),
+                          child: AppText.body1(
+                            countNumber,
+                            customStyle: TextStyle(
+                              color: theme.secondaryHeaderColor,
+                            ),
                           ),
                         ),
-                      ),
-                  ],
-                ),
-                SizedBox(height: 12),
-                Divider(thickness: 0.2, color: theme.highlightColor),
-              ],
-            ),
-          )
-        ],
+                    ],
+                  ),
+                  SizedBox(height: 12),
+                  Divider(thickness: 0.2, color: theme.highlightColor),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

@@ -14,7 +14,7 @@ void goTo(dynamic from, Widget to) {
   ''');
 
   // Force wrap in a builder function
-  Get.to(() => to);
+  Get.to(to);
 }
 
 

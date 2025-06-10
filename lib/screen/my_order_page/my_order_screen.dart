@@ -1,6 +1,8 @@
 import 'package:e_commerce_tech/controllers/order_contoller.dart';
 import 'package:e_commerce_tech/models/Transaction_model.dart';
+import 'package:e_commerce_tech/screen/track_order_page/order_transaction_detail_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
+import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/item_select_widget.dart';
 import 'package:e_commerce_tech/widgets/list_view_custom_widget.dart';
@@ -122,6 +124,9 @@ class _OrdersTabState extends State<OrdersTab> {
             }
             return ItemSelectWidget(
               imageUrl: imageList,
+              onTap: () {
+                goTo(this, OrderTransactionDetailScreen());
+              },
               title: tx.createdAt ?? 'No Title',
               prices: '\$${tx.amount ?? '0.00'}',
               countNumber: tx.order?.orderItems?.length.toString() ?? '0',
