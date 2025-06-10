@@ -16,6 +16,7 @@ class HomeController extends GetxController {
   final apiRepository = ApiRepository();
 
   int currentPage = 1;
+  int totalUnReadNotification = 0;
   final int pageSize = 10;
   bool isLoading = false;
   bool hasMore = true;
@@ -47,6 +48,7 @@ class HomeController extends GetxController {
       // Debugging: Check the response data structure
       log('Home response: ${jsonData['data']}');
 
+      totalUnReadNotification = jsonData['data']['unreadNotificationsCount'];
       if (page == 1) {
         products = homeResponse.products;
       } else {

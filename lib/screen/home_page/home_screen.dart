@@ -67,9 +67,9 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 60),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.all(12.0),
-                child: HomeTopBarScreenWidget(),
+                child: HomeTopBarScreenWidget(unReadNotification: controller.totalUnReadNotification,),
               ),
               const SizedBox(height: 12),
               ImageSlider(

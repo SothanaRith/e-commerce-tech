@@ -13,18 +13,27 @@ class NotificationController extends GetxController {
   bool isLoading = false;
   List<NotificationModel> notifications = [];
   NotificationModel notification = NotificationModel();
+  int totalUnread = 0;
+  int totalNotifications = 0;
+  int currentPage = 1;
+  final int pageSize = 10;
 
   NotificationController() {
     apiRepository = ApiRepository();
   }
 
-  // Fetch all notifications for a user
-  Future<List<NotificationModel>> getNotifications({
+// Fetch notifications with pagination
+  Future<void> getNotifications({
     required BuildContext context,
-    required String userId,
+    bool isLoadMore = false,  // Indicates if we are loading more notifications
   }) async {
+    if (isLoading) return;  // Prevent multiple requests while loading
+
+    isLoading = true;
+    update();
+
     final response = await apiRepository.fetchData(
-      '$mainPoint/api/notifications/$userId',
+      '$mainPoint/api/notification/notifications/${UserStorage.currentUser?.id}?page=$currentPage&size=$pageSize',
       headers: {
         'Authorization': TokenStorage.token ?? "",
         'Content-Type': 'application/json',
@@ -34,20 +43,40 @@ class NotificationController extends GetxController {
 
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
-      print("Fetched Notifications: $jsonData");
 
-      notifications = (jsonData as List)
+      // Extract notifications from the response data
+      var dataList = jsonData['data']['notifications'] as List<dynamic>;
+
+      List<NotificationModel> newNotifications = dataList
           .map((item) => NotificationModel.fromJson(item))
           .toList();
+
+      // If loading more, append to the existing list
+      print(isLoadMore);
+
+      if (isLoadMore) {
+        notifications.addAll(newNotifications);
+      } else {
+        notifications = newNotifications;  // Replace the notifications list
+      }
+
+      // Update total unread and total notifications
+      totalUnread = jsonData['data']['totalUnread'];
+      totalNotifications = jsonData['data']['totalNotifications'];
+
+      // Update page for next call
+      if (newNotifications.isNotEmpty) {
+        currentPage++;
+      }
+
+      isLoading = false;
       update();
-      return notifications;
     } else {
       showCustomDialog(
         context: context,
         type: DialogType.error,
         title: "Error: ${response.error}",
       );
-      return []; // Return empty list if error
     }
   }
 
@@ -59,7 +88,7 @@ class NotificationController extends GetxController {
     required BuildContext context,
   }) async {
     final response = await apiRepository.postData(
-      '$mainPoint/api/notifications',
+      '$mainPoint/api/notification/notifications?page',
       body: {
         "userId": userId,
         "title": title,
@@ -94,13 +123,17 @@ class NotificationController extends GetxController {
   // Update (mark as read) a notification
   Future<void> updateNotification({
     required String notificationId,
+    required String status,
     required BuildContext context,
   }) async {
     final response = await apiRepository.putData(
-      '$mainPoint/api/notifications/$notificationId',
+      '$mainPoint/api/notification/notifications/$notificationId',
       headers: {
         'Authorization': TokenStorage.token ?? "",
         'Content-Type': 'application/json',
+      },
+      body: {
+        "status": status,
       },
       context: context,
     );
@@ -111,6 +144,10 @@ class NotificationController extends GetxController {
         context: context,
         type: DialogType.success,
         title: "${jsonData["message"]}",
+        okOnPress: () async {
+          currentPage = 1;
+          await getNotifications(context: context);
+        }
       );
     } else {
       showCustomDialog(
@@ -127,7 +164,7 @@ class NotificationController extends GetxController {
     required BuildContext context,
   }) async {
     final response = await apiRepository.deleteData(
-      '$mainPoint/api/notifications/$notificationId',
+      '$mainPoint/api/notification/notifications/$notificationId',
       headers: {
         'Authorization': TokenStorage.token ?? "",
         'Content-Type': 'application/json',

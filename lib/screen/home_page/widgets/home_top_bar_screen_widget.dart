@@ -8,7 +8,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 class HomeTopBarScreenWidget extends StatefulWidget {
-  const HomeTopBarScreenWidget({super.key});
+  final int unReadNotification;
+  const HomeTopBarScreenWidget({super.key, required this.unReadNotification});
 
   @override
   State<HomeTopBarScreenWidget> createState() => _HomeTopBarScreenWidgetState();
@@ -70,17 +71,36 @@ class _HomeTopBarScreenWidgetState extends State<HomeTopBarScreenWidget> {
           onTap: () {
             goTo(this, NotificationScreen());
           },
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
-              color: theme.highlightColor.withAlpha(40),
-            ),
-            child: SvgPicture.asset(
-              'assets/images/icons/notification.svg',
-              height: 20,
-              width: 20,
-            ),
+          child: Stack(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  color: theme.highlightColor.withAlpha(40),
+                ),
+                child: SvgPicture.asset(
+                  'assets/images/icons/notification.svg',
+                  height: 20,
+                  width: 20,
+                ),
+              ),
+              if(widget.unReadNotification != 0)
+              Positioned(
+                right: -2,
+                top: -2,
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.red,
+                    border: Border.all(width: 2, color: Colors.white)
+                  ),
+                  child: AppText.caption(widget.unReadNotification.toString(), customStyle: TextStyle(color: Colors.white),),
+                ),
+              ),
+            ],
           ),
         )
       ],

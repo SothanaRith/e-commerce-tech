@@ -1,8 +1,8 @@
 import 'package:e_commerce_tech/models/product_model.dart';  // Replace with any related model if necessary
 
 class NotificationModel {
-  int? id;
-  int? userId;
+  String? id;
+  String? userId;
   String? title;
   String? body;
   String? sentAt;
@@ -20,12 +20,12 @@ class NotificationModel {
 
   // From JSON Constructor
   NotificationModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    userId = json['userId'];
-    title = json['title'];
-    body = json['body'];
-    sentAt = json['sentAt'];
-    status = json['status'];
+    id = json['id'].toString();
+    userId = json['userId'].toString();
+    title = json['title'].toString();
+    body = json['body'].toString();
+    sentAt = json['sentAt'].toString();
+    status = json['status'].toString();
   }
 
   // To JSON Method
