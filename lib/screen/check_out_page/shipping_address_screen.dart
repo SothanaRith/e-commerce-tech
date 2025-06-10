@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:e_commerce_tech/controllers/lacation_controller.dart';
 import 'package:e_commerce_tech/main.dart';
@@ -30,59 +31,50 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
     });
   }
 
-  void _showAddressDialog(
-      String id, String fullName, String street, bool isDefault) {
-    showDialog(
+  void _showAddressDialog(String id, String fullName, String street, bool isDefault) {
+    AwesomeDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("manage_address".tr),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("${"full_name_:".tr} $fullName"),
-              Text("${"address_:".tr} $street"),
-              if (!isDefault)
-                TextButton.icon(
-                  icon: Icon(Icons.star),
-                  label: Text("set_as_default".tr),
-                  onPressed: () {
-                    Future.delayed(Duration.zero, () {
-                      locationController.updateAddress(
-                        id: id,
-                        fullName: fullName,
-                        phoneNumber: UserStorage.currentUser?.phone ?? '',
-                        street: street,
-                        isDefault: true,
-                        context: context,
-                      );
-                    });
-                  },
-                ),
-              if (!isDefault)
-              TextButton.icon(
-                icon: Icon(Icons.delete, color: Colors.red),
-                label: Text("delete".tr, style: TextStyle(color: Colors.red)),
-                onPressed: () {
-                  Future.delayed(Duration.zero, () {
-                    locationController.deleteAddress(id: id, context: context);
-                  });
-                },
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              child: Text("close".tr),
-              onPressed: () => Navigator.pop(context),
-            )
-          ],
-        );
+      dialogType: DialogType.info,
+      animType: AnimType.bottomSlide,
+      title: 'manage_address'.tr,
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          AppText.title2("${"address_:".tr} $street"),
+          if (!isDefault)
+            TextButton.icon(
+              icon: Icon(Icons.star, color: theme.primaryColor),
+              label: AppText.body("set_as_default".tr, customStyle: TextStyle(color: theme.primaryColor),),
+              onPressed: () {
+                Future.delayed(Duration.zero, () {
+                  locationController.updateAddress(
+                    id: id,
+                    fullName: fullName,
+                    phoneNumber: UserStorage.currentUser?.phone ?? '',
+                    street: street,
+                    isDefault: true,
+                    context: context,
+                  );
+                });
+              },
+            ),
+          if (!isDefault)
+            TextButton.icon(
+              icon: Icon(Icons.delete, color: Colors.red),
+              label: AppText.body("delete".tr, customStyle: TextStyle(color: Colors.red)),
+              onPressed: () {
+                Future.delayed(Duration.zero, () {
+                  locationController.deleteAddress(id: id, context: context);
+                });
+              },
+            ),
+        ],
+      ),
+      btnCancelOnPress: () {
       },
-    );
+    ).show();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
