@@ -6,6 +6,7 @@ import 'package:e_commerce_tech/widgets/grid_custom_widget.dart';
 import 'package:e_commerce_tech/widgets/item_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class WishListScreen extends StatefulWidget {
   const WishListScreen({super.key});
@@ -40,37 +41,38 @@ class _WishListScreenState extends State<WishListScreen> {
             title: "wish_list".tr,
             context: context,
             haveArrowBack: false),
-        body: logic.isLoading
-            ? Center(child: Text("no_data".tr),)
-            : SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 12),
-              GridCustomWidget(
-                items: logic.wishlistData.map((item) {
-                  final product = item.product;
-                  if (product != null) {
-                    return ItemCardWidget(
-                      product: product,
-                      parentContext: context,
-                      onUpdateWishlist: () {
+        body: Skeletonizer(
+          enabled: logic.isLoading,
+              child: SingleChildScrollView(
+                        child: Column(
+              children: [
+                SizedBox(height: 12),
+                GridCustomWidget(
+                  items: logic.wishlistData.map((item) {
+                    final product = item.product;
+                    if (product != null) {
+                      return ItemCardWidget(
+                        product: product,
+                        parentContext: context,
+                        onUpdateWishlist: () {
+                          fetchWishlist();
+                        },
+                        onUpdateCheckOut: () {
+                          fetchWishlist();
+                        }, onBackAction: () {
                         fetchWishlist();
                       },
-                      onUpdateCheckOut: () {
-                        fetchWishlist();
-                      }, onBackAction: () {
-                      fetchWishlist();
-                    },
-                    );
-                  } else {
-                    return SizedBox();
-                  }
-                }).toList(),
-              ),
-              SizedBox(height: 130),
-            ],
-          ),
-        ),
+                      );
+                    } else {
+                      return SizedBox();
+                    }
+                  }).toList(),
+                ),
+                SizedBox(height: 130),
+              ],
+                        ),
+                      ),
+            ),
       );
     });
   }

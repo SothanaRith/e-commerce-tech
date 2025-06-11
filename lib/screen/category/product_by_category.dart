@@ -2,6 +2,7 @@ import 'package:e_commerce_tech/controllers/category_controller.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../widgets/item_card_widget.dart';
 
@@ -39,46 +40,46 @@ class _ProductByCategoryScreenState extends State<ProductByCategoryScreen> {
       appBar: customAppBar(
           type: this, title: widget.categoryName, context: context),
       body: GetBuilder<CategoryController>(builder: (controller) {
-        if (controller.isLoadingProducts) {
-          return const Center(child: CircularProgressIndicator());
-        }
 
         if (controller.productByCategories.isEmpty) {
           return Center(child: Text("no_products_found".tr));
         }
 
-        return GridView.builder(
-          padding: const EdgeInsets.all(12),
-          itemCount: controller.productByCategories.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 0.75,
-          ),
-          itemBuilder: (contextList, index) {
-            final product = controller.productByCategories[index];
-            return ItemCardWidget(
-              product: product, parentContext: context,
-              onUpdateCheckOut: () {
+        return Skeletonizer(
+          enabled: controller.isLoadingProducts,
+          child: GridView.builder(
+            padding: const EdgeInsets.all(12),
+            itemCount: controller.productByCategories.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 0.75,
+            ),
+            itemBuilder: (contextList, index) {
+              final product = controller.productByCategories[index];
+              return ItemCardWidget(
+                product: product, parentContext: context,
+                onUpdateCheckOut: () {
+                  Future.delayed(Duration.zero, () {
+                    controller.listProByCategory(
+                        categoryId: widget.categoryId, context: context);
+                  });
+                },
+                onUpdateWishlist: () {
+                  Future.delayed(Duration.zero, () {
+                    controller.listProByCategory(
+                        categoryId: widget.categoryId, context: context);
+                  });
+                }, onBackAction: () {
                 Future.delayed(Duration.zero, () {
                   controller.listProByCategory(
                       categoryId: widget.categoryId, context: context);
                 });
               },
-              onUpdateWishlist: () {
-                Future.delayed(Duration.zero, () {
-                  controller.listProByCategory(
-                      categoryId: widget.categoryId, context: context);
-                });
-              }, onBackAction: () {
-              Future.delayed(Duration.zero, () {
-                controller.listProByCategory(
-                    categoryId: widget.categoryId, context: context);
-              });
+              );
             },
-            );
-          },
+          ),
         );
       }),
     );

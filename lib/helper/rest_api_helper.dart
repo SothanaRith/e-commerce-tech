@@ -18,7 +18,6 @@ class ApiRepository {
   Future<ApiResponse> _handleRequest(
       Future<http.Response> Function() request,
       {String method = "", String url = "", required BuildContext context, Map<String, String>? headers, dynamic body}) async {
-    showLoadingDialog(context);
     try {
       // ✅ Log Request Details
       print("\n🔹 [DEBUG] HTTP Request - Method: $method, URL: $url");
@@ -32,15 +31,12 @@ class ApiRepository {
       print("🔹 [DEBUG] HTTP Response: ${response.statusCode} - ${response.body}");
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        hideLoadingDialog(context);
         return ApiResponse(data: response.body); // Keep JSON as string
       } else {
-        hideLoadingDialog(context);
         return ApiResponse(error: response.body);
       }
     } catch (e) {
       print("❌ [ERROR] Exception: $e");
-      hideLoadingDialog(context);
       return ApiResponse(error: e.toString());
     }
 

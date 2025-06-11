@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:e_commerce_tech/widgets/filter_dialog_widget.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -38,6 +39,7 @@ class _SearchScreenState extends State<SearchScreen> {
   List<String> selectedCategories = [];
   RangeValues priceRange = const RangeValues(0, 1000);
   double? selectedRating = 0;
+
   @override
   void initState() {
     super.initState();
@@ -81,7 +83,7 @@ class _SearchScreenState extends State<SearchScreen> {
         context: context,
         search: searchText.text.trim(),
         categoryId:
-            selectedCategories.isNotEmpty ? selectedCategories.join(',') : null,
+        selectedCategories.isNotEmpty ? selectedCategories.join(',') : null,
         minPrice: priceRange.start,
         maxPrice: priceRange.end,
         minRating: selectedRating,
@@ -140,198 +142,214 @@ class _SearchScreenState extends State<SearchScreen> {
     return Scaffold(
       // appBar: customAppBar(type: this, title: "Search", context: context),
       body: SafeArea(
-        child: Column(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        child: GetBuilder<SearchingController>(builder: (logic) {
+          return Skeletonizer(
+            enabled: logic.isLoading,
+            child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.sizeOf(context).width - 80,
-                        child: CustomTextField(
-                          controller: searchText,
-                          label: "search_something...".tr,
-                          onSubmitted: (value) {
-                            _searchProducts(page: 1);
-                          },
-                          leftIcon: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: SvgPicture.asset(
-                                "assets/images/icons/search.svg"),
-                          ),
-                        ),
-                      ),
-                      FilterDialogWidget(
-                        child: Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            color: theme.primaryColor,
-                          ),
-                          child: SvgPicture.asset(
-                              "assets/images/icons/filter.svg"),
-                        ),
-                        filterContent: (setModalState) => SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: MediaQuery
+                                .sizeOf(context)
+                                .width - 80,
+                            child: CustomTextField(
+                              controller: searchText,
+                              label: "search_something...".tr,
+                              onSubmitted: (value) {
+                                _searchProducts(page: 1);
+                              },
+                              leftIcon: Padding(
                                 padding: const EdgeInsets.all(12.0),
-                                child: AppText.title1("category".tr),
+                                child: SvgPicture.asset(
+                                    "assets/images/icons/search.svg"),
                               ),
-                              categoryController.category == null
-                                  ? const Center(
-                                      child: CircularProgressIndicator())
-                                  : ListViewHorizontalWidget(
-                                      items: categoryController
-                                          .category!.categories
-                                          .map((cat) {
-                                        return TextBtnWidget(
-                                          title: cat.name,
-                                          isSelected:
-                                              selectedCategories.contains(cat
-                                                  .id), // <-- Add this if your widget supports it
-                                          onTap: () {
-                                            toggleCategory(
-                                                cat.id, setModalState);
-                                          },
-                                        );
-                                      }).toList(),
-                                      height: 40,
-                                    ),
-                              Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: AppText.title1("pricing_range".tr),
-                              ),
-                              RangeSliderWidget(
-                                min: 0,
-                                max: 3000,
-                                start: priceRange.start,
-                                end: priceRange.end,
-                                onChanged: (values) {
-                                  setModalState(() {});
-                                  setState(() => priceRange = values);
-                                },
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12.0, vertical: 6),
-                                child: AppText.title1("reviews".tr),
-                              ),
-                              Row(
-                                children: List.generate(5, (index) {
-                                  return IconButton(
-                                    icon: Icon(
-                                      Icons.star,
-                                      color: selectedRating! >= index + 1
-                                          ? Colors.amber
-                                          : Colors.grey,
-                                    ),
-                                    onPressed: () {
-                                      setModalState(() {});
-                                      setState(() => selectedRating =
-                                          (index + 1).toDouble());
-                                    },
-                                  );
-                                }),
-                              ),
-                              const SizedBox(height: 12),
-                            ],
+                            ),
                           ),
-                        ),
-                        onApply: () {
-                          _searchProducts(page: 1);
-                        },
-                        onClear: () {
-                          setState(() {
-                            selectedCategories = [];
-                            priceRange = const RangeValues(0, 1000);
-                            selectedRating = 0;
-                            searchText.clear();
-                          });
-                          _searchProducts(page: 1);
+                          FilterDialogWidget(
+                            child: Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100),
+                                color: theme.primaryColor,
+                              ),
+                              child: SvgPicture.asset(
+                                  "assets/images/icons/filter.svg"),
+                            ),
+                            filterContent: (setModalState) =>
+                                SingleChildScrollView(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: AppText.title1("category".tr),
+                                      ),
+                                      categoryController.category == null
+                                          ? const Center(
+                                          child: CircularProgressIndicator())
+                                          : ListViewHorizontalWidget(
+                                        items: categoryController
+                                            .category!.categories
+                                            .map((cat) {
+                                          return TextBtnWidget(
+                                            title: cat.name,
+                                            isSelected:
+                                            selectedCategories.contains(cat
+                                                .id),
+                                            // <-- Add this if your widget supports it
+                                            onTap: () {
+                                              toggleCategory(
+                                                  cat.id, setModalState);
+                                            },
+                                          );
+                                        }).toList(),
+                                        height: 40,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: AppText.title1("pricing_range".tr),
+                                      ),
+                                      RangeSliderWidget(
+                                        min: 0,
+                                        max: 3000,
+                                        start: priceRange.start,
+                                        end: priceRange.end,
+                                        onChanged: (values) {
+                                          setModalState(() {});
+                                          setState(() => priceRange = values);
+                                        },
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 12.0, vertical: 6),
+                                        child: AppText.title1("reviews".tr),
+                                      ),
+                                      Row(
+                                        children: List.generate(5, (index) {
+                                          return IconButton(
+                                            icon: Icon(
+                                              Icons.star,
+                                              color: selectedRating! >= index + 1
+                                                  ? Colors.amber
+                                                  : Colors.grey,
+                                            ),
+                                            onPressed: () {
+                                              setModalState(() {});
+                                              setState(() =>
+                                              selectedRating =
+                                                  (index + 1).toDouble());
+                                            },
+                                          );
+                                        }),
+                                      ),
+                                      const SizedBox(height: 12),
+                                    ],
+                                  ),
+                                ),
+                            onApply: () {
+                              _searchProducts(page: 1);
+                            },
+                            onClear: () {
+                              setState(() {
+                                selectedCategories = [];
+                                priceRange = const RangeValues(0, 1000);
+                                selectedRating = 0;
+                                searchText.clear();
+                              });
+                              _searchProducts(page: 1);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: GetBuilder<SearchingController>(
+                        builder: (_) {
+                          final queryText = searchText.text.isEmpty
+                              ? 'all_products'.tr
+                              : searchText.text;
+                          return AppText.title1(
+                              "${"result_for".tr} '$queryText'");
                         },
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
                 ),
-                const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: GetBuilder<SearchingController>(
-                    builder: (_) {
-                      final queryText = searchText.text.isEmpty
-                          ? 'all_products'.tr
-                          : searchText.text;
-                      return AppText.title1("${"result_for".tr} '$queryText'");
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      _searchProducts(page: 1);
+                      // Wait for controller update before completing refresh
+                      await Future.delayed(const Duration(milliseconds: 500));
                     },
+                    child: GetBuilder<SearchingController>(
+                      builder: (_) {
+                        if (searchController.isLoading &&
+                            searchController.searchResults.isEmpty) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+
+                        final results = searchController.searchResults;
+
+                        if (results.isEmpty) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(20),
+                              child: Text("no_results_found"),
+                            ),
+                          );
+                        }
+
+                        return ListView(
+                          controller: _scrollController,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          children: [
+                            GridCustomWidget(
+                              items: results
+                                  .map((item) =>
+                                  ItemCardWidget(
+                                    product: item,
+                                    onUpdateWishlist: () {
+                                      _searchProducts(
+                                          page: 1); // refresh search result
+                                    },
+                                    onUpdateCheckOut: () {
+                                      _searchProducts(
+                                          page: 1); // refresh search result
+                                    },
+                                    parentContext: context,
+                                    onBackAction: () {
+                                      _searchProducts(
+                                          page: 1);
+                                    },))
+                                  .toList(),
+                            ),
+                            if (searchController.isLoading &&
+                                searchController.searchResults.isNotEmpty)
+                              const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Center(child: CircularProgressIndicator()),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ),
-                const SizedBox(height: 12),
               ],
             ),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  _searchProducts(page: 1);
-                  // Wait for controller update before completing refresh
-                  await Future.delayed(const Duration(milliseconds: 500));
-                },
-                child: GetBuilder<SearchingController>(
-                  builder: (_) {
-                    if (searchController.isLoading &&
-                        searchController.searchResults.isEmpty) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
-                    final results = searchController.searchResults;
-
-                    if (results.isEmpty) {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(20),
-                          child: Text("no_results_found"),
-                        ),
-                      );
-                    }
-
-                    return ListView(
-                      controller: _scrollController,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      children: [
-                        GridCustomWidget(
-                          items: results
-                              .map((item) => ItemCardWidget(
-                                  product: item,
-                                  onUpdateWishlist: () {
-                                    _searchProducts(
-                                        page: 1); // refresh search result
-                                  },
-                                  onUpdateCheckOut: () {
-                                    _searchProducts(
-                                        page: 1); // refresh search result
-                                  }, parentContext: context, onBackAction: () { _searchProducts(
-                              page: 1); },))
-                              .toList(),
-                        ),
-                        if (searchController.isLoading &&
-                            searchController.searchResults.isNotEmpty)
-                          const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Center(child: CircularProgressIndicator()),
-                          ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
+          );
+        }),
       ),
     );
   }

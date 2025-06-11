@@ -8,6 +8,7 @@ import 'package:e_commerce_tech/screen/home_page/widgets/home_top_bar_screen_wid
 import 'package:e_commerce_tech/widgets/item_card_widget.dart';
 import 'package:e_commerce_tech/widgets/slider_custom_widget.dart';
 import 'package:get/get.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../controllers/home_controller.dart';
 
@@ -63,70 +64,73 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (controller) => SingleChildScrollView(
           controller: scrollController,
           padding: const EdgeInsets.only(bottom: 132),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 60),
-              Padding(
-                padding: EdgeInsets.all(12.0),
-                child: HomeTopBarScreenWidget(unReadNotification: controller.totalUnReadNotification,),
-              ),
-              const SizedBox(height: 12),
-              ImageSlider(
-                imageUrls: homeController.imagesSlide,
-                height: 200,
-              ),
-              const SizedBox(height: 12),
-              const CategoryHomeScreenWidget(),
-              const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: AppText.title2(
-                  "all_product".tr,
-                  customStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          child: Skeletonizer(
+            enabled: controller.isLoading,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 60),
+                Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: HomeTopBarScreenWidget(unReadNotification: controller.totalUnReadNotification,),
                 ),
-              ),
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.all(0),
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: controller.hasMore && controller.isLoading
-                      ? controller.products.length + 1
-                      : controller.products.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 24,
-                    mainAxisSpacing: 12,
-                    childAspectRatio: 0.8,
+                const SizedBox(height: 12),
+                ImageSlider(
+                  imageUrls: homeController.imagesSlide,
+                  height: 200,
+                ),
+                const SizedBox(height: 12),
+                const CategoryHomeScreenWidget(),
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: AppText.title2(
+                    "all_product".tr,
+                    customStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
-                  itemBuilder: (context, index) {
-                    if (index < controller.products.length) {
-                      final product = controller.products[index];
-                      return ItemCardWidget(product: product,
-                        onBackAction: () {
+                ),
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.all(0),
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: controller.hasMore && controller.isLoading
+                        ? controller.products.length + 1
+                        : controller.products.length,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 24,
+                      mainAxisSpacing: 12,
+                      childAspectRatio: 0.8,
+                    ),
+                    itemBuilder: (context, index) {
+                      if (index < controller.products.length) {
+                        final product = controller.products[index];
+                        return ItemCardWidget(product: product,
+                          onBackAction: () {
+                            homeController.loadHome(page: 1, userId: UserStorage.currentUser?.id.toString() ?? '', context: context);
+                          },
+                          onUpdateCheckOut: () {
                           homeController.loadHome(page: 1, userId: UserStorage.currentUser?.id.toString() ?? '', context: context);
                         },
-                        onUpdateCheckOut: () {
-                        homeController.loadHome(page: 1, userId: UserStorage.currentUser?.id.toString() ?? '', context: context);
-                      },
-                        onUpdateWishlist: () {
-                          homeController.loadHome(page: 1, userId: UserStorage.currentUser?.id.toString() ?? '', context: context);
-                        }, parentContext: context,);
-                    } else {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
-                  },
+                          onUpdateWishlist: () {
+                            homeController.loadHome(page: 1, userId: UserStorage.currentUser?.id.toString() ?? '', context: context);
+                          }, parentContext: context,);
+                      } else {
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

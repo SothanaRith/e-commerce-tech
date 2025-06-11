@@ -8,6 +8,7 @@ import 'package:e_commerce_tech/widgets/item_select_widget.dart';
 import 'package:e_commerce_tech/widgets/list_view_custom_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class MyOrderScreen extends StatefulWidget {
   const MyOrderScreen({super.key});
@@ -96,9 +97,6 @@ class _OrdersTabState extends State<OrdersTab> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<OrderController>(builder: (_) {
-      if (orderController.isLoading) {
-        return const Center(child: CircularProgressIndicator());
-      }
 
       final List<TransactionModel> items =
           orderController.transactionsByStatus[widget.status] ?? [];
@@ -107,31 +105,34 @@ class _OrdersTabState extends State<OrdersTab> {
         return Center(child: Text('no_orders_found'.tr));
       }
 
-      return Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: ListView.builder(
-          shrinkWrap: true,
-          physics: const BouncingScrollPhysics(),
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            final tx = items[index];
-            final imageList = <String>[];
+      return Skeletonizer(
+        enabled: orderController.isLoading,
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: ListView.builder(
+            shrinkWrap: true,
+            physics: const BouncingScrollPhysics(),
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final tx = items[index];
+              final imageList = <String>[];
 
-            for (var item in tx.order?.orderItems ?? []) {
-              for (var image in item.product?.imageUrl ?? []) {
-                imageList.add(image);
+              for (var item in tx.order?.orderItems ?? []) {
+                for (var image in item.product?.imageUrl ?? []) {
+                  imageList.add(image);
+                }
               }
-            }
-            return ItemSelectWidget(
-              imageUrl: imageList,
-              onTap: () async {
-                goTo(this, OrderTransactionDetailScreen(data: tx.order ?? OrderModel(),));
-              },
-              title: tx.createdAt ?? 'No Title',
-              prices: '\$${tx.amount ?? '0.00'}',
-              countNumber: tx.order?.orderItems?.length.toString() ?? '0',
-            );
-          },
+              return ItemSelectWidget(
+                imageUrl: imageList,
+                onTap: () async {
+                  goTo(this, OrderTransactionDetailScreen(data: tx.order ?? OrderModel(),));
+                },
+                title: tx.createdAt ?? 'No Title',
+                prices: '\$${tx.amount ?? '0.00'}',
+                countNumber: tx.order?.orderItems?.length.toString() ?? '0',
+              );
+            },
+          ),
         ),
       );
     });
