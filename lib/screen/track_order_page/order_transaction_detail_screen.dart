@@ -37,14 +37,6 @@ class _OrderTransactionDetailScreenState extends State<OrderTransactionDetailScr
   }
 
   @override
-  void initState() {
-    // TODO: implement initState
-    print(widget.data.trackingSteps?[0].status);
-    print(widget.data.trackingSteps?[0].timestamp);
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBar(type: this, title: "transaction_detail".tr, context: context),
