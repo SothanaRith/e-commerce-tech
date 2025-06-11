@@ -2,6 +2,7 @@ import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/Transaction_model.dart';
 import 'package:e_commerce_tech/models/order_tracking_model.dart';
 import 'package:e_commerce_tech/screen/product_details_page/product_details_screen.dart';
+import 'package:e_commerce_tech/screen/review_page/review_screen.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
@@ -50,6 +51,11 @@ class _OrderTransactionDetailScreenState extends State<OrderTransactionDetailScr
               onTap: () {
                 goTo(this, ProductDetailsScreen(id: item.product?.id ?? ''));
               },
+              actionTitle: "review_this_product".tr,
+              onAction: () {
+                if (item.product != null)
+                goTo(this, ReviewScreen(product: item.product!,));
+              },
               title: item.product?.name ?? '--',
               prices: '\$${item.product?.price}',
               countNumber: item.quantity ?? '0',
@@ -66,7 +72,12 @@ class _OrderTransactionDetailScreenState extends State<OrderTransactionDetailScr
               child: AppText.title2(showAllItems ? 'show_less'.tr : 'show_all'.tr, customStyle: TextStyle(color: theme.primaryColor),),
             ),
           const SizedBox(height: 26),
-          AppText.title1("order_detail".tr, customStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AppText.title1("order_detail".tr, customStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            ],
+          ),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

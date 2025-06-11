@@ -11,6 +11,8 @@ class ItemSelectWidget extends StatelessWidget {
   final String countNumber;
   final Function(bool isIncrement)? count;
   final Function()? onTap;
+  final Function()? onAction;
+  final String? actionTitle;
 
   const ItemSelectWidget({
     super.key,
@@ -18,7 +20,7 @@ class ItemSelectWidget extends StatelessWidget {
     required this.title,
     required this.prices,
     required this.countNumber,
-    this.count, this.onTap,
+    this.count, this.onTap, this.onAction, this.actionTitle,
   });
 
   Widget _buildStackedImages() {
@@ -72,17 +74,21 @@ class ItemSelectWidget extends StatelessWidget {
       children: [
         AppText.title1(title),
         AppText.title1(prices, customStyle: TextStyle(color: theme.primaryColor)),
-        Container(
-          padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            color: theme.primaryColor.withAlpha(60),
-          ),
-          child: AppText.caption(
-            "Free Delivery",
-            customStyle: TextStyle(
-              color: theme.primaryColor,
-              fontWeight: FontWeight.bold,
+        InkWell(
+          onTap: onAction ?? () {
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: theme.primaryColor.withAlpha(60),
+            ),
+            child: AppText.caption(
+              actionTitle ?? "Free Delivery",
+              customStyle: TextStyle(
+                color: theme.primaryColor,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),

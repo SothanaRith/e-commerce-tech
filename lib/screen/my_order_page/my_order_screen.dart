@@ -40,7 +40,7 @@ class _MyOrderScreenState extends State<MyOrderScreen>
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) return;
 
-      final statuses = ['pending', 'complete', 'failed'];
+      final statuses = ['pending', 'completed', 'failed'];
       final status = statuses[_tabController.index];
 
       Future.delayed(Duration.zero, () {
@@ -74,7 +74,7 @@ class _MyOrderScreenState extends State<MyOrderScreen>
         controller: _tabController,
         children: const [
           OrdersTab(status: 'pending'),
-          OrdersTab(status: 'complete'),
+          OrdersTab(status: 'completed'),
           OrdersTab(status: 'failed'),
         ],
       ),

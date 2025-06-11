@@ -9,6 +9,7 @@ import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_dialog.dart';
+import 'package:e_commerce_tech/widgets/flexible_image_preview_widget.dart';
 import 'package:e_commerce_tech/widgets/grid_custom_widget.dart';
 import 'package:e_commerce_tech/widgets/item_card_widget.dart';
 import 'package:e_commerce_tech/widgets/list_view_horizontal_widget.dart';
@@ -149,14 +150,19 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           alignment: Alignment.center,
                           children: [
                             if (selectedImageUrl != null)
-                              Positioned(
-                                top: 0,
-                                child: Image.network(
-                                  "$mainPoint$selectedImageUrl",
-                                  height:
-                                  MediaQuery.sizeOf(context).height / 1.5 - 35,
-                                  width: MediaQuery.sizeOf(context).width,
-                                  fit: BoxFit.cover,
+                              GestureDetector(
+                                onTap: () {
+                                  goTo(this, FlexibleImagePreview(image: "$mainPoint$selectedImageUrl"));
+                                },
+                                child: Positioned(
+                                  top: 0,
+                                  child: Image.network(
+                                    "$mainPoint$selectedImageUrl",
+                                    height:
+                                    MediaQuery.sizeOf(context).height / 1.5 - 35,
+                                    width: MediaQuery.sizeOf(context).width,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             Positioned(
@@ -415,14 +421,19 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                           horizontalPadding: 4,
                                           items: List.generate(review.images!.length, (i) {
                                             final imageUrl = "$mainPoint${review.images![i]}";
-                                            return Container(
-                                              width: 60,
-                                              height: 60,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(5),
-                                                image: DecorationImage(
-                                                  image: NetworkImage(imageUrl),
-                                                  fit: BoxFit.cover,
+                                            return GestureDetector(
+                                              onTap: () {
+                                                goTo(this, FlexibleImagePreview(image: imageUrl));
+                                              },
+                                              child: Container(
+                                                width: 60,
+                                                height: 60,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                  image: DecorationImage(
+                                                    image: NetworkImage(imageUrl),
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ),
                                               ),
                                             );
