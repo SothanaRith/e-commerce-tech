@@ -58,12 +58,14 @@ dependencies:
   image_picker: ^1.1.2
   share_plus: ^11.0.0
   path_provider: ^2.1.5
-  firebase_core: ^3.13.1
-  firebase_messaging: ^15.2.6
+#  firebase_core: ^3.13.1
+#  firebase_messaging: ^15.2.6
   flutter_local_notifications: ^19.2.1
   skeletonizer: ^1.4.3
   photo_view: ^0.15.0
   carousel_slider: ^5.1.1
+  url_launcher: ^6.3.1
+  khqr_sdk: ^1.0.4
 
 dev_dependencies:
   flutter_test:

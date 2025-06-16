@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 
 late final ApiRepository apiRepository;
 
-late final String mainPoint = "http://localhost:3000";
+late final String mainPoint = "https://bfae-58-97-218-118.ngrok-free.app";
 // late final String mainPoint = "https://c9f0-58-97-220-69.ngrok-free.app";
 
 String formatDateString(String dateString) {
