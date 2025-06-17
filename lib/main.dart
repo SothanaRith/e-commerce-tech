@@ -1,4 +1,6 @@
 import 'package:e_commerce_tech/controllers/theme_controller.dart';
+import 'package:e_commerce_tech/screen/payment/payment_verify_screen.dart';
+import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/all_get_binding.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,7 +11,7 @@ import 'package:e_commerce_tech/utils/dep.dart' as dep;
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/app_route.dart';
 import 'package:e_commerce_tech/utils/messages.dart';
-import 'firebase_options.dart';
+import 'package:uni_links/uni_links.dart';
 // Setup theme color and text
 final ThemeController themeController = Get.find<ThemeController>();
 ThemeData get theme => themeController.theme;
@@ -34,8 +36,20 @@ void main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {
     runApp(MyApp(languages: _languages)); // Start the app after initialization
   });
+  handleIncomingLinks();
 }
 
+void handleIncomingLinks() {
+  uriLinkStream.listen((Uri? uri) {
+    if (uri != null && uri.host == 'payment-callback') {
+      final txnId = uri.queryParameters['txn_id'];
+      print('✅ Got txn_id from stream: $txnId');
+      if (UserStorage.currentUser != null) {
+        goOff("callback deeplink", PaymentVerifyScreen(cart: [], paymentMethod: {}));
+      }
+    }
+  });
+}
 class MyApp extends StatelessWidget {
   const MyApp({super.key, required this.languages});
   final Map<String, Map<String, String>> languages;

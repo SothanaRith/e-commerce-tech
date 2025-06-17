@@ -3,7 +3,6 @@ import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/check_out_page/shipping_address_screen.dart';
 import 'package:e_commerce_tech/screen/forget_password_page/forget_password_screen.dart';
 import 'package:e_commerce_tech/screen/location_page/location_select_screen.dart';
-import 'package:e_commerce_tech/screen/payment/payment_screen.dart';
 import 'package:e_commerce_tech/screen/sign_up_page/sign_up_screen.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
@@ -37,11 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-              InkWell(
-                  onTap: () {
-                    goTo(this, PaymentApp());
-                  },
-                  child: AppText.h1("sign_in".tr)),
+              AppText.h1("sign_in".tr),
               SizedBox(height: 10),
               AppText.caption("hi_welcome_back_you’ve_been_issed".tr),
               SizedBox(height: 50),

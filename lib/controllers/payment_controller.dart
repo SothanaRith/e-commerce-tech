@@ -1,7 +1,12 @@
 import 'dart:async';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:e_commerce_tech/helper/global.dart';
+import 'package:e_commerce_tech/widgets/custom_dialog.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:khqr_sdk/khqr_sdk.dart';
 import 'dart:convert';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -13,53 +18,55 @@ class PaymentController extends GetxController {
   var isPaymentSuccess = false;  // Observable variable for loading state
   var qrCode = '';
   var md5 = '';
+  final _khqrSdk = KhqrSdk();
   final StreamController<String> _statusStreamController = StreamController<String>.broadcast(); // Broadcast stream
 
   // Backend URL for Deeplink Generation and Transaction Status check
-  final String apiUrl = 'https://bfae-58-97-218-118.ngrok-free.app/api/payment'; // Replace with your backend URL
+  final String apiUrl = '$mainPoint/api/payment'; // Replace with your backend URL
 
-  // Method to generate Deeplink by sending QR data to the backend
-  Future<void> generateDeeplink(String qrCode, String appIconUrl, String appName, String appDeepLinkCallback) async {
+  Future<void> resetData() async {
+    deeplink = '';  // Observable variable for Deeplink
+    transactionStatus = '';  // Observable variable for Transaction Status
+    isLoading = false;  // Observable variable for loading state
+    isPaymentSuccess = false;  // Observable variable for loading state
+    qrCode = '';
+    md5 = '';
+    update();
+
+  }
+
+  Future<void> generateDeeplink(String appIconUrl, String appName, String appDeepLinkCallback, BuildContext context) async {
     isLoading = true;
     update();
     try {
-      final response = await http.post(
-        Uri.parse('$apiUrl/generate-deeplink'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({
-          'qrCode': qrCode,
-          'appIconUrl': appIconUrl,
-          'appName': appName,
-          'appDeepLinkCallback': appDeepLinkCallback
-        }),
+      final sourceInfo = SourceInfo(
+        appName: appName,
+        appIconUrl: appIconUrl,
+        appDeepLinkCallBack: appDeepLinkCallback,
       );
 
-      if (response.statusCode == 200) {
-        var data = json.decode(response.body);
-        deeplink = data['data']['shortLink'];
-        update();// Assuming response data contains 'shortLink'
-        await launchInBrowser(Uri.parse(deeplink));
-        // await openBakongApp(deeplink.value);
-      } else {
-        deeplink = 'Failed to generate deeplink';
-        update();
-      }
+      final deeplinkInfo = DeeplinkInfo(
+        qr: qrCode,
+        url: 'https://api-bakong.nbc.gov.kh/v1/generate_deeplink_by_qr',
+        sourceInfo: sourceInfo,
+      );
 
+      final deeplinkData = await _khqrSdk.generateDeepLink(deeplinkInfo);
+
+      deeplink = deeplinkData?.shortLink ?? 'No shortLink in response';
+      await launchInBrowser(Uri.parse(deeplink));
     } catch (e) {
-      deeplink = 'Error: $e';
-      update();
+      print('❌ Error: $e');
+      deeplink = '';
+      showCustomDialog(
+        context: context,
+        type: DialogType.error,
+        title: "Failed Payment",
+        desc: "Something wrong. please do your payment again",
+      );
     } finally {
       isLoading = false;
       update();
-    }
-  }
-
-  Future<void> openBakongApp(String bakongDeeplink ) async {
-    // Check if the URL can be launched
-    if (await canLaunch(bakongDeeplink)) {
-      await launch(bakongDeeplink);  // Launch the Bakong deeplink
-    } else {
-      throw 'Could not open the Bakong app';
     }
   }
 
@@ -72,7 +79,20 @@ class PaymentController extends GetxController {
     }
   }
 
-  Future<void> checkTransactionStatus(String md5) async {
+  Future<void> checkTransactionStatus({required String md5, required BuildContext context}) async {
+    if (isLoading) {
+      return;
+    }
+    if (md5 == '') {
+      showCustomDialog(
+        context: context,
+        type: DialogType.error,
+        title: "Failed Payment",
+        desc: "Something wrong. please do your payment again",
+      );
+      return;
+    }
+
     isLoading = true;
     update();
     _statusStreamController.add("Transaction status check started..."); // Emit initial message
@@ -83,23 +103,56 @@ class PaymentController extends GetxController {
         ..body = json.encode({'md5': md5});
 
       var streamedResponse = await request.send();
-
       // Listen for the response stream
       streamedResponse.stream.listen(
             (List<int> chunk) {
           String responseData = String.fromCharCodes(chunk);
           _statusStreamController.add(responseData); // Add data to stream
+          print(responseData);
+
+          // Strip `data: ` prefix if it exists
+          if (responseData.startsWith('data: ')) {
+            responseData = responseData.replaceFirst('data: ', '');
+          }
+
+          try {
+            final decoded = json.decode(responseData);
+
+            if (decoded is Map<String, dynamic> && decoded['status'] == 'Transaction successful') {
+              print("✅ Transaction successful, do something here");
+              isPaymentSuccess = true;
+              update();
+            }
+          } catch (e) {
+            print("JSON decode error: $e");
+          }
         },
         onDone: () {
-          print("Stream finished.");
           isLoading = false;
-          isPaymentSuccess = true;
-          _statusStreamController.add("Transaction check completed.");
+          if (!isPaymentSuccess) {
+            showCustomDialog(
+              context: context,
+              type: DialogType.error,
+              title: "Failed Payment",
+              desc: "Payment Failed please try again...",
+            );
+            _statusStreamController.add("Transaction check completed but failed");
+          } else {
+            _statusStreamController.add("Transaction check completed");
+          }
           update();
         },
         onError: (e) {
           print("Error: $e");
           isPaymentSuccess = false;
+
+          showCustomDialog(
+            context: context,
+            type: DialogType.error,
+            title: "Failed Payment",
+            desc: "Error occurred while checking transaction",
+          );
+
           _statusStreamController.add("Error occurred while checking transaction");
           isLoading = false;
           update();
@@ -108,6 +161,14 @@ class PaymentController extends GetxController {
     } catch (e) {
       _statusStreamController.add("Error: $e");
       isPaymentSuccess = false;
+
+      showCustomDialog(
+        context: context,
+        type: DialogType.error,
+        title: "Failed Payment",
+        desc: "Payment Failed with Error: $e",
+      );
+
       isLoading = false;
       update();
     }
@@ -123,27 +184,39 @@ class PaymentController extends GetxController {
   }
 
   // Generate KHQR QR code
-  Future<void> generateKHQR(String type) async {
+  Future<void> generateKHQR({required KhqrCurrency currency,required String amount, required BuildContext context}) async {
     isLoading = true;
     update();
     try {
-      final response = await http.post(
-        Uri.parse('$apiUrl/generate-khqr'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({'type': type}), // Sending the type (merchant/individual)
+      final expire = DateTime.now().millisecondsSinceEpoch + 3600000;
+      final info = IndividualInfo(
+          bakongAccountId: 'un_virak2@aclb',
+          // bakongAccountId: 'sothanarith_heang1@aclb',
+          merchantName: 'Snap Buy',
+          accountInformation: '123456789',
+          mobileNumber: '18182242192',
+          storeLabel: 'Snap Buy',
+          merchantCity: "Phnom Penh",
+          purposeOfTransaction: "snapbuy payment-callback",
+          currency: currency,
+          amount: double.parse(amount),
+          expirationTimestamp: expire
       );
+      final khqrData = await _khqrSdk.generateIndividual(info);
 
-      if (response.statusCode == 200) {
-        var data = json.decode(response.body);
-        qrCode = data['qrCode'];  // Store the generated QR code
-        md5 = data['md5'];  // Store the generated QR code
-        update();
-      } else {
-        qrCode = 'Failed to generate QR code';
-        update();
-      }
+      qrCode = khqrData?.qr ?? 'Failed to generate QR code';  // Store the generated QR code
+      md5 = khqrData?.md5 ?? '';  // Store the generated QR code
+      print(md5);
+      update();
+
     } catch (e) {
       qrCode = 'Error: $e';
+      showCustomDialog(
+        context: context,
+        type: DialogType.error,
+        title: "Failed Payment",
+        desc: "Something wrong. please do your payment again",
+      );
       update();
     } finally {
       isLoading = false;

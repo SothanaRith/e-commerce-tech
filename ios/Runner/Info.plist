@@ -71,5 +71,14 @@
 	</array>
 	<key>firebase_messaging_auto_init_enabled</key>
 	<true/>
+	<key>CFBundleURLTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>snapbuy</string>
+        </array>
+      </dict>
+    </array>
 </dict>
 </plist>

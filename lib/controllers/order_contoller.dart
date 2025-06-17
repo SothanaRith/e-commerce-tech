@@ -127,19 +127,14 @@ class OrderController extends GetxController {
 
     return [
       {
-        "imageUrl": "https://cdn6.aptoide.com/imgs/2/a/6/2a6b391e2053870eac06539bd99d51a6_icon.png",
-        "bankName": "ABA",
-        "subtitle": "23776 ** 1324",
+        "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAksY2TS0gKo7ahWTiy73LEAvW6Hezllu7eQ&s",
+        "bankName": "Bakong App",
+        "subtitle": "National Bank",
       },
       {
-        "imageUrl": "https://cdn6.aptoide.com/imgs/c/f/f/cffec3f2fc237b5e9baefcff21783b7c_icon.png",
-        "bankName": "Wing",
-        "subtitle": "",
-      },
-      {
-        "imageUrl": "https://www.acledasecurities.com.kh/as/assets/listed_company/ABC/logo.png",
-        "bankName": "Acleda",
-        "subtitle": "",
+        "imageUrl": "https://devithuotkeo.com/static/image/portfolio/khqr/khqr-5.png",
+        "bankName": "KHQR",
+        "subtitle": "for all bank payment in Cambodia",
       },
     ];
   }

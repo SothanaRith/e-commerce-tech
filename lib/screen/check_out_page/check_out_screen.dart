@@ -1,7 +1,7 @@
 import 'package:e_commerce_tech/controllers/cart_controller.dart';
 import 'package:e_commerce_tech/controllers/lacation_controller.dart';
 import 'package:e_commerce_tech/main.dart';
-import 'package:e_commerce_tech/screen/check_out_page/payment_method_screen.dart';
+import 'package:e_commerce_tech/screen/payment/payment_method_screen.dart';
 import 'package:e_commerce_tech/screen/check_out_page/shipping_address_screen.dart';
 import 'package:e_commerce_tech/screen/product_details_page/product_details_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';

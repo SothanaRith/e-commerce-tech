@@ -1,101 +1,126 @@
 import 'package:e_commerce_tech/controllers/payment_controller.dart';
+import 'package:e_commerce_tech/screen/payment/payment_verify_screen.dart';
+import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:khqr_sdk/khqr_sdk.dart';
-import 'package:flutter/widgets.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
-class PaymentStreamApp extends StatefulWidget {
+class PaymentDialog extends StatefulWidget {
+  final String amount;
+  final KhqrCurrency currency;
+
+  const PaymentDialog({super.key, required this.amount, required this.currency});
+
   @override
-  State<PaymentStreamApp> createState() => _PaymentStreamAppState();
+  State<PaymentDialog> createState() => _PaymentDialogState();
 }
 
-class _PaymentStreamAppState extends State<PaymentStreamApp> with WidgetsBindingObserver {
+class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserver {
   final PaymentController paymentController = Get.put(PaymentController());
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);  // Register the observer
+    Future.delayed(Duration.zero, () async {
+      await paymentController.generateKHQR(
+        currency: widget.currency,
+        amount: widget.amount, context: context,
+      );
+    });
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);  // Remove the observer when not needed
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-
-    // When app is resumed (comes to the foreground)
     if (state == AppLifecycleState.resumed) {
-      print("App has returned to the foreground");
-      // You can refresh the transaction status when app is resumed
-      paymentController.checkTransactionStatus(paymentController.md5); // Use the MD5 or any identifier
+      Future.delayed(Duration.zero, () {
+        // paymentController.checkTransactionStatus(md5: paymentController.md5, context: context);
+      });
     }
-    // If you want to track when the app goes to the background, you can add logic for AppLifecycleState.paused
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Payment Integration')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      backgroundColor: Colors.white,
+      insetPadding: const EdgeInsets.all(20),
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
         child: GetBuilder<PaymentController>(builder: (controller) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Show loading indicator while waiting for response
-
-              if (controller.isLoading)
-                CircularProgressIndicator()
-              else
-                ...[
-                  if (!controller.isPaymentSuccess)
+          if (controller.isPaymentSuccess) {
+            Future.microtask(() {
+              Navigator.of(context).pop(); // Close dialog first
+              controller.resetData();
+              goTo(this, PaymentVerifyScreen(cart: [], paymentMethod: {}));
+            });
+          }
+          return Skeletonizer(
+            enabled: controller.isLoading,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('KHQR Payment',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.teal.shade700,
+                    )),
+                const SizedBox(height: 16),
+                if (!controller.isPaymentSuccess)
                   KhqrCardWidget(
-                    width: 300.0,
-                    receiverName: 'Narith KoKo',
-                    amount: 100.00,
+                    width: 280,
+                    receiverName: 'Snap Buy',
+                    amount: double.parse(widget.amount),
                     keepIntegerDecimal: false,
-                    currency: KhqrCurrency.khr,
+                    currency: widget.currency,
                     qr: controller.qrCode,
                   ),
-                  SizedBox(height: 20),
-                  if (!controller.isPaymentSuccess)
-                  Text('QR Code: ${controller.qrCode}'),
-                  SizedBox(height: 20),
-                  if (!controller.isPaymentSuccess)
-                  ElevatedButton(
-                    onPressed: () async {
-                      // Simulate a deeplink or QR generation
-                      await controller.generateKHQR("individual");
-                    },
-                    child: Text('Generate QR Code'),
+                const SizedBox(height: 20),
+                StreamBuilder<String>(
+                  stream: controller.transactionStatusStream,
+                  builder: (context, snapshot) {
+                    if (controller.isPaymentSuccess) {
+                      return Column(
+                        children: [
+                          Icon(Icons.check_circle, color: Colors.green, size: 48),
+                          const SizedBox(height: 8),
+                          Text('Payment Successful!',
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.green)),
+                        ],
+                      );
+                    } else if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Text('Waiting for transaction status...');
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}', style: TextStyle(color: Colors.red));
+                    } else if (snapshot.hasData) {
+                      return Text('Status: ${snapshot.data}', style: TextStyle(fontWeight: FontWeight.w500));
+                    } else {
+                      return const Text('No data available.');
+                    }
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () {
+                    controller.resetData();
+                    Navigator.of(context).pop();
+                  },
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
-                  SizedBox(height: 20),
-                  // Use StreamBuilder to listen to the status stream
-                  StreamBuilder<String>(
-                    stream: controller.transactionStatusStream,
-                    builder: (context, snapshot) {
-                      if (controller.isPaymentSuccess) {
-                        return Center(child: Text('successfully pay!', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 18),));
-                      }
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Text('Waiting for transaction status...');
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else if (snapshot.hasData) {
-                        // Display the transaction status data received from the stream
-                        return Text('Transaction Status: ${snapshot.data}');
-                      } else {
-                        return Text('No data available');
-                      }
-                    },
-                  ),
-                ]
-            ],
+                  child: const Text('Close', style: TextStyle(color: Colors.white)),
+                ),
+              ],
+            ),
           );
         }),
       ),
