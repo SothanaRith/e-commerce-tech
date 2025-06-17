@@ -201,7 +201,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
             int quantity = int.tryParse(item.quantity ?? '') ?? 0;
             totalPrice += price * quantity;
           }
-
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             decoration: BoxDecoration(
@@ -219,7 +218,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
               children: [
                 AppText.title1('Total: \$${totalPrice.toStringAsFixed(2)}'),
                 GetBuilder<LocationController>(builder: (logicLocation) {
-                  return ElevatedButton(
+                  return logic.cartList.isNotEmpty ? ElevatedButton(
                     onPressed: () {
                       // Proceed to payment or order confirmation
                       Navigator.push(
@@ -233,6 +232,17 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: theme.primaryColor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
+                    ),
+                    child: AppText.title2("check_out".tr,
+                      customStyle: TextStyle(color: theme
+                          .secondaryHeaderColor),),
+                  ) : ElevatedButton(
+                    onPressed: () {
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.highlightColor,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 24, vertical: 12),
                     ),

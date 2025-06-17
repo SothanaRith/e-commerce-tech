@@ -36,7 +36,7 @@ class _PaymentVerifyScreenState extends State<PaymentVerifyScreen> {
               child: Icon(Icons.verified, color: theme.primaryColor, size: 120,),
             ),
             SizedBox(height: 30,),
-            AppText.h3("payment_successful".tr),
+            widget.paymentMethod['bankName'] == "ABA Offline Payment" ? AppText.h3("waiting_for_admin_check".tr) : AppText.h3("payment_successful".tr),
             SizedBox(height: 20,),
             AppText.body2("thank_you_for_your_purchase_n_have_a_good_day".tr, textAlign: TextAlign.center,),
             SizedBox(height: 30,),

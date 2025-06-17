@@ -7,6 +7,7 @@ class TransactionModel {
   String? id;
   String? orderId;
   String? paymentType;
+  String? billingNumber;
   String? status;
   String? transactionId;
   String? amount;
@@ -75,6 +76,7 @@ class OrderModel {
   String? userId;
   String? totalAmount;
   String? paymentType;
+  String? billingNumber;
   String? status;
   String? createdAt;
   String? updatedAt;
@@ -87,6 +89,7 @@ class OrderModel {
     this.userId,
     this.totalAmount,
     this.paymentType,
+    this.billingNumber,
     this.status,
     this.createdAt,
     this.updatedAt,
@@ -100,6 +103,7 @@ class OrderModel {
     userId = json['userId'].toString();
     totalAmount = json['totalAmount'].toString();
     paymentType = json['paymentType'].toString();
+    billingNumber = json['billingNumber'].toString();
     status = json['status'].toString();
     createdAt = formatDateString(json['createdAt'].toString());
     updatedAt = formatDateString(json['updatedAt'].toString());
@@ -129,6 +133,7 @@ class OrderModel {
     data['userId'] = userId;
     data['totalAmount'] = totalAmount;
     data['paymentType'] = paymentType;
+    data['billingNumber'] = billingNumber;
     data['status'] = status;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;

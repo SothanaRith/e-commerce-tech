@@ -1,3 +1,4 @@
+import 'package:e_commerce_tech/widgets/custom_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:e_commerce_tech/theme/shadow.dart';
@@ -69,22 +70,19 @@ class _FilterDialogWidgetState extends State<FilterDialogWidget> {
                               ),
                               widget.filterContent(setModalState),
                               Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Row(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Column(
                                   children: [
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        widget.onApply();
-                                      },
-                                      child: const Text("Apply Filters"),
+                                    CustomButtonWidget(
+                                      title: 'Apply Filters',
+                                      action: () { Navigator.of(context).pop();
+                                      widget.onApply(); },
                                     ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        widget.onClear();
-                                      },
-                                      child: const Text("Clear Filters"),
+                                    SizedBox(height: 12,),
+                                    CustomButtonWidget(
+                                      title: 'Clear Filters',
+                                      action: () { Navigator.of(context).pop();
+                                      widget.onClear(); },
                                     ),
                                   ],
                                 ),

@@ -1,5 +1,7 @@
+import 'package:e_commerce_tech/controllers/order_contoller.dart';
 import 'package:e_commerce_tech/controllers/payment_controller.dart';
 import 'package:e_commerce_tech/screen/payment/payment_verify_screen.dart';
+import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,8 +11,11 @@ import 'package:skeletonizer/skeletonizer.dart';
 class PaymentDialog extends StatefulWidget {
   final String amount;
   final KhqrCurrency currency;
+  final String paymentType;
+  final String addressId;
+  final List<Map<String, String>> items;
 
-  const PaymentDialog({super.key, required this.amount, required this.currency});
+  const PaymentDialog({super.key, required this.amount, required this.currency, required this.paymentType, required this.addressId, required this.items});
 
   @override
   State<PaymentDialog> createState() => _PaymentDialogState();
@@ -18,6 +23,7 @@ class PaymentDialog extends StatefulWidget {
 
 class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserver {
   final PaymentController paymentController = Get.put(PaymentController());
+  final OrderController orderController = OrderController();
 
   @override
   void initState() {
@@ -56,11 +62,19 @@ class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserv
         padding: const EdgeInsets.all(24.0),
         child: GetBuilder<PaymentController>(builder: (controller) {
           if (controller.isPaymentSuccess) {
-            Future.microtask(() {
+            orderController
+                .placeOrder(
+                context: context,
+                userId:
+                UserStorage.currentUser?.id.toString() ??
+                    '',
+                items: widget.items,
+                paymentType: widget.paymentType,
+                addressId: widget.addressId, billingNumber: controller.billingNumber ).then((value) => Future.microtask(() {
               Navigator.of(context).pop(); // Close dialog first
               controller.resetData();
               goTo(this, PaymentVerifyScreen(cart: [], paymentMethod: {}));
-            });
+            }),);
           }
           return Skeletonizer(
             enabled: controller.isLoading,

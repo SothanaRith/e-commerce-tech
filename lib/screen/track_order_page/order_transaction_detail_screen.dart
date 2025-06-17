@@ -94,6 +94,22 @@ class _OrderTransactionDetailScreenState extends State<OrderTransactionDetailScr
               AppText.body2(widget.data.id ?? ''),
             ],
           ),
+          const SizedBox(height: 5),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AppText.body1("billing_number".tr),
+              AppText.body2(widget.data.billingNumber ?? ''),
+            ],
+          ),
+          const SizedBox(height: 5),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AppText.body1("payment_type".tr),
+              AppText.body2(widget.data.paymentType ?? ''),
+            ],
+          ),
           const SizedBox(height: 20),
           ...widget.data.trackingSteps!.asMap().entries.map((entry) {
             int idx = entry.key;

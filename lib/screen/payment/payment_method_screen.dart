@@ -1,12 +1,15 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/controllers/order_contoller.dart';
 import 'package:e_commerce_tech/controllers/payment_controller.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/cart_model.dart';
 import 'package:e_commerce_tech/screen/payment/payment_verify_screen.dart';
 import 'package:e_commerce_tech/screen/payment/qrcode_screen.dart';
+import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
+import 'package:e_commerce_tech/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -103,11 +106,34 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
           type: this, title: "payment_method".tr, context: context),
       body: GetBuilder<PaymentController>(builder: (controller) {
         if (controller.isPaymentSuccess) {
-          Future.microtask(() {
-            Navigator.of(context).pop(); // Close dialog first
-            controller.resetData();
-            goTo(this, PaymentVerifyScreen(cart: [], paymentMethod: {}));
-          });
+          orderController
+              .placeOrder(
+                  context: context,
+                  userId:
+                      UserStorage.currentUser?.id.toString() ??
+                          '',
+                  items: items,
+                  paymentType:
+                      paymentMethods[selectedMethodIndex ?? 0]
+                              ['bankName'] ??
+                          "",
+                  addressId: widget.addressId, billingNumber: controller.billingNumber )
+              .then(
+            (value) {
+              if (value) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PaymentVerifyScreen(
+                      cart: widget.cart,
+                      paymentMethod:
+                          paymentMethods[selectedMethodIndex!],
+                    ),
+                  ),
+                );
+              }
+            },
+          );
         }
         return Skeletonizer(
         enabled: isLoading || controller.isLoading,
@@ -231,49 +257,75 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
                     ? null
                     : () async {
                   if (selectedMethodIndex == 0) {
-                    if (controller.md5 == '') {
-                      await controller.generateKHQR(currency: KhqrCurrency.khr, amount: "100", context: context);
-                    }
-                    controller.generateDeeplink(
-                      'https://bakong.nbc.gov.kh/images/logo.svg',
-                      'Snap Buy',
-                      'https://comforting-kitten-d5be33.netlify.app/', context
+                    showCustomDialog(
+                      context: context,
+                      type: DialogType.info,
+                      title: "Process Payment",
+                      desc: "are you sure you want to continues payment?",
+                      cancelOnPress: () {
+                      },
+                      okOnPress: () async {
+                        if (controller.md5 == '') {
+                          await controller.generateKHQR(currency: KhqrCurrency.khr, amount: "100", context: context);
+                        }
+                        controller.generateDeeplink(
+                            'https://bakong.nbc.gov.kh/images/logo.svg',
+                            'Snap Buy',
+                            'https://comforting-kitten-d5be33.netlify.app/', context
+                        );
+                      }
                     );
+
                   } else if (selectedMethodIndex == 1) {
+                    controller.isLoading = true;
+                    controller.update();
                     showDialog(
                       context: context,
                       barrierDismissible: false,
-                      builder: (context) => PaymentDialog(amount: '100.00', currency: KhqrCurrency.khr),
+                      builder: (context) => PaymentDialog(amount: "${totalPrice.toStringAsFixed(2)}", currency: KhqrCurrency.khr, paymentType: paymentMethods[selectedMethodIndex ?? 0]
+                      ['bankName'] ??
+                          "", addressId: widget.addressId, items: items,),
                     );
+                  } else if (selectedMethodIndex == 2) {
+                    showCustomDialog(
+                      context: context,
+                      type: DialogType.info,
+                      title: "Process Payment",
+                      desc: "are you sure you want to continues payment?",
+                        cancelOnPress: () {
+                        },
+                      okOnPress: () async {
+                        await controller.generateKHQRMerchantInfo(currency: KhqrCurrency.khr, amount: "100", context: context).then((value) {
+                          orderController
+                              .placeOrder(
+                              context: context,
+                              userId:
+                              UserStorage.currentUser?.id.toString() ??
+                                  '',
+                              items: items,
+                              paymentType:
+                              paymentMethods[selectedMethodIndex ?? 0]
+                              ['bankName'] ??
+                                  "",
+                              addressId: widget.addressId, billingNumber: controller.billingNumber )
+                              .then(
+                                (value) {
+                              if (value) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PaymentVerifyScreen(
+                                      cart: widget.cart,
+                                      paymentMethod: paymentMethods[selectedMethodIndex ?? 0],
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                          );
+                        },);
+                      });
                   }
-                  // orderController
-                  //     .placeOrder(
-                  //         context: context,
-                  //         userId:
-                  //             UserStorage.currentUser?.id.toString() ??
-                  //                 '',
-                  //         items: items,
-                  //         paymentType:
-                  //             paymentMethods[selectedMethodIndex ?? 0]
-                  //                     ['bankName'] ??
-                  //                 "",
-                  //         addressId: widget.addressId)
-                  //     .then(
-                  //   (value) {
-                  //     if (value) {
-                  //       Navigator.push(
-                  //         context,
-                  //         MaterialPageRoute(
-                  //           builder: (context) => PaymentVerifyScreen(
-                  //             cart: widget.cart,
-                  //             paymentMethod:
-                  //                 paymentMethods[selectedMethodIndex!],
-                  //           ),
-                  //         ),
-                  //       );
-                  //     }
-                  //   },
-                  // );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: selectedMethodIndex == null

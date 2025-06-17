@@ -69,6 +69,7 @@ class OrderController extends GetxController {
     required List<Map<String, dynamic>> items,
     required String paymentType,
     required String addressId,  // Added addressId parameter
+    required String billingNumber,  // Added addressId parameter
   }) async {
     try {
       isPlacingOrder.value = true;
@@ -79,6 +80,7 @@ class OrderController extends GetxController {
         "items": items,
         "paymentType": paymentType,
         "deliveryAddressId": addressId,  // Add addressId to the request body
+        "billingNumber": billingNumber
       };
 
       final response = await apiRepository.postData(
@@ -135,6 +137,11 @@ class OrderController extends GetxController {
         "imageUrl": "https://devithuotkeo.com/static/image/portfolio/khqr/khqr-5.png",
         "bankName": "KHQR",
         "subtitle": "for all bank payment in Cambodia",
+      },
+      {
+        "imageUrl": "https://cdn6.aptoide.com/imgs/2/a/6/2a6b391e2053870eac06539bd99d51a6_icon.png",
+        "bankName": "ABA Offline Payment",
+        "subtitle": "Advanced Bank of Asia Limited",
       },
     ];
   }

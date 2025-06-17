@@ -123,5 +123,8 @@
   "from_gallery": "From gallery",
   "from_camera": "From camera",
   "images_preview": "Images preview",
-  "submit": "Submit"
+  "submit": "Submit",
+
+  "billing_number": "Billing number",
+  "waiting_for_admin_check": "Waiting for admin check"
 }

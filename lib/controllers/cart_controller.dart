@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/controllers/home_controller.dart';
 import 'package:e_commerce_tech/controllers/product_controller.dart';
 import 'package:e_commerce_tech/controllers/search_controller.dart';
 import 'package:e_commerce_tech/controllers/wishlist_contoller.dart';
 import 'package:e_commerce_tech/models/cart_model.dart';
+import 'package:e_commerce_tech/models/product_model.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:flutter/material.dart';
@@ -71,6 +73,18 @@ class CartController extends GetxController {
         required String productId,
         required String quantity,
       }) async {
+
+    ProductModel product = await productController.getProductById(context: context, id: productId, userId: UserStorage.currentUser?.id ?? '');
+
+    if (int.parse(product.totalStock ?? "0") < int.parse(quantity)) {
+      showCustomDialog(
+          context: context,
+          type: DialogType.info,
+          title: "product is out of stock or have no enough",
+          okOnPress: () async {
+          });
+      return;
+    }
     final response = await apiRepository.postData(
         '$mainPoint/api/product/cart/add',
         body: {
@@ -112,6 +126,7 @@ class CartController extends GetxController {
           type: DialogType.success,
           title: "${jsonData["message"]}",
           okOnPress: () async {
+            fetchAllCart(context: context, userId: UserStorage.currentUser?.id ?? '');
           });
     } else {
       var jsonData = jsonDecode(response.error!);

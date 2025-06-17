@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/helper/global.dart';
@@ -18,6 +19,7 @@ class PaymentController extends GetxController {
   var isPaymentSuccess = false;  // Observable variable for loading state
   var qrCode = '';
   var md5 = '';
+  var billingNumber = '';
   final _khqrSdk = KhqrSdk();
   final StreamController<String> _statusStreamController = StreamController<String>.broadcast(); // Broadcast stream
 
@@ -31,8 +33,8 @@ class PaymentController extends GetxController {
     isPaymentSuccess = false;  // Observable variable for loading state
     qrCode = '';
     md5 = '';
+    billingNumber = '';
     update();
-
   }
 
   Future<void> generateDeeplink(String appIconUrl, String appName, String appDeepLinkCallback, BuildContext context) async {
@@ -83,6 +85,7 @@ class PaymentController extends GetxController {
     if (isLoading) {
       return;
     }
+
     if (md5 == '') {
       showCustomDialog(
         context: context,
@@ -186,31 +189,28 @@ class PaymentController extends GetxController {
   // Generate KHQR QR code
   Future<void> generateKHQR({required KhqrCurrency currency,required String amount, required BuildContext context}) async {
     isLoading = true;
+    billingNumber = await generateBillNumberWithRandom();
     update();
     try {
       final expire = DateTime.now().millisecondsSinceEpoch + 3600000;
       final info = IndividualInfo(
           bakongAccountId: 'un_virak2@aclb',
           // bakongAccountId: 'sothanarith_heang1@aclb',
-          merchantName: 'Snap Buy',
-          accountInformation: '123456789',
-          mobileNumber: '18182242192',
-          storeLabel: 'Snap Buy',
-          merchantCity: "Phnom Penh",
-          purposeOfTransaction: "snapbuy payment-callback",
+          merchantName: 'Snap Buy ($billingNumber)',
+          billNumber: billingNumber,
           currency: currency,
-          amount: double.parse(amount),
+          amount: double.parse("100"),
           expirationTimestamp: expire
       );
       final khqrData = await _khqrSdk.generateIndividual(info);
 
-      qrCode = khqrData?.qr ?? 'Failed to generate QR code';  // Store the generated QR code
+      qrCode = khqrData?.qr ?? '';  // Store the generated QR code
       md5 = khqrData?.md5 ?? '';  // Store the generated QR code
       print(md5);
       update();
 
     } catch (e) {
-      qrCode = 'Error: $e';
+      qrCode = '';
       showCustomDialog(
         context: context,
         type: DialogType.error,
@@ -222,5 +222,51 @@ class PaymentController extends GetxController {
       isLoading = false;
       update();
     }
+  }
+  Future<void> generateKHQRMerchantInfo({required KhqrCurrency currency,required String amount, required BuildContext context}) async {
+    isLoading = true;
+    billingNumber = await generateBillNumberWithRandom();
+    update();
+    try {
+      final expire = DateTime.now().millisecondsSinceEpoch + 3600000;
+      final info = MerchantInfo(
+        bakongAccountId: 'un_virak2@aclb',
+        acquiringBank: 'ABA Bank',
+        merchantId: '1241779',
+        merchantName: 'Heang Sothanarith',
+        currency: KhqrCurrency.khr,
+        amount: 100,
+        merchantCategoryCode: "8220",
+        upiAccountInformation: "30",
+
+        expirationTimestamp: expire,
+      );
+      final khqrData = await _khqrSdk.generateMerchant(info);
+      deeplink = "abamobilebank://ababank.com?type=payway&qrcode=00020101021130510016abaakhppxxx@abaa01151250216233230280208ABA Bank5204822053031165802KH5917HEANG SOTHANARITH6010PHNOM PENH624768430010PAYWAY@ABA010712417790209031712101050116304FD93";
+      await launchInBrowser(Uri.parse(deeplink));
+      qrCode = '';  // Store the generated QR code
+      md5 = '';  // Store the generated QR code
+      print(md5);
+      update();
+    } catch (e) {
+      qrCode = '';
+      showCustomDialog(
+        context: context,
+        type: DialogType.error,
+        title: "Failed Payment",
+        desc: "Something wrong. please do your payment again",
+      );
+      update();
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
+  String generateBillNumberWithRandom() {
+    final now = DateTime.now();
+    final rand = Random().nextInt(900000) + 100000; // 6-digit random
+    final formatted = "${now.month.toString().padLeft(2, '0')}$rand${now.day.toString().padLeft(2, '0')}";
+    return "${formatted}";
   }
 }

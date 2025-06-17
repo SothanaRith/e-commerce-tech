@@ -82,6 +82,7 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                       iconSize: 32,
                       onPressed: () {
                         setState(() {
+                          if (int.parse(widget.product.totalStock ?? '0') > _dialogQuantity )
                           _dialogQuantity++;
                         });
                       },

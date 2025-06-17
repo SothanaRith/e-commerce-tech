@@ -86,6 +86,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       iconSize: 32,
                       onPressed: () {
                         setState(() {
+                          if (int.parse(productController.product.totalStock ?? '0') > _dialogQuantity )
                           _dialogQuantity++;
                         });
                       },
