@@ -63,6 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: RefreshIndicator(
         onRefresh: () async {
           homeController.currentPage = 1;
+          homeController.hasMore = true;
           homeController.update();
           await homeController.loadHome(
             page: homeController.currentPage,
