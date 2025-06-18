@@ -159,8 +159,9 @@ class PaymentController extends GetxController {
                   paymentType: PaymentStorage.paymentType ?? '',
                   addressId: PaymentStorage.addressId ?? '', billingNumber: PaymentStorage.billingNumber ?? '' )
                   .then(
-                    (value) {
-                  if (value) {
+                    (value) async {
+                  if (value.isNotEmpty) {
+                    await orderController.updateTransactionByOrderId(context: context, status: "success", paymentType: PaymentStorage.paymentType ?? '', orderId: value['orderId'] ?? '', amount: value['totalAmount'] ?? '0');
                     Navigator.push(
                       context,
                       MaterialPageRoute(

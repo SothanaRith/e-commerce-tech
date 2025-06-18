@@ -63,7 +63,7 @@ class OrderController extends GetxController {
   /// Place an order method updated to include addressId
   RxBool isPlacingOrder = false.obs;
 
-  Future<bool> placeOrder({
+  Future<Map<String, String>> placeOrder({
     required BuildContext context,
     required String userId,
     required List<Map<String, dynamic>> items,
@@ -99,7 +99,7 @@ class OrderController extends GetxController {
           desc: jsonData["message"] ?? "Order placed successfully",
           okOnPress: () {},
         );
-        return true;
+        return {'orderId': jsonData["orderId"], 'totalAmount': jsonData["totalAmount"]};
       } else {
         showCustomDialog(
           context: context,
@@ -107,7 +107,7 @@ class OrderController extends GetxController {
           title: "Error",
           desc: response.error ?? "Failed to place order",
         );
-        return false;
+        return {};
       }
     } catch (e) {
       showCustomDialog(
@@ -116,7 +116,7 @@ class OrderController extends GetxController {
         title: "Unexpected Error",
         desc: e.toString(),
       );
-      return false;
+      return {};
     } finally {
       isPlacingOrder.value = false;
       update();
@@ -144,6 +144,43 @@ class OrderController extends GetxController {
         "subtitle": "Advanced Bank of Asia Limited",
       },
     ];
+  }
+
+  Future<void> updateTransactionByOrderId({
+    required BuildContext context,
+    required String status,
+    required String paymentType,
+    required String orderId,
+    required String amount,
+  }) async {
+    try {
+      isPlacingOrder.value = true;
+      update();
+
+      final body = {
+        "status": status,
+        "paymentType": paymentType,
+        "amount": amount
+      };
+
+      final response = await apiRepository.postData(
+        '$mainPoint/api/product//transactions/by-order${orderId}/update',
+        body: body,
+        headers: {'Content-Type': 'application/json'},
+        context: context,
+      );
+
+      if (response.data != null) {
+        var jsonData = jsonDecode(response.data!);
+      } else {
+      }
+    } catch (e) {
+      debugPrint("Unexpected Error $e");
+
+    } finally {
+      update();
+    }
+
   }
 }
 
