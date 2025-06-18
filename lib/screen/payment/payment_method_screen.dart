@@ -35,8 +35,6 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
   bool isLoading = true;
   List<Map<String, String>> paymentMethods = [];
 
-  List<Map<String, String>> items = [];
-
   final PaymentController paymentController = Get.put(PaymentController());
 
   @override
@@ -51,10 +49,18 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      if (paymentController.md5 != '') {
-        Future.delayed(Duration.zero, () {
-          paymentController.checkTransactionStatus(md5: paymentController.md5, context: context);
-        });
+      if (PaymentStorage.md5 != null) {
+        if (PaymentStorage.md5 != '') {
+          Future.delayed(Duration.zero, () {
+            paymentController.checkTransactionStatus(md5: PaymentStorage.md5 ?? '', context: context);
+          });
+        } else {
+          paymentController.isLoading = false;
+          paymentController.update();
+        }
+      } else {
+        paymentController.isLoading = false;
+        paymentController.update();
       }
     }
   }
@@ -64,17 +70,9 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this); // Register the observer
     _loadPaymentMethods();
-    for (CartModel item in widget.cart) {
-      items.add({
-        "productId": item.productId ?? '',
-        "quantity": item.quantity ?? '0'
-      });
-    }
   }
 
   Future<void> _loadPaymentMethods() async {
-    // Example: load payment methods from your OrderController or API
-    // Replace this with your actual method to fetch payment methods
     try {
       final methods = await orderController.fetchPaymentMethods();
       setState(() {
@@ -105,36 +103,6 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
       appBar: customAppBar(
           type: this, title: "payment_method".tr, context: context),
       body: GetBuilder<PaymentController>(builder: (controller) {
-        if (controller.isPaymentSuccess) {
-          orderController
-              .placeOrder(
-                  context: context,
-                  userId:
-                      UserStorage.currentUser?.id.toString() ??
-                          '',
-                  items: items,
-                  paymentType:
-                      paymentMethods[selectedMethodIndex ?? 0]
-                              ['bankName'] ??
-                          "",
-                  addressId: widget.addressId, billingNumber: controller.billingNumber )
-              .then(
-            (value) {
-              if (value) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PaymentVerifyScreen(
-                      cart: widget.cart,
-                      paymentMethod:
-                          paymentMethods[selectedMethodIndex!],
-                    ),
-                  ),
-                );
-              }
-            },
-          );
-        }
         return Skeletonizer(
         enabled: isLoading || controller.isLoading,
         child: SingleChildScrollView(
@@ -266,7 +234,9 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
                       },
                       okOnPress: () async {
                         if (controller.md5 == '') {
-                          await controller.generateKHQR(currency: KhqrCurrency.khr, amount: "100", context: context);
+                          await controller.generateKHQR(currency: KhqrCurrency.khr, amount: "100", context: context).then((value) => PaymentStorage.saveOrder(newBillingNumber: controller.billingNumber, newAddressId: widget.addressId, items: widget.cart, newPaymentType: paymentMethods[selectedMethodIndex ?? 0]
+                          ['bankName'] ??
+                              ""),);
                         }
                         controller.generateDeeplink(
                             'https://bakong.nbc.gov.kh/images/logo.svg',
@@ -282,9 +252,18 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
                     showDialog(
                       context: context,
                       barrierDismissible: false,
-                      builder: (context) => PaymentDialog(amount: "${totalPrice.toStringAsFixed(2)}", currency: KhqrCurrency.khr, paymentType: paymentMethods[selectedMethodIndex ?? 0]
-                      ['bankName'] ??
-                          "", addressId: widget.addressId, items: items,),
+                      builder: (context) {
+                                return PaymentDialog(
+                                  amount: "${totalPrice.toStringAsFixed(2)}",
+                                  currency: KhqrCurrency.khr,
+                                  paymentType:
+                                      paymentMethods[selectedMethodIndex ?? 0]
+                                              ['bankName'] ??
+                                          "",
+                                  addressId: widget.addressId,
+                                  items: widget.cart,
+                                );
+                              },
                     );
                   } else if (selectedMethodIndex == 2) {
                     showCustomDialog(
@@ -295,35 +274,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
                         cancelOnPress: () {
                         },
                       okOnPress: () async {
-                        await controller.generateKHQRMerchantInfo(currency: KhqrCurrency.khr, amount: "100", context: context).then((value) {
-                          orderController
-                              .placeOrder(
-                              context: context,
-                              userId:
-                              UserStorage.currentUser?.id.toString() ??
-                                  '',
-                              items: items,
-                              paymentType:
-                              paymentMethods[selectedMethodIndex ?? 0]
-                              ['bankName'] ??
-                                  "",
-                              addressId: widget.addressId, billingNumber: controller.billingNumber )
-                              .then(
-                                (value) {
-                              if (value) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => PaymentVerifyScreen(
-                                      cart: widget.cart,
-                                      paymentMethod: paymentMethods[selectedMethodIndex ?? 0],
-                                    ),
-                                  ),
-                                );
-                              }
-                            },
-                          );
-                        },);
+                        await controller.generateKHQRMerchantInfo(currency: KhqrCurrency.khr, amount: "100", context: context);
                       });
                   }
                 },

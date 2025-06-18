@@ -28,6 +28,7 @@ void main() async {
   // Load token and user data
   await TokenStorage.loadToken();
   await UserStorage.loadUser();
+  await PaymentStorage.loadCheckPayment();
 
   // Initialize theme controller
   Get.put(ThemeController());

@@ -311,6 +311,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                       "\$${product.price}",
                                       customStyle: TextStyle(color: theme.primaryColor),
                                     ),
+                                    if(int.parse(product.totalStock ?? '0') > 0)
                                     GestureDetector(
                                       onTap: () {
                                         _showAddToCartQuantityDialog();

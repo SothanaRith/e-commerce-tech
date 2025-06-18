@@ -3,14 +3,19 @@ import 'dart:math';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/helper/global.dart';
+import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/widgets/custom_dialog.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:khqr_sdk/khqr_sdk.dart';
 import 'dart:convert';
 
 import 'package:url_launcher/url_launcher.dart';
+
+import '../screen/payment/payment_verify_screen.dart';
+import 'order_contoller.dart';
 
 class PaymentController extends GetxController {
   var deeplink = '';  // Observable variable for Deeplink
@@ -21,6 +26,7 @@ class PaymentController extends GetxController {
   var md5 = '';
   var billingNumber = '';
   final _khqrSdk = KhqrSdk();
+  OrderController orderController = Get.put(OrderController());
   final StreamController<String> _statusStreamController = StreamController<String>.broadcast(); // Broadcast stream
 
   // Backend URL for Deeplink Generation and Transaction Status check
@@ -56,6 +62,8 @@ class PaymentController extends GetxController {
       final deeplinkData = await _khqrSdk.generateDeepLink(deeplinkInfo);
 
       deeplink = deeplinkData?.shortLink ?? 'No shortLink in response';
+      isLoading = false;
+      update();
       await launchInBrowser(Uri.parse(deeplink));
     } catch (e) {
       print('❌ Error: $e');
@@ -79,9 +87,11 @@ class PaymentController extends GetxController {
     )) {
       throw Exception('Could not launch $url');
     }
+    isLoading = false;
+    update();
   }
 
-  Future<void> checkTransactionStatus({required String md5, required BuildContext context}) async {
+  Future<void> checkTransactionStatus({required String md5, required BuildContext context, bool isOpenApp = false}) async {
     if (isLoading) {
       return;
     }
@@ -93,6 +103,11 @@ class PaymentController extends GetxController {
         title: "Failed Payment",
         desc: "Something wrong. please do your payment again",
       );
+      if (isOpenApp) {
+        PaymentStorage.clearCheckPayment();
+      }
+      isLoading = false;
+      update();
       return;
     }
 
@@ -108,7 +123,7 @@ class PaymentController extends GetxController {
       var streamedResponse = await request.send();
       // Listen for the response stream
       streamedResponse.stream.listen(
-            (List<int> chunk) {
+            (List<int> chunk) async {
           String responseData = String.fromCharCodes(chunk);
           _statusStreamController.add(responseData); // Add data to stream
           print(responseData);
@@ -120,10 +135,46 @@ class PaymentController extends GetxController {
 
           try {
             final decoded = json.decode(responseData);
-
             if (decoded is Map<String, dynamic> && decoded['status'] == 'Transaction successful') {
               print("✅ Transaction successful, do something here");
               isPaymentSuccess = true;
+              List<Map<String, String>> items = [];
+
+              for (var quantity in PaymentStorage.quantity ?? []) {
+                for (var productId in PaymentStorage.listProductId ?? []) {
+                  items.add({
+                    "productId": productId ?? '',
+                    "quantity": quantity ?? '0'
+                  });
+                }
+              }
+
+              await orderController
+                  .placeOrder(
+                  context: context,
+                  userId:
+                  UserStorage.currentUser?.id.toString() ??
+                      '',
+                  items: items,
+                  paymentType: PaymentStorage.paymentType ?? '',
+                  addressId: PaymentStorage.addressId ?? '', billingNumber: PaymentStorage.billingNumber ?? '' )
+                  .then(
+                    (value) {
+                  if (value) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PaymentVerifyScreen(
+                          cart: [],
+                          paymentMethod: {},
+                        ),
+                      ),
+                    );
+                  }
+                },
+              );
+
+              PaymentStorage.clearCheckPayment();
               update();
             }
           } catch (e) {
@@ -140,6 +191,9 @@ class PaymentController extends GetxController {
               desc: "Payment Failed please try again...",
             );
             _statusStreamController.add("Transaction check completed but failed");
+            if (isOpenApp) {
+              PaymentStorage.clearCheckPayment();
+            }
           } else {
             _statusStreamController.add("Transaction check completed");
           }
@@ -156,6 +210,10 @@ class PaymentController extends GetxController {
             desc: "Error occurred while checking transaction",
           );
 
+          if (isOpenApp) {
+            PaymentStorage.clearCheckPayment();
+          }
+
           _statusStreamController.add("Error occurred while checking transaction");
           isLoading = false;
           update();
@@ -164,6 +222,10 @@ class PaymentController extends GetxController {
     } catch (e) {
       _statusStreamController.add("Error: $e");
       isPaymentSuccess = false;
+
+      if (isOpenApp) {
+        PaymentStorage.clearCheckPayment();
+      }
 
       showCustomDialog(
         context: context,
@@ -203,12 +265,14 @@ class PaymentController extends GetxController {
           expirationTimestamp: expire
       );
       final khqrData = await _khqrSdk.generateIndividual(info);
+      qrCode = khqrData?.qr ?? '';
+      md5 = khqrData?.md5 ?? '';
 
-      qrCode = khqrData?.qr ?? '';  // Store the generated QR code
-      md5 = khqrData?.md5 ?? '';  // Store the generated QR code
-      print(md5);
+      if (qrCode != '' && md5 != '') {
+        PaymentStorage.savePayment(qrCode: qrCode, md5: md5, isPaymentCompleted: false);
+      }
+
       update();
-
     } catch (e) {
       qrCode = '';
       showCustomDialog(
@@ -237,8 +301,6 @@ class PaymentController extends GetxController {
         currency: KhqrCurrency.khr,
         amount: 100,
         merchantCategoryCode: "8220",
-        upiAccountInformation: "30",
-
         expirationTimestamp: expire,
       );
       final khqrData = await _khqrSdk.generateMerchant(info);
@@ -246,7 +308,6 @@ class PaymentController extends GetxController {
       await launchInBrowser(Uri.parse(deeplink));
       qrCode = '';  // Store the generated QR code
       md5 = '';  // Store the generated QR code
-      print(md5);
       update();
     } catch (e) {
       qrCode = '';

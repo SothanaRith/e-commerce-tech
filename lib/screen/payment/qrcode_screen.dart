@@ -1,5 +1,6 @@
 import 'package:e_commerce_tech/controllers/order_contoller.dart';
 import 'package:e_commerce_tech/controllers/payment_controller.dart';
+import 'package:e_commerce_tech/models/cart_model.dart';
 import 'package:e_commerce_tech/screen/payment/payment_verify_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
@@ -13,7 +14,7 @@ class PaymentDialog extends StatefulWidget {
   final KhqrCurrency currency;
   final String paymentType;
   final String addressId;
-  final List<Map<String, String>> items;
+  final List<CartModel> items;
 
   const PaymentDialog({super.key, required this.amount, required this.currency, required this.paymentType, required this.addressId, required this.items});
 
@@ -32,7 +33,9 @@ class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserv
       await paymentController.generateKHQR(
         currency: widget.currency,
         amount: widget.amount, context: context,
-      );
+      ).then((value) {
+        PaymentStorage.saveOrder(newBillingNumber: paymentController.billingNumber, newAddressId: widget.addressId, items: widget.items, newPaymentType: widget.paymentType);
+      },);
     });
     WidgetsBinding.instance.addObserver(this);
   }
@@ -47,7 +50,7 @@ class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserv
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       Future.delayed(Duration.zero, () {
-        // paymentController.checkTransactionStatus(md5: paymentController.md5, context: context);
+        paymentController.checkTransactionStatus(md5: paymentController.md5, context: context);
       });
     }
   }
@@ -61,21 +64,6 @@ class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserv
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: GetBuilder<PaymentController>(builder: (controller) {
-          if (controller.isPaymentSuccess) {
-            orderController
-                .placeOrder(
-                context: context,
-                userId:
-                UserStorage.currentUser?.id.toString() ??
-                    '',
-                items: widget.items,
-                paymentType: widget.paymentType,
-                addressId: widget.addressId, billingNumber: controller.billingNumber ).then((value) => Future.microtask(() {
-              Navigator.of(context).pop(); // Close dialog first
-              controller.resetData();
-              goTo(this, PaymentVerifyScreen(cart: [], paymentMethod: {}));
-            }),);
-          }
           return Skeletonizer(
             enabled: controller.isLoading,
             child: Column(
@@ -124,6 +112,7 @@ class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserv
                 TextButton(
                   onPressed: () {
                     controller.resetData();
+                    PaymentStorage.clearCheckPayment();
                     Navigator.of(context).pop();
                   },
                   style: TextButton.styleFrom(
@@ -131,7 +120,7 @@ class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserv
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
-                  child: const Text('Close', style: TextStyle(color: Colors.white)),
+                  child: const Text('Cancel Payment', style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),

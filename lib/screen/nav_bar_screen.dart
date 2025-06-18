@@ -1,10 +1,13 @@
 import 'dart:math';
 
 import 'package:e_commerce_tech/controllers/home_controller.dart';
+import 'package:e_commerce_tech/controllers/order_contoller.dart';
+import 'package:e_commerce_tech/controllers/payment_controller.dart';
 import 'package:e_commerce_tech/controllers/search_controller.dart';
 import 'package:e_commerce_tech/controllers/wishlist_contoller.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/home_page/home_screen.dart';
+import 'package:e_commerce_tech/screen/payment/payment_verify_screen.dart';
 import 'package:e_commerce_tech/screen/profile_setting_page/profile_screen.dart';
 import 'package:e_commerce_tech/screen/search_page/search_screen.dart';
 import 'package:e_commerce_tech/screen/wish_list_page/wish_list_screen.dart';
@@ -29,6 +32,8 @@ class _MainScreenState extends State<MainScreen> {
   HomeController homeController = Get.put(HomeController());
   WishlistController wishlistController = Get.put(WishlistController());
   SearchingController searchController = Get.put(SearchingController());
+  PaymentController paymentController = Get.put(PaymentController());
+  OrderController orderController = Get.put(OrderController());
   final pagesList = [
     const HomeScreen(),
     const SearchScreen(),
@@ -42,7 +47,21 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       currentPageIndex = widget.currentPageIndex;
     });
+    Future.delayed(Duration.zero, () async {
+      print("object payment ${PaymentStorage.isPaymentCompleted}");
+      print("object payment ${PaymentStorage.md5}");
+
+      if (PaymentStorage.isPaymentCompleted != null) {
+        if (!PaymentStorage.isPaymentCompleted!){
+          await checkPaymentProcess();
+        }
+      }
+    });
     super.initState();
+  }
+
+  Future<void> checkPaymentProcess() async {
+    paymentController.checkTransactionStatus(md5: PaymentStorage.md5 ?? '', context: context, isOpenApp: true);
   }
 
   @override

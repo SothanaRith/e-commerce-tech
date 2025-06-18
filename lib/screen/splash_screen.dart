@@ -4,8 +4,6 @@ import 'package:e_commerce_tech/screen/nav_bar_screen.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'home_page/home_screen.dart';
 import 'login_page/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {

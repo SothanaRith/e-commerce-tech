@@ -215,6 +215,7 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                 ),
               ),
               SizedBox(width: 6),
+              if(int.parse(widget.product.totalStock ?? '0') > 0)
               GestureDetector(
                 onTap: () {
                   _showAddToCartQuantityDialog();
