@@ -81,6 +81,7 @@ class SearchingController extends GetxController {
         searchResults = products;
       }
 
+      print("work here");
       currentPage = page;
       pageSize = size;
       totalPages = jsonData["pagination"]?["totalPages"] ?? 1;

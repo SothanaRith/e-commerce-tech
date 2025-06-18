@@ -7,6 +7,7 @@ import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/category_model.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
+import 'package:e_commerce_tech/widgets/custom_button_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_text_field_widget.dart';
 import 'package:e_commerce_tech/widgets/grid_custom_widget.dart';
 import 'package:e_commerce_tech/widgets/item_card_widget.dart';
@@ -76,7 +77,8 @@ class _SearchScreenState extends State<SearchScreen> {
     super.dispose();
   }
 
-  void _searchProducts({int page = 1}) {
+  void _searchProducts({int page = 1, bool append = false}) {
+    print("object page $page");
     if (page == 1) {
       // New search — reset results
       searchController.searchProduct(
@@ -90,11 +92,12 @@ class _SearchScreenState extends State<SearchScreen> {
         userId: UserStorage.currentUser?.id.toString() ?? '',
         page: 1,
         size: 10,
-        append: false,
+        append: append,
       );
     } else {
       // Load more — append results
       if (!_isLoadingMore) {
+        print("object here");
         _isLoadingMore = true;
         searchController
             .searchProduct(
@@ -109,7 +112,7 @@ class _SearchScreenState extends State<SearchScreen> {
           userId: UserStorage.currentUser?.id.toString() ?? '',
           page: page,
           size: 10,
-          append: true,
+          append: append,
         )
             .then((_) {
           _isLoadingMore = false;
@@ -133,7 +136,9 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void _loadMore() {
     if (searchController.currentPage < searchController.totalPages) {
-      _searchProducts(page: searchController.currentPage + 1);
+      searchController.currentPage = searchController.currentPage + 1;
+      searchController.update();
+      _searchProducts(page: searchController.currentPage, append: true);
     }
   }
 
@@ -141,216 +146,233 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       // appBar: customAppBar(type: this, title: "Search", context: context),
-      body: SafeArea(
-        child: GetBuilder<SearchingController>(builder: (logic) {
-          return Skeletonizer(
-            enabled: logic.isLoading,
-            child: Column(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            width: MediaQuery
-                                .sizeOf(context)
-                                .width - 80,
-                            child: CustomTextField(
-                              controller: searchText,
-                              label: "search_something...".tr,
-                              onSubmitted: (value) {
-                                _searchProducts(page: 1);
-                              },
-                              leftIcon: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: SvgPicture.asset(
-                                    "assets/images/icons/search.svg"),
-                              ),
-                            ),
-                          ),
-                          FilterDialogWidget(
-                            child: Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100),
-                                color: theme.primaryColor,
-                              ),
+      body: GetBuilder<SearchingController>(builder: (logic) {
+        return Skeletonizer(
+          enabled: logic.currentPage == 1 && logic.isLoading,
+          child: Column(
+            children: [
+              SizedBox(height: 60,),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery
+                              .sizeOf(context)
+                              .width - 80,
+                          child: CustomTextField(
+                            controller: searchText,
+                            label: "search_something...".tr,
+                            onSubmitted: (value) {
+                              _searchProducts(page: 1);
+                            },
+                            leftIcon: Padding(
+                              padding: const EdgeInsets.all(12.0),
                               child: SvgPicture.asset(
-                                  "assets/images/icons/filter.svg"),
+                                  "assets/images/icons/search.svg"),
                             ),
-                            filterContent: (setModalState) =>
-                                SingleChildScrollView(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: AppText.title1("category".tr),
-                                      ),
-                                      categoryController.category == null
-                                          ? const Center(
-                                          child: CircularProgressIndicator())
-                                          : ListViewHorizontalWidget(
-                                        items: categoryController
-                                            .category!.categories
-                                            .map((cat) {
-                                          return TextBtnWidget(
-                                            title: cat.name,
-                                            isSelected:
-                                            selectedCategories.contains(cat
-                                                .id),
-                                            // <-- Add this if your widget supports it
-                                            onTap: () {
-                                              toggleCategory(
-                                                  cat.id, setModalState);
-                                            },
-                                          );
-                                        }).toList(),
-                                        height: 40,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: AppText.title1("pricing_range".tr),
-                                      ),
-                                      RangeSliderWidget(
-                                        min: 0,
-                                        max: 3000,
-                                        start: priceRange.start,
-                                        end: priceRange.end,
-                                        onChanged: (values) {
-                                          setModalState(() {});
-                                          setState(() => priceRange = values);
-                                        },
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 12.0, vertical: 6),
-                                        child: AppText.title1("reviews".tr),
-                                      ),
-                                      Row(
-                                        children: List.generate(5, (index) {
-                                          return IconButton(
-                                            icon: Icon(
-                                              Icons.star,
-                                              color: selectedRating! >= index + 1
-                                                  ? Colors.amber
-                                                  : Colors.grey,
-                                            ),
-                                            onPressed: () {
-                                              setModalState(() {});
-                                              setState(() =>
-                                              selectedRating =
-                                                  (index + 1).toDouble());
-                                            },
-                                          );
-                                        }),
-                                      ),
-                                      const SizedBox(height: 12),
-                                    ],
-                                  ),
-                                ),
-                            onApply: () {
-                              _searchProducts(page: 1);
-                            },
-                            onClear: () {
-                              setState(() {
-                                selectedCategories = [];
-                                priceRange = const RangeValues(0, 1000);
-                                selectedRating = 0;
-                                searchText.clear();
-                              });
-                              _searchProducts(page: 1);
-                            },
                           ),
-                        ],
-                      ),
+                        ),
+                        FilterDialogWidget(
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                              color: theme.primaryColor,
+                            ),
+                            child: SvgPicture.asset(
+                                "assets/images/icons/filter.svg"),
+                          ),
+                          filterContent: (setModalState) =>
+                              SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: AppText.title1("category".tr),
+                                    ),
+                                    categoryController.category == null
+                                        ? const Center(
+                                        child: CircularProgressIndicator())
+                                        : ListViewHorizontalWidget(
+                                      items: categoryController
+                                          .category!.categories
+                                          .map((cat) {
+                                        return TextBtnWidget(
+                                          title: cat.name,
+                                          isSelected:
+                                          selectedCategories.contains(cat
+                                              .id),
+                                          // <-- Add this if your widget supports it
+                                          onTap: () {
+                                            toggleCategory(
+                                                cat.id, setModalState);
+                                          },
+                                        );
+                                      }).toList(),
+                                      height: 40,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: AppText.title1("pricing_range".tr),
+                                    ),
+                                    RangeSliderWidget(
+                                      min: 0,
+                                      max: 3000,
+                                      start: priceRange.start,
+                                      end: priceRange.end,
+                                      onChanged: (values) {
+                                        setModalState(() {});
+                                        setState(() => priceRange = values);
+                                      },
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12.0, vertical: 6),
+                                      child: AppText.title1("reviews".tr),
+                                    ),
+                                    Row(
+                                      children: List.generate(5, (index) {
+                                        return IconButton(
+                                          icon: Icon(
+                                            Icons.star,
+                                            color: selectedRating! >= index + 1
+                                                ? Colors.amber
+                                                : Colors.grey,
+                                          ),
+                                          onPressed: () {
+                                            setModalState(() {});
+                                            setState(() =>
+                                            selectedRating =
+                                                (index + 1).toDouble());
+                                          },
+                                        );
+                                      }),
+                                    ),
+                                    const SizedBox(height: 12),
+                                  ],
+                                ),
+                              ),
+                          onApply: () {
+                            _searchProducts(page: 1);
+                          },
+                          onClear: () {
+                            setState(() {
+                              selectedCategories = [];
+                              priceRange = const RangeValues(0, 1000);
+                              selectedRating = 0;
+                              searchText.clear();
+                            });
+                            _searchProducts(page: 1);
+                          },
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      child: GetBuilder<SearchingController>(
-                        builder: (_) {
-                          final queryText = searchText.text.isEmpty
-                              ? 'all_products'.tr
-                              : searchText.text;
-                          return AppText.title1(
-                              "${"result_for".tr} '$queryText'");
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                  ],
-                ),
-                Expanded(
-                  child: RefreshIndicator(
-                    onRefresh: () async {
-                      _searchProducts(page: 1);
-                      // Wait for controller update before completing refresh
-                      await Future.delayed(const Duration(milliseconds: 500));
-                    },
+                  ),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: GetBuilder<SearchingController>(
                       builder: (_) {
-                        if (searchController.isLoading &&
-                            searchController.searchResults.isEmpty) {
-                          return const Center(child: CircularProgressIndicator());
-                        }
-
-                        final results = searchController.searchResults;
-
-                        if (results.isEmpty) {
-                          return const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(20),
-                              child: Text("no_results_found"),
-                            ),
-                          );
-                        }
-
-                        return ListView(
-                          controller: _scrollController,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          children: [
-                            GridCustomWidget(
-                              items: results
-                                  .map((item) =>
-                                  ItemCardWidget(
-                                    product: item,
-                                    onUpdateWishlist: () {
-                                      _searchProducts(
-                                          page: 1); // refresh search result
-                                    },
-                                    onUpdateCheckOut: () {
-                                      _searchProducts(
-                                          page: 1); // refresh search result
-                                    },
-                                    parentContext: context,
-                                    onBackAction: () {
-                                      _searchProducts(
-                                          page: 1);
-                                    },))
-                                  .toList(),
-                            ),
-                            if (searchController.isLoading &&
-                                searchController.searchResults.isNotEmpty)
-                              const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Center(child: CircularProgressIndicator()),
-                              ),
-                          ],
-                        );
+                        final queryText = searchText.text.isEmpty
+                            ? 'all_products'.tr
+                            : searchText.text;
+                        return AppText.title1(
+                            "${"result_for".tr} '$queryText'");
                       },
                     ),
                   ),
+                  const SizedBox(height: 12),
+                ],
+              ),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    _searchProducts(page: 1);
+                    // Wait for controller update before completing refresh
+                    await Future.delayed(const Duration(milliseconds: 500));
+                  },
+                  child: GetBuilder<SearchingController>(
+                    builder: (_) {
+                      if (searchController.isLoading &&
+                          searchController.searchResults.isEmpty) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      final results = searchController.searchResults;
+
+                      if (results.isEmpty) {
+                        return Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.search_off_sharp, size: 120, color: theme.highlightColor,),
+                                AppText.title("no_results_found".tr),
+                                SizedBox(height: 22,),
+                                CustomButtonWidget(
+                                  title: 'Clear Filters',
+                                  action: () { setState(() {
+                                    selectedCategories = [];
+                                    priceRange = const RangeValues(0, 1000);
+                                    selectedRating = 0;
+                                    searchText.clear();
+                                  });
+                                  _searchProducts(page: 1); },
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+
+                      return ListView(
+                        controller: _scrollController,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: EdgeInsets.all(0),
+                        children: [
+                          GridCustomWidget(
+                            items: results
+                                .map((item) =>
+                                ItemCardWidget(
+                                  product: item,
+                                  onUpdateWishlist: () {
+                                    _searchProducts(
+                                        page: 1); // refresh search result
+                                  },
+                                  onUpdateCheckOut: () {
+                                    _searchProducts(
+                                        page: 1); // refresh search result
+                                  },
+                                  parentContext: context,
+                                  onBackAction: () {
+                                    _searchProducts(
+                                        page: 1);
+                                  },))
+                                .toList(),
+                          ),
+                          if (searchController.isLoading &&
+                              searchController.searchResults.isNotEmpty)
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+                        ],
+                      );
+                    },
+                  ),
                 ),
-              ],
-            ),
-          );
-        }),
-      ),
+              ),
+            ],
+          ),
+        );
+      }),
     );
   }
 }

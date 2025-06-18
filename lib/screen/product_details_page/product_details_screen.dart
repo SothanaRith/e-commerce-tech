@@ -79,7 +79,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     ),
 
                     SizedBox(width: 20),
-
                     // Increment Button
                     IconButton(
                       icon: Icon(Icons.add_circle_outline),

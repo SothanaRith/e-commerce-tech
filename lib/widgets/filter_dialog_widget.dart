@@ -77,6 +77,7 @@ class _FilterDialogWidgetState extends State<FilterDialogWidget> {
                                       title: 'Apply Filters',
                                       action: () { Navigator.of(context).pop();
                                       widget.onApply(); },
+                                      buttonStyle: BtnStyle.action,
                                     ),
                                     SizedBox(height: 12,),
                                     CustomButtonWidget(
