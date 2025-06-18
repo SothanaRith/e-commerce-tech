@@ -1,5 +1,6 @@
 import 'package:e_commerce_tech/controllers/auth_controller.dart';
 import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/screen/forget_password_page/privacy.dart';
 import 'package:e_commerce_tech/screen/login_page/login_screen.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
@@ -23,6 +24,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController emailTextField = TextEditingController();
   TextEditingController passwordTextField = TextEditingController();
   TextEditingController phoneNumberTextField = TextEditingController();
+  bool isAgree = false;
 
   String emailErrorText = "";
   String nameErrorText = "";
@@ -95,9 +97,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.check_box,
-                      color: theme.primaryColor,
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          isAgree = !isAgree;
+                        });
+                      },
+                      child: Icon(
+                        isAgree ? Icons.check_box : Icons.check_box_outline_blank,
+                        color: theme.primaryColor,
+                      ),
                     ),
                     SizedBox(
                       width: 5,
@@ -109,14 +118,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           fontWeight: FontWeight.w600,
                           fontSize: 12),
                     ),
-                    AppText.caption(
-                      "terms_&_condition".tr,
-                      customStyle: TextStyle(
-                          color: theme.primaryColor,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12,
-                          decoration: TextDecoration.underline,
-                          decorationColor: theme.primaryColor),
+                    GestureDetector(
+                      onTap: () {
+                        goTo(this, PrivacyScreen());
+                      },
+                      child: AppText.caption(
+                        "terms_&_condition".tr,
+                        customStyle: TextStyle(
+                            color: theme.primaryColor,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                            decoration: TextDecoration.underline,
+                            decorationColor: theme.primaryColor),
+                      ),
                     ),
                   ],
                 ),
@@ -126,6 +140,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 CustomButtonWidget(
                   title: "sign_up".tr,
                   action: () {
+                    if(!isAgree) {
+                      return;
+                    }
                     nameErrorText = "";
                     emailErrorText = "";
                     passwordErrorText = "";
@@ -162,7 +179,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                     // goOff(this, LocationScreen());
                   },
-                  buttonStyle: BtnStyle.action,
+                  buttonStyle: isAgree ? BtnStyle.action : BtnStyle.normal,
                 ),
                 SizedBox(
                   height: 50,

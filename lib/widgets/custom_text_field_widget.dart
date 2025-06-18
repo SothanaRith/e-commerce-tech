@@ -90,7 +90,7 @@ class CustomTextField extends StatelessWidget {
         ),
         if (subtitle != null && subtitle != "") ...[
           SizedBox(height: 6.h),
-          AppText.caption(
+          AppText.body2(
             subtitle!,
             customStyle: TextStyle(color: Colors.yellow.shade800),
           ),
