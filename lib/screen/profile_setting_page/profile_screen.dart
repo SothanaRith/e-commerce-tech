@@ -199,112 +199,114 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Profile section
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Stack(
-                    alignment: Alignment.bottomRight,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          showOptionsSheet(context);
-                        },
-                        child: CircleAvatar(
-                          radius: 50,
-                          backgroundColor: Colors.grey[300], // Placeholder color
-                          backgroundImage: NetworkImage(
-                            user?.coverImage != null
-                                ? "$mainPoint${user!.coverImage}"
-                                : 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740',
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          showOptionsSheet(context);
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.grey,
-                              width: 1.0,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Profile section
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            showOptionsSheet(context);
+                          },
+                          child: CircleAvatar(
+                            radius: 50,
+                            backgroundColor: Colors.grey[300], // Placeholder color
+                            backgroundImage: NetworkImage(
+                              user?.coverImage != null
+                                  ? "$mainPoint${user!.coverImage}"
+                                  : 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740',
                             ),
                           ),
-                          child: CircleAvatar(
-                            radius: 12,
-                            backgroundColor: Colors.white,
-                            child: SvgPicture.asset("assets/images/icons/edit-2.svg")
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            showOptionsSheet(context);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.grey,
+                                width: 1.0,
+                              ),
+                            ),
+                            child: CircleAvatar(
+                              radius: 12,
+                              backgroundColor: Colors.white,
+                              child: SvgPicture.asset("assets/images/icons/edit-2.svg")
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10), // Spacing between avatar and text
-                  Text(
-                    user?.name ?? 'Rose BanSon',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            ),
-            // Menu items list
-            ListView.builder(
-              shrinkWrap: true, // Allows ListView to take only the space it needs
-              physics: const NeverScrollableScrollPhysics(), // Disables ListView's scrolling
-              itemCount: menuItems.length,
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    ListTile(
-                      leading: SvgPicture.asset(
-                        menuItems[index].iconName,
-                        color: theme.primaryColor,
+                    const SizedBox(height: 10), // Spacing between avatar and text
+                    Text(
+                      user?.name ?? 'Rose BanSon',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
-                      title: AppText.title2(
-                        menuItems[index].title,
-                        customStyle: const TextStyle(fontSize: 16),
-                      ),
-                      trailing:  SvgPicture.asset(
-                      "assets/images/icons/arrow-down.svg"
-                      ),
-                      onTap: () {
-                        if (menuItems[index].hasSpecialAction) {
-                          // Handle special actions like showing a bottom sheet
-                          if (menuItems[index].title == 'log_out'.tr) {
-                            _showLogoutBottomSheet(context);
-                          }
-                        } else if (menuItems[index].screen != null) {
-                          // Navigate to the screen if it exists
-                          goTo(this, menuItems[index].screen!);
-                        }
-                      },
                     ),
-                    if (index < menuItems.length - 1)
-                       Divider(
-                        height: 1,
-                        thickness: 1,
-                        color: Colors.grey.withAlpha(35),
-                        indent: 16, // Optional: adds padding on the left
-                        endIndent: 16, // Optional: adds padding on the right
-                      ),
                   ],
-                );
-              },
-            ),
-            const SizedBox(height: 110,)
-          ],
+                ),
+              ),
+              // Menu items list
+              ListView.builder(
+                shrinkWrap: true, // Allows ListView to take only the space it needs
+                physics: const NeverScrollableScrollPhysics(), // Disables ListView's scrolling
+                itemCount: menuItems.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      ListTile(
+                        leading: SvgPicture.asset(
+                          menuItems[index].iconName,
+                          color: theme.primaryColor,
+                        ),
+                        title: AppText.title2(
+                          menuItems[index].title,
+                          customStyle: const TextStyle(fontSize: 16),
+                        ),
+                        trailing:  SvgPicture.asset(
+                        "assets/images/icons/arrow-down.svg"
+                        ),
+                        onTap: () {
+                          if (menuItems[index].hasSpecialAction) {
+                            // Handle special actions like showing a bottom sheet
+                            if (menuItems[index].title == 'log_out'.tr) {
+                              _showLogoutBottomSheet(context);
+                            }
+                          } else if (menuItems[index].screen != null) {
+                            // Navigate to the screen if it exists
+                            goTo(this, menuItems[index].screen!);
+                          }
+                        },
+                      ),
+                      if (index < menuItems.length - 1)
+                         Divider(
+                          height: 1,
+                          thickness: 1,
+                          color: Colors.grey.withAlpha(35),
+                          indent: 16, // Optional: adds padding on the left
+                          endIndent: 16, // Optional: adds padding on the right
+                        ),
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: 110,)
+            ],
+          ),
         ),
       ),
     );
