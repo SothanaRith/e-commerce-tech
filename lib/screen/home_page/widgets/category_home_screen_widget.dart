@@ -70,7 +70,7 @@ class CategoryHomeScreenWidget extends StatelessWidget {
               ),
               child: ClipOval(
                 child: Image.network(
-                  "$mainPoint${category.imageUrl}",
+                  "${category.imageUrl}",
                   fit: BoxFit.cover,
                   errorBuilder: (_, __, ___) => const Icon(Icons.image, size: 40, color: Colors.blue),
                 ),

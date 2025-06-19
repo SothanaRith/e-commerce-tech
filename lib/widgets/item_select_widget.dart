@@ -33,7 +33,7 @@ class ItemSelectWidget extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(100),
             child: Image.network(
-              "$mainPoint${imageUrl[i]}",
+              "${imageUrl[i]}",
               width: 50.w,
               height: 50.w,
               fit: BoxFit.cover,
@@ -146,7 +146,7 @@ class ItemSelectWidget extends StatelessWidget {
               ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.network(
-                    "$mainPoint${imageUrl.isEmpty ? '' : imageUrl[0]}",
+                    imageUrl.isEmpty ? '' : imageUrl[0],
                     width: 90.w,
                     height: 90.w,
                     fit: BoxFit.cover,

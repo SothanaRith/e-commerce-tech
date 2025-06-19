@@ -107,7 +107,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               backgroundColor: Colors.grey[300], // Placeholder color
                               backgroundImage: NetworkImage(
                                 user?.coverImage != null
-                                    ? "$mainPoint${user!.coverImage}"
+                                    ? "${user!.coverImage}"
                                     : 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740',
                               ),
                             ),

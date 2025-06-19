@@ -152,12 +152,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             if (selectedImageUrl != null)
                               GestureDetector(
                                 onTap: () {
-                                  goTo(this, FlexibleImagePreview(image: "$mainPoint$selectedImageUrl"));
+                                  goTo(this, FlexibleImagePreview(image: "$selectedImageUrl"));
                                 },
                                 child: Positioned(
                                   top: 0,
                                   child: Image.network(
-                                    "$mainPoint$selectedImageUrl",
+                                    "$selectedImageUrl",
                                     height:
                                     MediaQuery.sizeOf(context).height / 1.5 - 35,
                                     width: MediaQuery.sizeOf(context).width,
@@ -202,7 +202,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                               width: 2,
                                             ),
                                             image: DecorationImage(
-                                              image: NetworkImage("$mainPoint$url"),
+                                              image: NetworkImage("$url"),
                                               fit: BoxFit.cover,
                                             ),
                                           ),
@@ -421,7 +421,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         ListViewHorizontalWidget(
                                           horizontalPadding: 4,
                                           items: List.generate(review.images!.length, (i) {
-                                            final imageUrl = "$mainPoint${review.images![i]}";
+                                            final imageUrl = "${review.images![i]}";
                                             return GestureDetector(
                                               onTap: () {
                                                 goTo(this, FlexibleImagePreview(image: imageUrl));
