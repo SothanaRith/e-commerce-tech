@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../forget_password_page/privacy.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -37,19 +38,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ),
     MenuItem(
       title: 'check_out'.tr,
-      iconName:"assets/images/icons/store.svg",
+      iconName: "assets/images/icons/store.svg",
       screen: const CheckOutScreen(),
       hasSpecialAction: false,
     ),
     MenuItem(
       title: 'my_orders'.tr,
-      iconName:"assets/images/icons/shopping_bag.svg",
+      iconName: "assets/images/icons/shopping_bag.svg",
       screen: const MyOrderScreen(),
       hasSpecialAction: false,
     ),
     MenuItem(
       title: 'my_delivery_address'.tr,
-      iconName:"assets/images/icons/delivery.svg",
+      iconName: "assets/images/icons/delivery.svg",
       screen: const ShippingAddressScreen(),
       hasSpecialAction: false,
     ),
@@ -86,6 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final AuthController authController = Get.put(AuthController());
 
   User? user = UserStorage.currentUser;
+
   // Method to show logout bottom sheet
   void _showLogoutBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -107,8 +109,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               const SizedBox(height: 10),
-               Text(
-               'are_you_sure_you_want_to_log_out_?'.tr,
+              Text(
+                'are_you_sure_you_want_to_log_out_?'.tr,
                 style: TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 20),
@@ -160,39 +162,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void showOptionsSheet(
-      BuildContext context
-      ) {
+  void showOptionsSheet(BuildContext context) {
     showCupertinoModalPopup(
       context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        cancelButton: CupertinoActionSheetAction(
-          isDefaultAction: true,
-          onPressed: () {
-            Navigator.pop(context, 'Cancel');
-          },
-          child: Text(
-            'cancel'.tr,
-            style: const TextStyle(color: Colors.red),
-          ),
-        ),
-        actions: <Widget>[
-          buildActionSheetAction('from_gallery'.tr, Colors.blue, () {
-            cropGallery(context).then((image) {
-              if (image != null) {
-                authController.updateUserProfilePicture(context, XFile(image.path));
-              }
-            });
+      builder: (BuildContext context) =>
+          GetBuilder<AuthController>(builder: (logic) {
+            return Skeletonizer(
+              enabled: logic.isLoading,
+              child: CupertinoActionSheet(
+                cancelButton: CupertinoActionSheetAction(
+                  isDefaultAction: true,
+                  onPressed: () {
+                    Navigator.pop(context, 'Cancel');
+                  },
+                  child: Text(
+                    'cancel'.tr,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
+                actions: <Widget>[
+                  buildActionSheetAction('from_gallery'.tr, Colors.blue, () {
+                    cropGallery(context).then((image) {
+                      if (image != null) {
+                        authController.updateUserProfilePicture(
+                            context, XFile(image.path));
+                      }
+                    });
+                  }),
+                  buildActionSheetAction('from_camera'.tr, Colors.red, () {
+                    cropCamera(context).then((image) {
+                      if (image != null) {
+                        authController.updateUserProfilePicture(
+                            context, XFile(image.path));
+                      }
+                    });
+                  }),
+                ],
+              ),
+            );
           }),
-          buildActionSheetAction('from_camera'.tr, Colors.red, () {
-            cropCamera(context).then((image) {
-              if (image != null) {
-                authController.updateUserProfilePicture(context, XFile(image.path));
-              }
-            });
-          }),
-        ],
-      ),
     );
   }
 
@@ -200,114 +208,126 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Profile section
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 20.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Stack(
-                      alignment: Alignment.bottomRight,
+        child: GetBuilder<AuthController>(builder: (logic) {
+          return Skeletonizer(
+            enabled: logic.isLoading,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Profile section
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 20.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        GestureDetector(
-                          onTap: () {
-                            showOptionsSheet(context);
-                          },
-                          child: CircleAvatar(
-                            radius: 50,
-                            backgroundColor: Colors.grey[300], // Placeholder color
-                            backgroundImage: NetworkImage(
-                              user?.coverImage != null
-                                  ? "${user!.coverImage}"
-                                  : 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740',
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            showOptionsSheet(context);
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.grey,
-                                width: 1.0,
+                        Stack(
+                          alignment: Alignment.bottomRight,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                showOptionsSheet(context);
+                              },
+                              child: CircleAvatar(
+                                radius: 50,
+                                backgroundColor: Colors.grey[300],
+                                // Placeholder color
+                                backgroundImage: NetworkImage(
+                                  logic.userProfile != null ? logic.userProfile ?? 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740' :
+                                  user?.coverImage != null
+                                      ? "${user!.coverImage}"
+                                      : 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740',
+                                ),
                               ),
                             ),
-                            child: CircleAvatar(
-                              radius: 12,
-                              backgroundColor: Colors.white,
-                              child: SvgPicture.asset("assets/images/icons/edit-2.svg")
+                            GestureDetector(
+                              onTap: () {
+                                showOptionsSheet(context);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                child: CircleAvatar(
+                                    radius: 12,
+                                    backgroundColor: Colors.white,
+                                    child: SvgPicture.asset(
+                                        "assets/images/icons/edit-2.svg")
+                                ),
+                              ),
                             ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        // Spacing between avatar and text
+                        Text(
+                          user?.name ?? 'Rose BanSon',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10), // Spacing between avatar and text
-                    Text(
-                      user?.name ?? 'Rose BanSon',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                  // Menu items list
+                  ListView.builder(
+                    shrinkWrap: true,
+                    // Allows ListView to take only the space it needs
+                    physics: const NeverScrollableScrollPhysics(),
+                    // Disables ListView's scrolling
+                    itemCount: menuItems.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          ListTile(
+                            leading: SvgPicture.asset(
+                              menuItems[index].iconName,
+                              color: theme.primaryColor,
+                            ),
+                            title: AppText.title2(
+                              menuItems[index].title,
+                              customStyle: const TextStyle(fontSize: 16),
+                            ),
+                            trailing: SvgPicture.asset(
+                                "assets/images/icons/arrow-down.svg"
+                            ),
+                            onTap: () {
+                              if (menuItems[index].hasSpecialAction) {
+                                // Handle special actions like showing a bottom sheet
+                                if (menuItems[index].title == 'log_out'.tr) {
+                                  _showLogoutBottomSheet(context);
+                                }
+                              } else if (menuItems[index].screen != null) {
+                                // Navigate to the screen if it exists
+                                goTo(this, menuItems[index].screen!);
+                              }
+                            },
+                          ),
+                          if (index < menuItems.length - 1)
+                            Divider(
+                              height: 1,
+                              thickness: 1,
+                              color: Colors.grey.withAlpha(35),
+                              indent: 16,
+                              // Optional: adds padding on the left
+                              endIndent: 16, // Optional: adds padding on the right
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 110,)
+                ],
               ),
-              // Menu items list
-              ListView.builder(
-                shrinkWrap: true, // Allows ListView to take only the space it needs
-                physics: const NeverScrollableScrollPhysics(), // Disables ListView's scrolling
-                itemCount: menuItems.length,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      ListTile(
-                        leading: SvgPicture.asset(
-                          menuItems[index].iconName,
-                          color: theme.primaryColor,
-                        ),
-                        title: AppText.title2(
-                          menuItems[index].title,
-                          customStyle: const TextStyle(fontSize: 16),
-                        ),
-                        trailing:  SvgPicture.asset(
-                        "assets/images/icons/arrow-down.svg"
-                        ),
-                        onTap: () {
-                          if (menuItems[index].hasSpecialAction) {
-                            // Handle special actions like showing a bottom sheet
-                            if (menuItems[index].title == 'log_out'.tr) {
-                              _showLogoutBottomSheet(context);
-                            }
-                          } else if (menuItems[index].screen != null) {
-                            // Navigate to the screen if it exists
-                            goTo(this, menuItems[index].screen!);
-                          }
-                        },
-                      ),
-                      if (index < menuItems.length - 1)
-                         Divider(
-                          height: 1,
-                          thickness: 1,
-                          color: Colors.grey.withAlpha(35),
-                          indent: 16, // Optional: adds padding on the left
-                          endIndent: 16, // Optional: adds padding on the right
-                        ),
-                    ],
-                  );
-                },
-              ),
-              const SizedBox(height: 110,)
-            ],
-          ),
-        ),
+            ),
+          );
+        }),
       ),
     );
   }

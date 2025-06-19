@@ -1,6 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/controllers/order_contoller.dart';
 import 'package:e_commerce_tech/controllers/payment_controller.dart';
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/cart_model.dart';
 import 'package:e_commerce_tech/screen/payment/payment_verify_screen.dart';
@@ -241,7 +242,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
                         controller.generateDeeplink(
                             'https://bakong.nbc.gov.kh/images/logo.svg',
                             'Snap Buy',
-                            'https://comforting-kitten-d5be33.netlify.app/', context
+                            '$mainPoint/api/payment/payment-callback', context
                         );
                       }
                     );

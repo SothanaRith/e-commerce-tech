@@ -19,7 +19,8 @@ import 'package:http/http.dart' as http;
 
 class AuthController extends GetxController {
   late final ApiRepository apiRepository;
-
+  bool isLoading = false;
+  String? userProfile;
   // late final String mainPoint = "http://192.168.1.6:6000";
   AuthController() {
     apiRepository = ApiRepository();
@@ -109,6 +110,9 @@ class AuthController extends GetxController {
   }
 
   Future<void> updateUserProfilePicture(BuildContext context, XFile? imageFile) async {
+
+    isLoading = true;
+    update();
     // Create request URL
     String url = '$mainPoint/api/users/updateProfilePicture/${UserStorage.currentUser?.id}'; // Replace with your API URL
 
@@ -148,10 +152,9 @@ class AuthController extends GetxController {
               okOnPress: () async {
                 await getUser(context: context);
                 await UserStorage.loadUser();
-                goOff(
-                  this,
-                  MainScreen(currentPageIndex: 3),
-                );
+                userProfile = UserStorage.currentUser?.coverImage;
+                update();
+                popBack(this);
               },
             );
           },
@@ -170,6 +173,9 @@ class AuthController extends GetxController {
         type: DialogType.error,
         title: 'Error: $e',
       );
+    } finally {
+      isLoading = false;
+      update();
     }
   }
 

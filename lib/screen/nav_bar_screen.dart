@@ -48,9 +48,6 @@ class _MainScreenState extends State<MainScreen> {
       currentPageIndex = widget.currentPageIndex;
     });
     Future.delayed(Duration.zero, () async {
-      print("object payment ${PaymentStorage.isPaymentCompleted}");
-      print("object payment ${PaymentStorage.md5}");
-
       if (PaymentStorage.isPaymentCompleted != null) {
         if (!PaymentStorage.isPaymentCompleted!){
           await checkPaymentProcess();
