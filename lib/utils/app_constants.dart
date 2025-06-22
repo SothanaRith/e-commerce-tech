@@ -20,21 +20,32 @@ class AppConstants{
 
 class TokenStorage {
   static String? token; // Global variable to store the token
+  static String? refreshToken; // Global variable to store the token
 
   static Future<void> loadToken() async {
     final prefs = await SharedPreferences.getInstance();
     token = "Bearer ${prefs.getString('access_token')}"; // Load token once at app start
   }
 
+  static Future<void> loadRefresh() async {
+    final prefs = await SharedPreferences.getInstance();
+    refreshToken = "${prefs.getString('refresh_token')}"; // Load token once at app start
+  }
   static Future<void> clearToken() async {
     token = null;
+    refreshToken = null;
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('access_token');
+    await prefs.remove('refresh_token');
   }
 
   static Future<void> saveToken(String newToken) async {
     token = "Bearer $newToken";
     (await SharedPreferences.getInstance()).setString('access_token', newToken);
+  }
+  static Future<void> saveRefreshToken(String newToken) async {
+    token = "$newToken";
+    (await SharedPreferences.getInstance()).setString('refresh_token', newToken);
   }
 }
 

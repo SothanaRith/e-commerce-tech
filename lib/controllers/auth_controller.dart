@@ -7,6 +7,7 @@ import 'package:e_commerce_tech/screen/forget_password_page/reset_password_scree
 import 'package:e_commerce_tech/screen/location_page/location_screen.dart';
 import 'package:e_commerce_tech/screen/login_page/login_screen.dart';
 import 'package:e_commerce_tech/screen/nav_bar_screen.dart';
+import 'package:e_commerce_tech/screen/splash_screen.dart';
 import 'package:e_commerce_tech/screen/verify_code_page/verify_code_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
@@ -39,17 +40,20 @@ class AuthController extends GetxController {
     if (response.data != null) {
       try {
         var jsonData = jsonDecode(response.data!);
-        print("Fetched Data: $jsonData");
+        debugPrint("Fetched Data: $jsonData");
 
         if (jsonData["success"] == true && jsonData["filteredUser"] != null) {
           User fetchedUser = User.fromJson(jsonData["filteredUser"]);
           await UserStorage.saveUser(fetchedUser);
-          print("User saved to storage: ${fetchedUser.name}");
+          debugPrint("User saved to storage: ${fetchedUser.name}");
         } else {
           showCustomDialog(
             context: context,
             type: DialogType.error,
             title: "Failed to fetch user: ${jsonData["message"] ?? "Unknown error"}",
+            okOnPress: () {
+              refreshToken(refreshToken: TokenStorage.refreshToken ?? '', email: UserStorage.currentUser?.email ?? '', context: context);
+            }
           );
         }
       } catch (e) {
@@ -186,6 +190,8 @@ class AuthController extends GetxController {
       required String phone,
       required String role,
       required BuildContext context}) async {
+    isLoading = true;
+    update();
     final response = await apiRepository.postData(
       '$mainPoint/api/auth/register',
       body: {
@@ -197,6 +203,8 @@ class AuthController extends GetxController {
       },
       headers: {'Content-Type': 'application/json'}, context: context
     );
+    isLoading = false;
+    update();
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
       TokenStorage.saveToken(jsonData["accessToken"]).then(
@@ -226,11 +234,15 @@ class AuthController extends GetxController {
       {required String email,
       required String password,
       required BuildContext context}) async {
+    isLoading = true;
+    update();
     final response = await apiRepository.postData(
       '$mainPoint/api/auth/login',
       body: {"email": email, "password": password},
       headers: {'Content-Type': 'application/json'}, context: context
     );
+    isLoading = false;
+    update();
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
       TokenStorage.saveToken(jsonData["accessToken"]).then(
@@ -259,11 +271,15 @@ class AuthController extends GetxController {
 
   Future<void> checkMail(
       {required String email, required BuildContext context}) async {
+    isLoading = true;
+    update();
     final response = await apiRepository.postData(
       '$mainPoint/api/auth/check-mail',
       body: {"email": email},
       headers: {'Content-Type': 'application/json'}, context: context
     );
+    isLoading = false;
+    update();
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
       print(jsonData["accessToken"]);
@@ -293,10 +309,71 @@ class AuthController extends GetxController {
     }
   }
 
+  Future<void> refreshToken({
+    required String refreshToken,
+    required String email,
+    required BuildContext context,
+  }) async {
+    isLoading = true;
+    update();
+
+    final response = await apiRepository.postData(
+      '$mainPoint/api/auth/refresh-token',
+      body: {
+        "email": email,
+        "refreshToken": refreshToken, // correctly send both fields
+      },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      context: context,
+    );
+
+    isLoading = false;
+    update();
+
+    if (response.data != null) {
+      var jsonData = jsonDecode(response.data!);
+      if (jsonData["accessToken"] != null && jsonData["accessToken"] != "") {
+        await TokenStorage.saveToken(jsonData["accessToken"]);
+        showCustomDialog(
+          context: context,
+          type: DialogType.success,
+          title: "Token refreshed successfully",
+          okOnPress: () async {
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setBool('isLoggedIn', true);
+            goOff(this, SplashScreen());
+          },
+        );
+      } else {
+        showCustomDialog(
+          context: context,
+          type: DialogType.warning,
+          title: "Invalid refresh response: accessToken missing",
+          okOnPress: () async {
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setBool('isLoggedIn', false);
+            UserStorage.clearUser();
+            goOff(this, SplashScreen());
+          }
+        );
+      }
+    } else {
+      showCustomDialog(
+        context: context,
+        type: DialogType.error,
+        title: "Refresh token failed: ${response.error}",
+      );
+    }
+  }
+
   Future<void> verifyOTP(
       {required String otp,
       required ScreenVerifyType type,
       required BuildContext context}) async {
+    isLoading = true;
+    update();
     final response = await apiRepository.postData(
       '$mainPoint/api/auth/verify-otp',
       body: {"otp": otp},
@@ -305,8 +382,11 @@ class AuthController extends GetxController {
         'Content-Type': 'application/json'
       }, context: context
     );
+    isLoading = false;
+    update();
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
+      await TokenStorage.saveRefreshToken(jsonData["refreshToken"]);
       TokenStorage.saveToken(jsonData["accessToken"]).then(
         (value) async {
           await getUser(context: context);
@@ -352,6 +432,8 @@ class AuthController extends GetxController {
   }
 
   Future<void> sendOTP({required BuildContext context}) async {
+    isLoading = true;
+    update();
     final response = await apiRepository.postData(
       '$mainPoint/api/auth/send-otp',
       headers: {
@@ -359,6 +441,8 @@ class AuthController extends GetxController {
         'Content-Type': 'application/json'
       }, context: context
     );
+    isLoading = false;
+    update();
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
       print("Fetched Data: $jsonData");
@@ -374,6 +458,8 @@ class AuthController extends GetxController {
   Future<void> resetPassword(
       {required String newPassword,
       required BuildContext context}) async {
+    isLoading = true;
+    update();
     final response = await apiRepository.postData(
       '$mainPoint/api/auth/reset-password',
       body: {"newPassword": newPassword},
@@ -382,6 +468,8 @@ class AuthController extends GetxController {
         'Content-Type': 'application/json'
       }, context: context
     );
+    isLoading = false;
+    update();
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
       showCustomDialog(

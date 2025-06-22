@@ -161,7 +161,7 @@ class PaymentController extends GetxController {
                   .then(
                     (value) async {
                   if (value.isNotEmpty) {
-                    await orderController.updateTransactionByOrderId(context: context, status: "success", paymentType: PaymentStorage.paymentType ?? '', orderId: value['orderId'] ?? '', amount: value['totalAmount'] ?? '0');
+                    await orderController.updateTransactionByOrderId(context: context, status: "completed", paymentType: PaymentStorage.paymentType ?? '', orderId: value['orderId'].toString(), amount: value['totalAmount'].toString());
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -262,7 +262,7 @@ class PaymentController extends GetxController {
           merchantName: 'Snap Buy ($billingNumber)',
           billNumber: billingNumber,
           currency: currency,
-          amount: double.parse("100"),
+          amount: double.parse("50"),
           expirationTimestamp: expire
       );
       final khqrData = await _khqrSdk.generateIndividual(info);

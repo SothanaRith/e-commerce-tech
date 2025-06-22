@@ -126,7 +126,7 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                 Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: NetworkImage(widget.product.imageUrl?.first ?? ""),
+                      image: NetworkImage("${widget.product.imageUrl?.first}"),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(12),

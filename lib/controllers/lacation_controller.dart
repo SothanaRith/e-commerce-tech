@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 class LocationController extends GetxController {
   late final ApiRepository apiRepository;
 
+  bool isLoading = false;
   RxList<DeliveryAddress> addresses = <DeliveryAddress>[].obs;
   DeliveryAddress? addressesDefault;
 
@@ -25,6 +26,8 @@ class LocationController extends GetxController {
     bool isDefault = false,
     required BuildContext context,
   }) async {
+    isLoading = true;
+    update();
     final response = await apiRepository.postData(
       '$mainPoint/api/delivery-addresses',
       headers: {
@@ -40,7 +43,8 @@ class LocationController extends GetxController {
       },
       context: context,
     );
-
+    isLoading = false;
+    update();
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
       if (jsonData['address'] != null) {
@@ -65,6 +69,8 @@ class LocationController extends GetxController {
   Future<void> getUserAddresses({
     required BuildContext context,
   }) async {
+    isLoading = true;
+    update();
     final response = await apiRepository.fetchData(
       '$mainPoint/api/delivery-addresses/user/${UserStorage.currentUser?.id}',
       headers: {
@@ -73,7 +79,8 @@ class LocationController extends GetxController {
       },
       context: context,
     );
-
+    isLoading = false;
+    update();
     if (response.data != null) {
       try {
         final List<dynamic> data = jsonDecode(response.data!);
@@ -98,6 +105,8 @@ class LocationController extends GetxController {
   Future<void> getDefaultAddresses({
     required BuildContext context,
   }) async {
+    isLoading = true;
+    update();
     final response = await apiRepository.fetchData(
       '$mainPoint/api/delivery-addresses/default/${UserStorage.currentUser?.id}',
       headers: {
@@ -106,7 +115,8 @@ class LocationController extends GetxController {
       },
       context: context,
     );
-
+    isLoading = false;
+    update();
     if (response.data != null) {
       try {
         final data = jsonDecode(response.data!);
@@ -136,6 +146,8 @@ class LocationController extends GetxController {
     bool isDefault = false,
     required BuildContext context,
   }) async {
+    isLoading = true;
+    update();
     final response = await apiRepository.putData(
       '$mainPoint/api/delivery-addresses/$id',
       headers: {
@@ -150,7 +162,8 @@ class LocationController extends GetxController {
       },
       context: context,
     );
-
+    isLoading = false;
+    update();
     if (response.data != null) {
       final jsonData = jsonDecode(response.data!);
       final index = addresses.indexWhere((e) => e.id == id);
@@ -179,6 +192,8 @@ class LocationController extends GetxController {
     required String id,
     required BuildContext context,
   }) async {
+    isLoading = true;
+    update();
     final response = await apiRepository.deleteData(
       '$mainPoint/api/delivery-addresses/$id',
       headers: {
@@ -187,7 +202,8 @@ class LocationController extends GetxController {
       },
       context: context,
     );
-
+    isLoading = false;
+    update();
     if (response.data != null) {
       addresses.removeWhere((element) => element.id == id);
       final jsonData = jsonDecode(response.data!);

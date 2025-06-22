@@ -7,11 +7,13 @@ import 'package:e_commerce_tech/widgets/custom_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 enum ScreenVerifyType { signup, signinPhoneNumber, forgetPassword }
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key, required this.type});
+
   final ScreenVerifyType type;
 
   @override
@@ -90,72 +92,88 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: cardCustom(
-                  padding: const EdgeInsets.all(32),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      AppText.h2('enter_verification_code'.tr, textAlign: TextAlign.center),
-                      const SizedBox(height: 8),
-                      AppText.title2(
-                        'we_are_automatically_detecting_the_otp_sent_to_your_email'.tr,
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                      ),
-                      const SizedBox(height: 32),
-                      Pinput(
-                        length: otpLength,
-                        controller: _otpController,
-                        keyboardType: TextInputType.number,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                      ),
-                      const SizedBox(height: 32),
-                      CustomButtonWidget(
-                        action: isOtpFilled ? () => _submitOtp(_otpController.text) : null,
-                        title: "verify_otp".tr,
-                        buttonStyle: isOtpFilled ? BtnStyle.action : BtnStyle.normal,
-                      ),
-                      const SizedBox(height: 16),
-                      StreamBuilder<int>(
-                        stream: _countdownStream,
-                        builder: (context, snapshot) {
-                          final remaining = snapshot.data ?? 0;
-                          final canResend = !_streamController.hasListener || remaining <= 0;
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              AppText.body2("didn't_receive_otp_?".tr),
-                              GestureDetector(
-                                onTap: canResend ? _resendOtp : null,
-                                child: AppText.body2(
-                                  canResend
-                                      ? "RESEND OTP"
-                                      : "RESEND IN ${_formatDuration(remaining)}",
-                                  customStyle: TextStyle(
-                                    color: canResend ? theme.primaryColor : Colors.grey,
-                                    fontWeight: FontWeight.w600,
+      body: GetBuilder<AuthController>(builder: (logic) {
+        return SafeArea(
+          child: CustomScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: cardCustom(
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AppText.h2('enter_verification_code'.tr,
+                            textAlign: TextAlign.center),
+                        const SizedBox(height: 8),
+                        AppText.title2(
+                          'we_are_automatically_detecting_the_otp_sent_to_your_email'
+                              .tr,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                        ),
+                        const SizedBox(height: 32),
+                        Pinput(
+                          length: otpLength,
+                          controller: _otpController,
+                          keyboardType: TextInputType.number,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                        ),
+                        const SizedBox(height: 32),
+                        if (logic.isLoading) ...[
+                          CircularProgressIndicator(color: theme.primaryColor,)
+                        ] else ...[
+                          CustomButtonWidget(
+                            action: isOtpFilled ? () =>
+                                _submitOtp(_otpController.text) : null,
+                            title: "verify_otp".tr,
+                            buttonStyle: isOtpFilled
+                                ? BtnStyle.action
+                                : BtnStyle.normal,
+                          ),
+                        ],
+                        const SizedBox(height: 16),
+                        StreamBuilder<int>(
+                          stream: _countdownStream,
+                          builder: (context, snapshot) {
+                            final remaining = snapshot.data ?? 0;
+                            final canResend = !_streamController
+                                .hasListener || remaining <= 0;
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                AppText.body2("didn't_receive_otp_?".tr),
+                                GestureDetector(
+                                  onTap: canResend ? _resendOtp : null,
+                                  child: AppText.body2(
+                                    canResend
+                                        ? "RESEND OTP"
+                                        : "RESEND IN ${_formatDuration(
+                                        remaining)}",
+                                    customStyle: TextStyle(
+                                      color: canResend
+                                          ? theme.primaryColor
+                                          : Colors.grey,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                    ],
+                              ],
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      }),
     );
   }
 }

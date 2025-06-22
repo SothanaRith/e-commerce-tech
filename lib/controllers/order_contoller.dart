@@ -63,7 +63,7 @@ class OrderController extends GetxController {
   /// Place an order method updated to include addressId
   RxBool isPlacingOrder = false.obs;
 
-  Future<Map<String, String>> placeOrder({
+  Future<Map<dynamic, dynamic>> placeOrder({
     required BuildContext context,
     required String userId,
     required List<Map<String, dynamic>> items,
@@ -163,8 +163,8 @@ class OrderController extends GetxController {
         "amount": amount
       };
 
-      final response = await apiRepository.postData(
-        '$mainPoint/api/product//transactions/by-order${orderId}/update',
+      final response = await apiRepository.putData(
+        '$mainPoint/api/product/transactions/by-order/${orderId}/update',
         body: body,
         headers: {'Content-Type': 'application/json'},
         context: context,

@@ -1,3 +1,4 @@
+import 'package:e_commerce_tech/controllers/auth_controller.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/language_screen.dart';
 import 'package:e_commerce_tech/screen/nav_bar_screen.dart';
@@ -26,6 +27,8 @@ class _SplashScreenState extends State<SplashScreen> {
     bool? isFirstTime = prefs.getBool('isFirstTime');
     bool? isLoggedIn = prefs.getBool('isLoggedIn');
 
+    AuthController authController = AuthController();
+
     // Add small delay to show splash animation
     await Future.delayed(const Duration(seconds: 3));
 
@@ -35,8 +38,8 @@ class _SplashScreenState extends State<SplashScreen> {
       goOff(this, const LanguageScreen());
     } else {
       if (isLoggedIn != null && isLoggedIn == true) {
+        await authController.getUser(context: context).then((_) => goOff(this, const MainScreen()),);
         // Already logged in
-        goOff(this, const MainScreen());
       } else {
         // Not logged in
         goOff(this, const LoginScreen());
