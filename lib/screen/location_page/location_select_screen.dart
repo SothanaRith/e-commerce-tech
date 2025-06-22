@@ -63,8 +63,10 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
         permission = await Geolocator.requestPermission();
       }
 
-      if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
-        final position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      if (permission == LocationPermission.always ||
+          permission == LocationPermission.whileInUse) {
+        final position = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high);
         await _setLocation(LatLng(position.latitude, position.longitude));
       }
     } catch (e) {
@@ -76,15 +78,22 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
     try {
       setState(() => _selectedLatLng = latLng);
       _mapController?.animateCamera(CameraUpdate.newLatLngZoom(latLng, 15));
-      final placemarks = await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
+      final placemarks = await placemarkFromCoordinates(
+          latLng.latitude, latLng.longitude);
       final place = placemarks.first;
 
       List<String> addressParts = [];
-      if (place.name != null && place.name!.isNotEmpty) addressParts.add(place.name!);
-      if (place.locality != null && place.locality!.isNotEmpty) addressParts.add(place.locality!);
-      if (place.subAdministrativeArea != null && place.subAdministrativeArea!.isNotEmpty) addressParts.add(place.subAdministrativeArea!);
-      if (place.street != null && place.street!.isNotEmpty) addressParts.add(place.street!);
-      if (place.country != null && place.country!.isNotEmpty) addressParts.add(place.country!);
+      if (place.name != null && place.name!.isNotEmpty) addressParts.add(
+          place.name!);
+      if (place.locality != null && place.locality!.isNotEmpty) addressParts
+          .add(place.locality!);
+      if (place.subAdministrativeArea != null &&
+          place.subAdministrativeArea!.isNotEmpty) addressParts.add(
+          place.subAdministrativeArea!);
+      if (place.street != null && place.street!.isNotEmpty) addressParts.add(
+          place.street!);
+      if (place.country != null && place.country!.isNotEmpty) addressParts.add(
+          place.country!);
 
       setState(() {
         _currentAddress = addressParts.join(', ').trim();
@@ -121,12 +130,13 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
 
       if (data['status'] == 'OK') {
         setState(() {
-          _suggestions = (data['predictions'] as List).map<Map<String, String>>((item) {
-            return {
-              "description": item['description'] ?? '',
-              "place_id": item['place_id'] ?? '',
-            };
-          }).toList();
+          _suggestions =
+              (data['predictions'] as List).map<Map<String, String>>((item) {
+                return {
+                  "description": item['description'] ?? '',
+                  "place_id": item['place_id'] ?? '',
+                };
+              }).toList();
         });
       } else {
         debugPrint("Autocomplete error: ${data}");
@@ -164,7 +174,8 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
     final radius = BorderRadius.circular(20);
 
     return Scaffold(
-      appBar: customAppBar(type: this, title: "select_location".tr, context: context),
+      appBar: customAppBar(
+          type: this, title: "select_location".tr, context: context),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
@@ -174,11 +185,14 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
                 ClipRRect(
                   borderRadius: radius,
                   child: SizedBox(
-                    height: MediaQuery.sizeOf(context).height / 1.8,
+                    height: MediaQuery
+                        .sizeOf(context)
+                        .height / 1.8,
                     width: double.infinity,
                     child: GoogleMap(
                       initialCameraPosition: CameraPosition(
-                        target: _selectedLatLng ?? const LatLng(12.5657, 104.9910),
+                        target: _selectedLatLng ??
+                            const LatLng(12.5657, 104.9910),
                         zoom: 15,
                       ),
                       onMapCreated: (controller) => _mapController = controller,
@@ -221,40 +235,46 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: SizedBox(
-          width: double.infinity,
-          height: 50,
-          child: CustomButtonWidget(
-            title: "selected".tr,
-            buttonStyle: BtnStyle.action,
-            action: () async {
-              if (_selectedLatLng != null) {
-                final placemarks = await placemarkFromCoordinates(_selectedLatLng!.latitude, _selectedLatLng!.longitude);
-                final place = placemarks.first;
-                if (place.country?.toLowerCase() != 'Cambodia'.toLowerCase()) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("your delivery location must be in cambodia".tr)),
-                  );
-                  return;
+      bottomNavigationBar: GetBuilder<LocationController>(builder: (logic) {
+        return logic.isLoading ? CircularProgressIndicator(color: theme.primaryColor,) : Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: CustomButtonWidget(
+              title: "selected".tr,
+              buttonStyle: BtnStyle.action,
+              action: () async {
+                if (_selectedLatLng != null) {
+                  final placemarks = await placemarkFromCoordinates(
+                      _selectedLatLng!.latitude, _selectedLatLng!.longitude);
+                  final place = placemarks.first;
+                  if (place.country?.toLowerCase() !=
+                      'Cambodia'.toLowerCase()) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(
+                          "your delivery location must be in cambodia".tr)),
+                    );
+                    return;
+                  }
                 }
-              }
-              if (_selectedLatLng != null && _currentAddress.isNotEmpty) {
-                locationController.createAddress(
-                  street: _currentAddress,
-                  isDefault: false,
-                  context: context,
-                );
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("please_select_a_valid_location".tr)),
-                );
-              }
-            },
+                if (_selectedLatLng != null && _currentAddress.isNotEmpty) {
+                  locationController.createAddress(
+                    street: _currentAddress,
+                    isDefault: false,
+                    context: context,
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("please_select_a_valid_location"
+                        .tr)),
+                  );
+                }
+              },
+            ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

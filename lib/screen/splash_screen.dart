@@ -2,6 +2,7 @@ import 'package:e_commerce_tech/controllers/auth_controller.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/language_screen.dart';
 import 'package:e_commerce_tech/screen/nav_bar_screen.dart';
+import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,7 +39,16 @@ class _SplashScreenState extends State<SplashScreen> {
       goOff(this, const LanguageScreen());
     } else {
       if (isLoggedIn != null && isLoggedIn == true) {
-        await authController.getUser(context: context).then((_) => goOff(this, const MainScreen()),);
+        goOff(this, const MainScreen());
+        // await authController.getUser(context: context).then((value) async {
+        //         if (value) {
+        //           goOff(this, const MainScreen());
+        //         } else {
+        //           print(TokenStorage.refreshToken);
+        //           print(UserStorage.currentUser?.email);
+        //           await authController.refreshToken(refreshToken: TokenStorage.refreshToken ?? '', email: UserStorage.currentUser?.email ?? '', context: context);
+        //         }
+        //       },);
         // Already logged in
       } else {
         // Not logged in

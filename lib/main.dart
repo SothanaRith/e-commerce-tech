@@ -27,6 +27,7 @@ void main() async {
 
   // Load token and user data
   await TokenStorage.loadToken();
+  await TokenStorage.loadRefresh();
   await UserStorage.loadUser();
   await PaymentStorage.loadCheckPayment();
 

@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/controllers/cart_controller.dart';
 import 'package:e_commerce_tech/controllers/lacation_controller.dart';
 import 'package:e_commerce_tech/main.dart';
@@ -8,6 +9,7 @@ import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
+import 'package:e_commerce_tech/widgets/custom_dialog.dart';
 import 'package:e_commerce_tech/widgets/item_select_widget.dart';
 import 'package:e_commerce_tech/widgets/list_view_custom_widget.dart';
 import 'package:flutter/material.dart';
@@ -220,15 +222,19 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                 GetBuilder<LocationController>(builder: (logicLocation) {
                   return logic.cartList.isNotEmpty ? ElevatedButton(
                     onPressed: () {
-                      // Proceed to payment or order confirmation
-                      Navigator.push(
+                      logicLocation.addressesDefault?.id != null || logicLocation.addressesDefault?.id != '' ? Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              PaymentMethodScreen(
-                                cart: logic.cartList, addressId: logicLocation.addressesDefault?.id ?? '',),
+                            builder: (context) => PaymentMethodScreen(
+                              cart: logic.cartList, addressId: logicLocation.addressesDefault?.id ?? '',)
                         ),
+                      ) : showCustomDialog(
+                        context: context,
+                        type: DialogType.info,
+                        title: "Please add your addresses",
                       );
+                      // Proceed to payment or order confirmation
+
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: theme.primaryColor,

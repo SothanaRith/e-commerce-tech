@@ -14,6 +14,7 @@ import 'package:get/get.dart';
 
 class ShippingAddressScreen extends StatefulWidget {
   final bool backHome;
+
   const ShippingAddressScreen({super.key, this.backHome = true});
 
   @override
@@ -31,50 +32,55 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
     });
   }
 
-  void _showAddressDialog(String id, String fullName, String street, bool isDefault) {
+  void _showAddressDialog(String id, String fullName, String street,
+      bool isDefault) {
     AwesomeDialog(
       context: context,
       dialogType: DialogType.info,
       animType: AnimType.bottomSlide,
       title: 'manage_address'.tr,
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          AppText.title2("${"address_:".tr} $street"),
-          if (!isDefault)
-            TextButton.icon(
-              icon: Icon(Icons.star, color: theme.primaryColor),
-              label: AppText.body("set_as_default".tr, customStyle: TextStyle(color: theme.primaryColor),),
-              onPressed: () {
-                Future.delayed(Duration.zero, () {
-                  locationController.updateAddress(
-                    id: id,
-                    fullName: fullName,
-                    phoneNumber: UserStorage.currentUser?.phone ?? '',
-                    street: street,
-                    isDefault: true,
-                    context: context,
-                  );
-                });
-              },
-            ),
-          if (!isDefault)
-            TextButton.icon(
-              icon: Icon(Icons.delete, color: Colors.red),
-              label: AppText.body("delete".tr, customStyle: TextStyle(color: Colors.red)),
-              onPressed: () {
-                Future.delayed(Duration.zero, () {
-                  locationController.deleteAddress(id: id, context: context);
-                });
-              },
-            ),
-        ],
-      ),
-      btnCancelOnPress: () {
-      },
+      body: GetBuilder<LocationController>(builder: (logic) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            AppText.title2("${"address_:".tr} $street"),
+            if (!isDefault)
+              logic.isLoading ? CircularProgressIndicator(color: theme.primaryColor,) : TextButton.icon(
+                icon: Icon(Icons.star, color: theme.primaryColor),
+                label: AppText.body("set_as_default".tr,
+                  customStyle: TextStyle(color: theme.primaryColor),),
+                onPressed: () {
+                  Future.delayed(Duration.zero, () {
+                    locationController.updateAddress(
+                      id: id,
+                      fullName: fullName,
+                      phoneNumber: UserStorage.currentUser?.phone ?? '',
+                      street: street,
+                      isDefault: true,
+                      context: context,
+                    );
+                  });
+                },
+              ),
+            if (!isDefault)
+              logic.isLoading ? CircularProgressIndicator(color: theme.primaryColor,) : TextButton.icon(
+                icon: Icon(Icons.delete, color: Colors.red),
+                label: AppText.body(
+                    "delete".tr, customStyle: TextStyle(color: Colors.red)),
+                onPressed: () {
+                  Future.delayed(Duration.zero, () {
+                    locationController.deleteAddress(id: id, context: context);
+                  });
+                },
+              ),
+          ],
+        );
+      }),
+      btnCancelOnPress: () {},
     ).show();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,7 +95,8 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Obx(() => ListViewCustomWidget(
+            Obx(() =>
+                ListViewCustomWidget(
                   items: locationController.addresses.map((item) {
                     final isDefault = item.isDefault == 'true';
                     return InkWell(
@@ -97,21 +104,25 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                       splashColor: Colors.transparent,
                       focusColor: Colors.transparent,
                       highlightColor: Colors.transparent,
-                      onTap: () => _showAddressDialog(
-                        item.id ?? '',
-                        item.fullName ?? '---',
-                        item.street ?? '',
-                        isDefault,
-                      ),
+                      onTap: () =>
+                          _showAddressDialog(
+                            item.id ?? '',
+                            item.fullName ?? '---',
+                            item.street ?? '',
+                            isDefault,
+                          ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
                         child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 8),
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: isDefault ? theme.primaryColor.withOpacity(0.05) : Colors.transparent,
+                            color: isDefault ? theme.primaryColor.withOpacity(
+                                0.05) : Colors.transparent,
                             border: Border.all(
-                              color: isDefault ? theme.primaryColor : Colors.grey.shade300,
+                              color: isDefault ? theme.primaryColor : Colors
+                                  .grey.shade300,
                               width: isDefault ? 1.5 : 1,
                             ),
                             borderRadius: BorderRadius.circular(12),
@@ -123,17 +134,22 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Icon(Icons.location_on_outlined, color: isDefault ? theme.primaryColor : null),
+                                    Icon(Icons.location_on_outlined,
+                                        color: isDefault
+                                            ? theme.primaryColor
+                                            : null),
                                     const SizedBox(width: 6),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment
+                                            .start,
                                         children: [
                                           AppText.caption(
                                             item.fullName ?? '---',
                                             customStyle: TextStyle(
                                               color: theme.primaryColor,
-                                              fontWeight: isDefault ? FontWeight.bold : null,
+                                              fontWeight: isDefault ? FontWeight
+                                                  .bold : null,
                                             ),
                                           ),
                                           AppText.body2(
@@ -168,11 +184,12 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                 )),
             const SizedBox(height: 24),
             GestureDetector(
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const LocationSelectScreen()),
-              ),
+              onTap: () =>
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LocationSelectScreen()),
+                  ),
               child: DottedBorder(
                 borderType: BorderType.RRect,
                 radius: const Radius.circular(12),
@@ -180,7 +197,9 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                 color: Colors.black,
                 strokeWidth: 1.5,
                 child: Container(
-                  width: MediaQuery.sizeOf(context).width * 0.8,
+                  width: MediaQuery
+                      .sizeOf(context)
+                      .width * 0.8,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Center(
                     child: Text(

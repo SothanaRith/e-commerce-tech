@@ -27,7 +27,7 @@ class AuthController extends GetxController {
     apiRepository = ApiRepository();
   }
 
-  Future<void> getUser({required BuildContext context}) async {
+  Future<bool> getUser({required BuildContext context}) async {
     final response = await apiRepository.fetchData(
       '$mainPoint/api/users/getProfile',
       headers: {
@@ -46,22 +46,22 @@ class AuthController extends GetxController {
           User fetchedUser = User.fromJson(jsonData["filteredUser"]);
           await UserStorage.saveUser(fetchedUser);
           debugPrint("User saved to storage: ${fetchedUser.name}");
+          return true;
         } else {
           showCustomDialog(
             context: context,
             type: DialogType.error,
             title: "Failed to fetch user: ${jsonData["message"] ?? "Unknown error"}",
-            okOnPress: () {
-              refreshToken(refreshToken: TokenStorage.refreshToken ?? '', email: UserStorage.currentUser?.email ?? '', context: context);
-            }
           );
+          return false;
         }
       } catch (e) {
-        showCustomDialog(
+      showCustomDialog(
           context: context,
           type: DialogType.error,
           title: "Invalid user response: ${e.toString()}",
         );
+      return false;
       }
     } else {
       showCustomDialog(
@@ -69,6 +69,7 @@ class AuthController extends GetxController {
         type: DialogType.error,
         title: "Error: ${response.error}",
       );
+      return false;
     }
   }
 
@@ -334,6 +335,7 @@ class AuthController extends GetxController {
 
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
+      await TokenStorage.saveRefreshToken(jsonData["hashedRefreshToken"]);
       if (jsonData["accessToken"] != null && jsonData["accessToken"] != "") {
         await TokenStorage.saveToken(jsonData["accessToken"]);
         showCustomDialog(
@@ -386,7 +388,8 @@ class AuthController extends GetxController {
     update();
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
-      await TokenStorage.saveRefreshToken(jsonData["refreshToken"]);
+      print(jsonData["hashedRefreshToken"]);
+      await TokenStorage.saveRefreshToken(jsonData["hashedRefreshToken"]);
       TokenStorage.saveToken(jsonData["accessToken"]).then(
         (value) async {
           await getUser(context: context);
