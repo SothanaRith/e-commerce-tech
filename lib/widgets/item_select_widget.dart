@@ -1,6 +1,7 @@
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
+import 'package:e_commerce_tech/widgets/safe_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -33,7 +34,7 @@ class ItemSelectWidget extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(100),
             child: Image.network(
-              "${imageUrl[i]}",
+              safeImageUrl("${imageUrl[i]}"),
               width: 50.w,
               height: 50.w,
               fit: BoxFit.cover,
@@ -146,7 +147,7 @@ class ItemSelectWidget extends StatelessWidget {
               ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.network(
-                    imageUrl.isEmpty ? '' : imageUrl[0],
+                    safeImageUrl( imageUrl.isEmpty ? '' : imageUrl[0]),
                     width: 90.w,
                     height: 90.w,
                     fit: BoxFit.cover,

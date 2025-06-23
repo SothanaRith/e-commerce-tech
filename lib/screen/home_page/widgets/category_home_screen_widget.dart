@@ -2,6 +2,7 @@ import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/models/category_model.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
+import 'package:e_commerce_tech/widgets/safe_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -70,7 +71,7 @@ class CategoryHomeScreenWidget extends StatelessWidget {
               ),
               child: ClipOval(
                 child: Image.network(
-                  "${category.imageUrl}",
+                  safeImageUrl("${category.imageUrl}"),
                   fit: BoxFit.cover,
                   errorBuilder: (_, __, ___) => const Icon(Icons.image, size: 40, color: Colors.blue),
                 ),

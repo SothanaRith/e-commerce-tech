@@ -335,7 +335,7 @@ class AuthController extends GetxController {
 
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
-      await TokenStorage.saveRefreshToken(jsonData["hashedRefreshToken"]);
+      await TokenStorage.saveRefreshToken(jsonData["refreshToken"]);
       if (jsonData["accessToken"] != null && jsonData["accessToken"] != "") {
         await TokenStorage.saveToken(jsonData["accessToken"]);
         showCustomDialog(
@@ -388,8 +388,8 @@ class AuthController extends GetxController {
     update();
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
-      print(jsonData["hashedRefreshToken"]);
-      await TokenStorage.saveRefreshToken(jsonData["hashedRefreshToken"]);
+      print(jsonData["refreshToken"]);
+      await TokenStorage.saveRefreshToken(jsonData["refreshToken"]);
       TokenStorage.saveToken(jsonData["accessToken"]).then(
         (value) async {
           await getUser(context: context);

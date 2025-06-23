@@ -13,6 +13,7 @@ import 'package:e_commerce_tech/widgets/flexible_image_preview_widget.dart';
 import 'package:e_commerce_tech/widgets/grid_custom_widget.dart';
 import 'package:e_commerce_tech/widgets/item_card_widget.dart';
 import 'package:e_commerce_tech/widgets/list_view_horizontal_widget.dart';
+import 'package:e_commerce_tech/widgets/safe_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -157,9 +158,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 child: Positioned(
                                   top: 0,
                                   child: Image.network(
-                                    "$selectedImageUrl",
-                                    height:
-                                    MediaQuery.sizeOf(context).height / 1.5 - 35,
+                                    safeImageUrl("$selectedImageUrl"),
+                                    height: MediaQuery.sizeOf(context).height / 1.5 - 35,
                                     width: MediaQuery.sizeOf(context).width,
                                     fit: BoxFit.cover,
                                   ),
@@ -202,7 +202,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                               width: 2,
                                             ),
                                             image: DecorationImage(
-                                              image: NetworkImage("$url"),
+                                              image: NetworkImage(safeImageUrl("$url")),
                                               fit: BoxFit.cover,
                                             ),
                                           ),
@@ -432,7 +432,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                                 decoration: BoxDecoration(
                                                   borderRadius: BorderRadius.circular(5),
                                                   image: DecorationImage(
-                                                    image: NetworkImage(imageUrl),
+                                                    image: NetworkImage(safeImageUrl(imageUrl)),
                                                     fit: BoxFit.cover,
                                                   ),
                                                 ),
@@ -485,7 +485,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     ],
                   ),
                 ),
-
                 // Back Button
                 Positioned(
                   top: 50,

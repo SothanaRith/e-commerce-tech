@@ -8,6 +8,7 @@ import 'package:e_commerce_tech/screen/product_details_page/product_details_scre
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_dialog.dart';
+import 'package:e_commerce_tech/widgets/safe_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -126,7 +127,7 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                 Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: NetworkImage("$mainPoint${widget.product.imageUrl?.first}"),
+                      image: NetworkImage(safeImageUrl("${widget.product.imageUrl?.first}")),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(12),

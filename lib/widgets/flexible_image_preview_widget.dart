@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
+import 'package:e_commerce_tech/widgets/safe_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
@@ -27,6 +28,7 @@ class FlexibleImagePreview extends StatelessWidget {
     try {
       if (img is File) return FileImage(img);
       if (img is String && img.startsWith('http')) return NetworkImage(img);
+      if (img is String) return NetworkImage(safeImageUrl(img));
     } catch (_) {}
     return null;
   }

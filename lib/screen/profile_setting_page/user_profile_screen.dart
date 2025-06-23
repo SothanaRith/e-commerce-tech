@@ -5,6 +5,7 @@ import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_button_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_text_field_widget.dart';
+import 'package:e_commerce_tech/widgets/safe_network_image.dart';
 import 'package:e_commerce_tech/widgets/select_image_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -118,10 +119,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   backgroundColor: Colors.grey[300],
                                   // Placeholder color
                                   backgroundImage: NetworkImage(
-                                    logic.userProfile != null ? logic.userProfile ?? 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740' : user?.coverImage != null
+                                      safeImageUrl(logic.userProfile != null ? logic.userProfile ?? 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740' : user?.coverImage != null
                                         ? "${user!.coverImage}"
                                         : 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740',
-                                  ),
+                                  )),
                                 ),
                               ),
                               GestureDetector(
