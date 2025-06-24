@@ -37,7 +37,7 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
   void _showAddToCartQuantityDialog() {
     _dialogQuantity = widget.product.cartQuantity == 0 ? 1 : widget.product.cartQuantity ?? 1;
     AwesomeDialog(
-      context: widget.parentContext,
+      context: context,
       dialogType: DialogType.info,
       animType: AnimType.bottomSlide,
       title: 'select_quantity'.tr,

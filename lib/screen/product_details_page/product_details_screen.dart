@@ -1,4 +1,5 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce_tech/controllers/cart_controller.dart';
 import 'package:e_commerce_tech/controllers/product_controller.dart';
 import 'package:e_commerce_tech/controllers/wishlist_contoller.dart';
@@ -119,12 +120,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       await productController.getProductById(
         context: context,
         id: widget.id, userId: UserStorage.currentUser?.id.toString() ?? '',
-      );
-      setState(() {
+      ).then((value) => setState(() {
         if (productController.product.imageUrl != null && productController.product.imageUrl!.isNotEmpty) {
           selectedImageUrl = productController.product.imageUrl!.first;
         }
-      });
+      }),);
+
     });
   }
 
@@ -157,12 +158,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 },
                                 child: Positioned(
                                   top: 0,
-                                  child: Image.network(
-                                    safeImageUrl("$selectedImageUrl"),
-                                    height: MediaQuery.sizeOf(context).height / 1.5 - 35,
-                                    width: MediaQuery.sizeOf(context).width,
-                                    fit: BoxFit.cover,
-                                  ),
+                                  child: CachedNetworkImage(
+                                  imageUrl: safeImageUrl("$selectedImageUrl"),
+                                  placeholder: (context, url) => Center(child: CircularProgressIndicator(color: theme.primaryColor,)),
+                                  errorWidget: (context, url, error) => Icon(Icons.error),
+                                  height: MediaQuery.sizeOf(context).height / 1.5 - 35,
+                                  width: MediaQuery.sizeOf(context).width,
+                                  fit: BoxFit.cover,
+                                  )
                                 ),
                               ),
                             Positioned(

@@ -222,7 +222,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                 GetBuilder<LocationController>(builder: (logicLocation) {
                   return logic.cartList.isNotEmpty ? ElevatedButton(
                     onPressed: () {
-                      logicLocation.addressesDefault?.id != null || logicLocation.addressesDefault?.id != '' ? Navigator.push(
+                      print(logicLocation.addressesDefault?.id);
+                      logicLocation.addressesDefault?.id != null && logicLocation.addressesDefault?.id != '' ? Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => PaymentMethodScreen(

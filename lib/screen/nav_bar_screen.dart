@@ -66,6 +66,7 @@ class _MainScreenState extends State<MainScreen> {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
+        resizeToAvoidBottomInset: false, // Prevents UI from resizing when keyboard appears
         backgroundColor: Colors.black,
         body: Stack(
           children: [
@@ -77,56 +78,61 @@ class _MainScreenState extends State<MainScreen> {
               bottom: 20,
               left: 20,
               right: 20,
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                height: 70,
-                decoration: BoxDecoration(
-                  color: theme.disabledColor,
-                  borderRadius: BorderRadius.circular(35),
-                ),
-                child: GNav(
-                  color: theme.highlightColor,
-                  activeColor: theme.disabledColor,
-                  tabBackgroundColor: theme.secondaryHeaderColor,
-                  padding: const EdgeInsets.all(12),
-                  selectedIndex: currentPageIndex,
-
-                  gap: 8,
-                  tabs: [
-                    GButton(
-                      icon: Icons.h_mobiledata,
-                      leading: SvgPicture.asset("assets/images/icons/home.svg", width: 40, color: theme.highlightColor,),
-                      text: '',
+              child: IgnorePointer(
+                ignoring: MediaQuery.of(context).viewInsets.bottom != 0,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 200),
+                  opacity: MediaQuery.of(context).viewInsets.bottom == 0 ? 1.0 : 0.0,
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    height: 70,
+                    decoration: BoxDecoration(
+                      color: theme.disabledColor,
+                      borderRadius: BorderRadius.circular(35),
                     ),
-                    GButton(
-                      icon: Icons.store,
-                      leading: SvgPicture.asset("assets/images/icons/store.svg", width: 40, color: theme.highlightColor,),
-                      text: '',
+                    child: GNav(
+                      color: theme.highlightColor,
+                      activeColor: theme.disabledColor,
+                      tabBackgroundColor: theme.secondaryHeaderColor,
+                      padding: const EdgeInsets.all(12),
+                      selectedIndex: currentPageIndex,
+                      gap: 8,
+                      tabs: [
+                        GButton(
+                          icon: Icons.h_mobiledata,
+                          leading: SvgPicture.asset("assets/images/icons/home.svg", width: 40, color: theme.highlightColor),
+                          text: '',
+                        ),
+                        GButton(
+                          icon: Icons.store,
+                          leading: SvgPicture.asset("assets/images/icons/store.svg", width: 40, color: theme.highlightColor),
+                          text: '',
+                        ),
+                        GButton(
+                          icon: CupertinoIcons.heart,
+                          leading: SvgPicture.asset("assets/images/icons/heart.svg", width: 40, color: theme.highlightColor),
+                          text: '',
+                        ),
+                        GButton(
+                          icon: Icons.person,
+                          leading: SvgPicture.asset("assets/images/icons/profile.svg", width: 40, color: theme.highlightColor),
+                          text: '',
+                        ),
+                      ],
+                      onTabChange: (value) {
+                        if (value == 0) {
+                          homeController.loadHome(page: 1, userId: UserStorage.currentUser?.id ?? '', context: context);
+                        } else if (value == 1) {
+                          searchController.searchProduct(context: context, userId: UserStorage.currentUser?.id ?? '');
+                        } else if (value == 2) {
+                          wishlistController.getAllWishlist(context: context, userId: UserStorage.currentUser?.id ?? '');
+                        }
+                        setState(() {
+                          currentPageIndex = value;
+                        });
+                      },
                     ),
-                    GButton(
-                      icon: CupertinoIcons.heart,
-                      leading: SvgPicture.asset("assets/images/icons/heart.svg", width: 40, color: theme.highlightColor,),
-                      text: '',
-                    ),
-                    GButton(
-                      icon: Icons.person,
-                      leading: SvgPicture.asset("assets/images/icons/profile.svg", width: 40, color: theme.highlightColor,),
-                      text: '',
-                    ),
-                  ],
-                  onTabChange: (value) {
-                    print(value);
-                    if (value == 0) {
-                      homeController.loadHome(page: 1, userId: UserStorage.currentUser?.id ?? '', context: context);
-                    } else if (value == 1) {
-                      searchController.searchProduct(context: context, userId: UserStorage.currentUser?.id ?? '');
-                    } else if (value == 2) {
-                      wishlistController.getAllWishlist(context: context, userId: UserStorage.currentUser?.id ?? '');
-                    } else if (value == 3) {}
-                    setState(() {
-                      currentPageIndex = value;
-                    });
-                  },
+                  ),
                 ),
               ),
             ),
