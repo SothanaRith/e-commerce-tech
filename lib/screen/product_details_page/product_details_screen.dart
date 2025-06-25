@@ -453,10 +453,30 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
                       if (product.variants != null &&
                           product.variants!.isNotEmpty) ...[
-                        const SizedBox(height: 24),
                         Padding(
                           padding: const EdgeInsets.all(12.0),
-                          child: AppText.title1("store_contacts".tr),
+                          child: AppText.title1("detail".tr),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: product.variants?[0].variantAttributes?.map((attribute) {
+                              return Row(
+                                children: [
+                                  AppText.body(
+                                    "${attribute.name}: ",
+                                    customStyle: TextStyle(color: theme.highlightColor),
+                                  ),
+                                  SizedBox(width: 8),
+                                  AppText.title(
+                                    "${attribute.value}",
+                                    customStyle: TextStyle(color: theme.primaryColor),
+                                  ),
+                                ],
+                              );
+                            }).toList() ?? [],
+                          ),
                         ),
                         const SizedBox(height: 24),
                       ],

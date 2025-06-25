@@ -128,6 +128,11 @@ class AppText extends StatelessWidget {
         (width / 375); // Assuming 375 is a standard width (iPhone X)
   }
 
+  String stripHtmlTags(String htmlText) {
+    final regex = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: false);
+    return htmlText.replaceAll(regex, '').trim();
+  }
+
   @override
   Widget build(BuildContext context) {
     double baseFontSize;
@@ -170,7 +175,7 @@ class AppText extends StatelessWidget {
     double fontSize = _responsiveFontSize(context, baseFontSize);
 
     return Text(
-      text,
+      stripHtmlTags(text),
       style: style
           .copyWith(
             fontSize: fontSize,
