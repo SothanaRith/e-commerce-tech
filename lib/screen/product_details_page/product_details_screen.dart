@@ -401,14 +401,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.end,
                                             children: [
-                                              AppText.caption(
-                                                  "Mar 30 2024"), // TODO: Add actual date if available
                                               Row(
                                                 children: List.generate(
                                                   int.tryParse(review.rating ?? '0') ?? 0,
                                                       (index) => const Icon(
-                                                    Icons.star,
-                                                    size: 16,
+                                                    Icons.star_rounded,
+                                                    size: 18,
+                                                    color: Colors.amber,
                                                   ),
                                                 ),
                                               ),
