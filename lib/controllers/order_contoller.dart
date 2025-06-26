@@ -138,11 +138,11 @@ class OrderController extends GetxController {
         "bankName": "KHQR",
         "subtitle": "for all bank payment in Cambodia",
       },
-      {
-        "imageUrl": "https://cdn6.aptoide.com/imgs/2/a/6/2a6b391e2053870eac06539bd99d51a6_icon.png",
-        "bankName": "ABA Offline Payment",
-        "subtitle": "Advanced Bank of Asia Limited",
-      },
+      // {
+      //   "imageUrl": "https://cdn6.aptoide.com/imgs/2/a/6/2a6b391e2053870eac06539bd99d51a6_icon.png",
+      //   "bankName": "ABA Offline Payment",
+      //   "subtitle": "Advanced Bank of Asia Limited",
+      // },
     ];
   }
 

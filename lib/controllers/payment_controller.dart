@@ -262,7 +262,7 @@ class PaymentController extends GetxController {
           merchantName: 'Snap Buy ($billingNumber)',
           billNumber: billingNumber,
           currency: currency,
-          amount: double.parse("50"),
+          amount: double.parse(amount),
           expirationTimestamp: expire
       );
       final khqrData = await _khqrSdk.generateIndividual(info);
@@ -300,7 +300,7 @@ class PaymentController extends GetxController {
         merchantId: '1241779',
         merchantName: 'Heang Sothanarith',
         currency: KhqrCurrency.khr,
-        amount: 100,
+        amount: double.parse(amount),
         merchantCategoryCode: "8220",
         expirationTimestamp: expire,
       );
