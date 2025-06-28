@@ -118,14 +118,27 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 5)],
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
                   children: [
-                    AppText.title1("total_amount_:".tr),
-                    AppText.title1("\$${totalPrice.toStringAsFixed(2)}"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        AppText.title1("total_amount_:".tr),
+                        AppText.title1("\$${totalPrice.toStringAsFixed(2)}"),
+                      ],
+                    ),
+                    SizedBox(height: 6,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        AppText.title1("TO REAL".tr),
+                        AppText.title1("\៛${(totalPrice * 4000).toStringAsFixed(2)}"),
+                      ],
+                    )
                   ],
                 ),
               ),
+
               const SizedBox(height: 20),
               paymentMethods.isEmpty
                   ? Center(
@@ -255,7 +268,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
                       barrierDismissible: false,
                       builder: (context) {
                                 return PaymentDialog(
-                                  amount: "${totalPrice.toStringAsFixed(2)}",
+                                  amount: "${(totalPrice * 4000).toStringAsFixed(2)}",
                                   currency: KhqrCurrency.khr,
                                   paymentType:
                                       paymentMethods[selectedMethodIndex ?? 0]

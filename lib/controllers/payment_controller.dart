@@ -300,7 +300,7 @@ class PaymentController extends GetxController {
         merchantId: '1241779',
         merchantName: 'Heang Sothanarith',
         currency: KhqrCurrency.khr,
-        amount: double.parse(amount),
+        amount: double.parse((amount * 4000)),
         merchantCategoryCode: "8220",
         expirationTimestamp: expire,
       );

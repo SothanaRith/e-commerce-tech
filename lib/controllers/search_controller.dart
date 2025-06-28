@@ -80,8 +80,6 @@ class SearchingController extends GetxController {
       } else {
         searchResults = products;
       }
-
-      print("work here");
       currentPage = page;
       pageSize = size;
       totalPages = jsonData["pagination"]?["totalPages"] ?? 1;
