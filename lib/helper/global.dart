@@ -3,7 +3,8 @@ import 'package:intl/intl.dart';
 
 late final ApiRepository apiRepository;
 
-late final String mainPoint = "http://192.168.0.102:3000";
+String mainPoint = "http://192.168.0.102:3000"; // Default value
+
 // late final String mainPoint = "https://c9f0-58-97-220-69.ngrok-free.app";
 
 String formatDateString(String dateString) {

@@ -11,6 +11,9 @@ import 'package:e_commerce_tech/utils/dep.dart' as dep;
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/app_route.dart';
 import 'package:e_commerce_tech/utils/messages.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'helper/global.dart';
 // import 'package:uni_links3/uni_links.dart';
 // Setup theme color and text
 final ThemeController themeController = Get.find<ThemeController>();
@@ -33,12 +36,18 @@ void main() async {
 
   // Initialize theme controller
   Get.put(ThemeController());
+  mainPoint = await getMainPointFromSettings() ?? "http://192.168.0.102:3000";
 
   // Set preferred orientation to portrait mode
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {
     runApp(MyApp(languages: _languages)); // Start the app after initialization
   });
   // handleIncomingLinks();
+}
+
+Future<String?> getMainPointFromSettings() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('main_point');
 }
 
 // void handleIncomingLinks() {

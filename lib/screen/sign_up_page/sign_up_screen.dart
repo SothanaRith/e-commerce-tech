@@ -1,4 +1,5 @@
 import 'package:e_commerce_tech/controllers/auth_controller.dart';
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/forget_password_page/privacy.dart';
 import 'package:e_commerce_tech/screen/login_page/login_screen.dart';
@@ -9,6 +10,7 @@ import 'package:e_commerce_tech/widgets/custom_button_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -38,6 +40,47 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.initState();
   }
 
+  void showChangeMainPointDialog(BuildContext context) {
+    final TextEditingController controller = TextEditingController(text: mainPoint);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Change API Endpoint'),
+          content: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              hintText: 'Enter new mainPoint URL',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                setState(() {
+                  mainPoint = controller.text;
+                });
+
+                // Save to SharedPreferences (optional)
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setString('main_point', mainPoint);
+
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('MainPoint updated to $mainPoint'),
+                ));
+              },
+              child: Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +95,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    AppText.h1("sign_up".tr),
+                    GestureDetector(
+                      onLongPress: () {
+                        showChangeMainPointDialog(context);
+                      },
+                      child: AppText.h1("sign_up".tr),
+                    ),
                     SizedBox(
                       height: 10,
                     ),
