@@ -108,45 +108,45 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     buttonStyle: BtnStyle.action,
                   ),
-                  SizedBox(height: 50),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: 0.2,
-                        width: 70,
-                        color: theme.highlightColor,
-                      ),
-                      SizedBox(width: 8),
-                      AppText.caption("or_sign_in_with".tr),
-                      SizedBox(width: 8),
-                      Container(
-                        height: 0.2,
-                        width: 70,
-                        color: theme.highlightColor,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      socialBtn(
-                          icons: "assets/images/icons/apple.png", action: () {
-                        goTo(this, ComingSoonScreen());
-                      }),
-                      SizedBox(width: 10),
-                      socialBtn(
-                          icons: "assets/images/icons/google.png", action: () {
-                        goTo(this, ComingSoonScreen());
-                      }),
-                      SizedBox(width: 10),
-                      socialBtn(
-                          icons: "assets/images/icons/facebook.png", action: () {
-                        goTo(this, ComingSoonScreen());
-                      }),
-                    ],
-                  ),
+                  // SizedBox(height: 50),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     Container(
+                  //       height: 0.2,
+                  //       width: 70,
+                  //       color: theme.highlightColor,
+                  //     ),
+                  //     SizedBox(width: 8),
+                  //     AppText.caption("or_sign_in_with".tr),
+                  //     SizedBox(width: 8),
+                  //     Container(
+                  //       height: 0.2,
+                  //       width: 70,
+                  //       color: theme.highlightColor,
+                  //     ),
+                  //   ],
+                  // ),
+                  // SizedBox(height: 30),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     socialBtn(
+                  //         icons: "assets/images/icons/apple.png", action: () {
+                  //       goTo(this, ComingSoonScreen());
+                  //     }),
+                  //     SizedBox(width: 10),
+                  //     socialBtn(
+                  //         icons: "assets/images/icons/google.png", action: () {
+                  //       goTo(this, ComingSoonScreen());
+                  //     }),
+                  //     SizedBox(width: 10),
+                  //     socialBtn(
+                  //         icons: "assets/images/icons/facebook.png", action: () {
+                  //       goTo(this, ComingSoonScreen());
+                  //     }),
+                  //   ],
+                  // ),
                   SizedBox(height: 35),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
