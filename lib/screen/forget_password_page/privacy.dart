@@ -40,6 +40,12 @@ class PrivacyScreen extends StatelessWidget {
             content:
             'We use encryption and secure storage practices to protect your data. However, no method of ...',
           ),
+          SizedBox(height: 16.0),
+          PrivacySectionWidget(
+            title: '6. Exchange',
+            content: 'All payments must be made in the official Cambodian currency (KHR).',
+          ),
+          SizedBox(height: 50.0),
         ],
       ),
     );
