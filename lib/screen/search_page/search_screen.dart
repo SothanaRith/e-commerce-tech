@@ -159,6 +159,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                   ),
                 ),
+                SizedBox(width: 14,),
                 FilterDialogWidget(
                   child: Container(
                     padding: const EdgeInsets.all(12),
