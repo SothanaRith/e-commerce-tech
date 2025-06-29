@@ -144,6 +144,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       title: "password".tr,
                       subtitle: passwordErrorText,
                       controller: passwordTextField,
+                      isObscureText: true,
                     ),
                     SizedBox(
                       height: 10,
