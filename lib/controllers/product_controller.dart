@@ -15,6 +15,7 @@ class ProductController extends GetxController {
   bool isLoading = false;
   ProductModel product = ProductModel();
   List<ProductModel> listProduct = [];
+  String selectedImageUrl = '';
   // late final String mainPoint = "http://192.168.1.6:6000";
   ProductController() {
     apiRepository = ApiRepository();
@@ -67,14 +68,16 @@ class ProductController extends GetxController {
       context: context,
     );
 
-    isLoading = false;
-    update();
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
-      print("Fetched Data: $jsonData");
 
       // Convert JSON to ProductModel
       product = ProductModel.fromJson(jsonData);
+      if (product.imageUrl != null && product.imageUrl!.isNotEmpty) {
+        selectedImageUrl = product.imageUrl!.first;
+      }
+
+      isLoading = false;
       update();
       return product;
     } else {

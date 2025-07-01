@@ -33,8 +33,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   final ProductController productController = Get.put(ProductController());
   final WishlistController wishlistController = Get.put(WishlistController());
 
-  String? selectedImageUrl; // Track current main image
-
   final CartController cartController = Get.put(CartController());
 
   int _dialogQuantity = 1;
@@ -120,12 +118,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       await productController.getProductById(
         context: context,
         id: widget.id, userId: UserStorage.currentUser?.id.toString() ?? '',
-      ).then((value) => setState(() {
-        if (productController.product.imageUrl != null && productController.product.imageUrl!.isNotEmpty) {
-          selectedImageUrl = productController.product.imageUrl!.first;
-        }
-      }),);
-
+      );
     });
   }
 
@@ -151,21 +144,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            if (selectedImageUrl != null)
+                            if (controller.selectedImageUrl.isNotEmpty)
                               GestureDetector(
-                                onTap: () {
-                                  goTo(this, FlexibleImagePreview(image: "$selectedImageUrl"));
-                                },
-                                child: Positioned(
-                                  top: 0,
-                                  child: CachedNetworkImage(
-                                  imageUrl: safeImageUrl("$selectedImageUrl"),
-                                  placeholder: (context, url) => Center(child: CircularProgressIndicator(color: theme.primaryColor,)),
-                                  errorWidget: (context, url, error) => Icon(Icons.error),
+                                onTap: () => goTo(this, FlexibleImagePreview(image: controller.selectedImageUrl)),
+                                child: CachedNetworkImage(
+                                  imageUrl: safeImageUrl(controller.selectedImageUrl),
+                                  placeholder: (context, url) =>
+                                      Center(child: CircularProgressIndicator(color: theme.primaryColor)),
+                                  errorWidget: (context, url, error) => const Icon(Icons.error),
                                   height: MediaQuery.sizeOf(context).height / 1.5 - 35,
-                                  width: MediaQuery.sizeOf(context).width,
+                                  width: double.infinity,
                                   fit: BoxFit.cover,
-                                  )
                                 ),
                               ),
                             Positioned(
@@ -188,7 +177,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                       return GestureDetector(
                                         onTap: () {
                                           setState(() {
-                                            selectedImageUrl = url;
+                                            controller.selectedImageUrl = url;
                                           });
                                         },
                                         child: Container(
@@ -199,7 +188,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(5),
                                             border: Border.all(
-                                              color: selectedImageUrl == url
+                                              color: controller.selectedImageUrl == url
                                                   ? theme.primaryColor
                                                   : Colors.transparent,
                                               width: 2,
