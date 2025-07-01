@@ -44,8 +44,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
       appBar: customAppBar(type: this, title: "checkout".tr, context: context),
       body: GetBuilder<CartController>(
         builder: (logic) {
-
-          if (logic.cartList.isEmpty) {
+          if (logic.cartList.isEmpty && !logic.isLoadingProducts.value) {
             return Center(child: Text("your_cart_is_empty".tr));
           }
           return Skeletonizer(
