@@ -28,6 +28,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController passwordTextField = TextEditingController();
   TextEditingController phoneNumberTextField = TextEditingController();
   bool isAgree = false;
+  bool isValidPassword(String password) {
+    final passwordRegex =
+    RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$');
+    return passwordRegex.hasMatch(password);
+  }
 
   String emailErrorText = "";
   String nameErrorText = "";
@@ -199,41 +204,62 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         if (!isAgree) {
                           return;
                         }
-                        nameErrorText = "";
-                        emailErrorText = "";
-                        passwordErrorText = "";
-                        phoneErrorText = "";
-                        if (nameTextField.text == "") {
+
+                        setState(() {
+                          nameErrorText = "";
+                          emailErrorText = "";
+                          passwordErrorText = "";
+                          phoneErrorText = "";
+                        });
+
+                        bool hasError = false;
+
+                        if (nameTextField.text.isEmpty) {
                           setState(() {
                             nameErrorText = "name_is_require_!";
                           });
-                        } else if (emailTextField.text == "") {
+                          hasError = true;
+                        }
+
+                        if (emailTextField.text.isEmpty) {
                           setState(() {
                             emailErrorText = "email_is_require_!";
                           });
-                        } else if (passwordTextField.text == "") {
-                          setState(() {
-                            passwordErrorText = "password_is_require_!";
-                          });
-                        } else if (phoneNumberTextField.text == "") {
+                          hasError = true;
+                        }
+
+                        if (phoneNumberTextField.text.isEmpty) {
                           setState(() {
                             phoneErrorText = "phone_is_require_!";
                           });
-                        } else {
-                          authController
-                              .signup(
-                              name: nameTextField.text,
-                              email: emailTextField.text,
-                              password: passwordTextField.text,
-                              phone: phoneNumberTextField.text,
-                              role: "buyer",
-                              context: context)
-                              .then(
-                                (value) {},
-                          );
+                          hasError = true;
                         }
 
-                        // goOff(this, LocationScreen());
+                        if (passwordTextField.text.isEmpty) {
+                          setState(() {
+                            passwordErrorText = "password_is_require_!";
+                          });
+                          hasError = true;
+                        } else if (!isValidPassword(passwordTextField.text)) {
+                          setState(() {
+                            passwordErrorText =
+                            "Password must be at least 8 characters,\ninclude uppercase, lowercase, number and symbol.";
+                          });
+                          hasError = true;
+                        }
+
+                        if (!hasError) {
+                          authController
+                              .signup(
+                            name: nameTextField.text,
+                            email: emailTextField.text,
+                            password: passwordTextField.text,
+                            phone: phoneNumberTextField.text,
+                            role: "buyer",
+                            context: context,
+                          )
+                              .then((value) {});
+                        }
                       },
                       buttonStyle: isAgree ? BtnStyle.action : BtnStyle.normal,
                     ),
