@@ -104,8 +104,8 @@ class _HelpCenterState extends State<HelpCenter> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Email: support@example.com'),
-                      Text('Phone: +1-800-555-1234'),
+                      Text('Email: snapbuy81@gmail.com'),
+                      Text('Phone: +855 127 943 3221'),
                       Text('Hours: Monday - Friday, 9 AM - 5 PM'),
                     ],
                   ),
