@@ -266,6 +266,7 @@ class _SearchScreenState extends State<SearchScreen> {
         return Skeletonizer(
           enabled: logic.currentPage == 1 && logic.isLoading,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
