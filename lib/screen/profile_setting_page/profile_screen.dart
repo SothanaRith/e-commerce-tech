@@ -2,6 +2,7 @@ import 'package:e_commerce_tech/controllers/auth_controller.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/user_model.dart';
+import 'package:e_commerce_tech/screen/chat_bot_page/chat_bot_screen.dart';
 import 'package:e_commerce_tech/screen/check_out_page/check_out_screen.dart';
 import 'package:e_commerce_tech/screen/check_out_page/shipping_address_screen.dart';
 import 'package:e_commerce_tech/screen/forget_password_page/forget_password_screen.dart';
@@ -41,6 +42,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       title: 'check_out'.tr,
       iconName: "assets/images/icons/store.svg",
       screen: const CheckOutScreen(),
+      hasSpecialAction: false,
+    ),
+    MenuItem(
+      title: 'chat_bot'.tr,
+      iconName: "assets/images/icons/store.svg",
+      screen: ChatScreen(),
       hasSpecialAction: false,
     ),
     MenuItem(

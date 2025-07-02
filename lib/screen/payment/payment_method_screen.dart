@@ -50,6 +50,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
+      print("object is resumed");
       if (PaymentStorage.md5 != null) {
         if (PaymentStorage.md5 != '') {
           Future.delayed(Duration.zero, () {
