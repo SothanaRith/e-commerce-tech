@@ -2,6 +2,7 @@ import 'package:e_commerce_tech/controllers/auth_controller.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/language_screen.dart';
 import 'package:e_commerce_tech/screen/nav_bar_screen.dart';
+import 'package:e_commerce_tech/screen/profile_setting_page/profile_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen> {
         // Already logged in
       } else {
         // Not logged in
-        goOff(this, const LoginScreen());
+        goOff(this, const ProfileScreen());
       }
     }
   }
