@@ -170,11 +170,11 @@ class OrderController extends GetxController {
     await Future.delayed(Duration(seconds: 1)); // simulate network delay
 
     return [
-      {
-        "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAksY2TS0gKo7ahWTiy73LEAvW6Hezllu7eQ&s",
-        "bankName": "Bakong App",
-        "subtitle": "National Bank",
-      },
+      // {
+      //   "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAksY2TS0gKo7ahWTiy73LEAvW6Hezllu7eQ&s",
+      //   "bankName": "Bakong App",
+      //   "subtitle": "National Bank",
+      // },
       {
         "imageUrl": "https://devithuotkeo.com/static/image/portfolio/khqr/khqr-5.png",
         "bankName": "KHQR",
