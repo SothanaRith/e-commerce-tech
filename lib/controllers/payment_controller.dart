@@ -174,7 +174,6 @@ class PaymentController extends GetxController {
                   }
                 },
               );
-
               PaymentStorage.clearCheckPayment();
               update();
             }

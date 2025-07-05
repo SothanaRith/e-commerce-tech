@@ -126,5 +126,8 @@
   "submit": "Submit",
 
   "billing_number": "Billing number",
-  "waiting_for_admin_check": "Waiting for admin check"
+  "waiting_for_admin_check": "Waiting for admin check",
+  "chat_bot": "chat bot",
+  "payment_type": "Payment type",
+  "hi_do_you_have_anything_that_i_can_help_you_today": "Hi, do you have anything that I can help you today?"
 }

@@ -53,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen> {
         // Already logged in
       } else {
         // Not logged in
-        goOff(this, const ProfileScreen());
+        goOff(this, const LoginScreen());
       }
     }
   }

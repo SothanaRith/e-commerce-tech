@@ -1,11 +1,11 @@
 import 'package:e_commerce_tech/controllers/order_contoller.dart';
+import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/Transaction_model.dart';
 import 'package:e_commerce_tech/screen/track_order_page/order_transaction_detail_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/item_select_widget.dart';
-import 'package:e_commerce_tech/widgets/list_view_custom_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -25,12 +25,12 @@ class _MyOrderScreenState extends State<MyOrderScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
 
     final userId = UserStorage.currentUser?.id.toString() ?? '';
 
     Future.delayed(Duration.zero, () {
-      orderController.getTransactionById(
+      orderController.getOrderById(
         context: context,
         status: 'pending',
         userId: userId,
@@ -40,11 +40,11 @@ class _MyOrderScreenState extends State<MyOrderScreen>
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) return;
 
-      final statuses = ['pending', 'completed', 'failed'];
+      final statuses = ['pending', 'delivery', 'completed', 'cancelled'];
       final status = statuses[_tabController.index];
 
       Future.delayed(Duration.zero, () {
-        orderController.getTransactionById(
+        orderController.getOrderById(
           context: context,
           status: status,
           userId: userId,
@@ -64,18 +64,22 @@ class _MyOrderScreenState extends State<MyOrderScreen>
     return Scaffold(
       appBar: customAppBar(type: this, title: "my_order".tr, context: context, bottom: TabBar(
         controller: _tabController,
+        indicatorColor: theme.primaryColor,
+        labelColor: theme.primaryColor,
         tabs: [
-          Tab(text: "pending".tr),
-          Tab(text: "complete".tr),
-          Tab(text: "cancel".tr),
+          Tab(text: "pending".tr, icon: Icon(Icons.watch_later_outlined),),
+          Tab(text: "delivery".tr, icon: Icon(Icons.delivery_dining),),
+          Tab(text: "complete".tr, icon: Icon(Icons.done),),
+          Tab(text: "cancel".tr, icon: Icon(Icons.cancel),),
         ],
       ),),
       body: TabBarView(
         controller: _tabController,
         children: const [
           OrdersTab(status: 'pending'),
+          OrdersTab(status: 'delivery'),
           OrdersTab(status: 'completed'),
-          OrdersTab(status: 'failed'),
+          OrdersTab(status: 'cancelled'),
         ],
       ),
     );

@@ -36,7 +36,7 @@ void main() async {
 
   // Initialize theme controller
   Get.put(ThemeController());
-  mainPoint = await getMainPointFromSettings() ?? "http://192.168.0.102:3000";
+  mainPoint = await getMainPointFromSettings() ?? "http://192.168.0.105:3000";
 
   // Set preferred orientation to portrait mode
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {

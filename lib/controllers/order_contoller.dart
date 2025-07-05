@@ -17,8 +17,51 @@ class OrderController extends GetxController {
   // Store transactions keyed by status
   Map<String, List<TransactionModel>> transactionsByStatus = {};
 
+  // /// Fetch transactions by status and userId, store them by status key.
+  // Future<List<TransactionModel>> getTransactionById({
+  //   required BuildContext context,
+  //   required String status,
+  //   required String userId,
+  // }) async {
+  //   isLoading = true;
+  //   update();
+  //
+  //   final response = await apiRepository.fetchData(
+  //     '$mainPoint/api/product/transactions/$status/$userId',
+  //     headers: {
+  //       'Authorization': TokenStorage.token ?? "",
+  //       'Content-Type': 'application/json',
+  //     },
+  //     context: context,
+  //   );
+  //
+  //   isLoading = false;
+  //   update();
+  //
+  //   if (response.data != null) {
+  //     final List<dynamic> jsonData = jsonDecode(response.data!);
+  //
+  //     List<TransactionModel> transactions = jsonData
+  //         .map((item) => TransactionModel.fromJson(item))
+  //         .toList();
+  //     // Save transactions for this status
+  //     transactionsByStatus[status] = transactions;
+  //     update();
+  //
+  //     return transactions;
+  //   } else {
+  //     // Show error dialog on failure
+  //     showCustomDialog(
+  //       context: context,
+  //       type: DialogType.error,
+  //       title: "Error: ${response.error ?? 'Failed to fetch transactions'}",
+  //     );
+  //     throw Exception('Failed to fetch transactions');
+  //   }
+  // }
+
   /// Fetch transactions by status and userId, store them by status key.
-  Future<List<TransactionModel>> getTransactionById({
+  Future<List<TransactionModel>> getOrderById({
     required BuildContext context,
     required String status,
     required String userId,
@@ -27,7 +70,7 @@ class OrderController extends GetxController {
     update();
 
     final response = await apiRepository.fetchData(
-      '$mainPoint/api/product/transactions/$status/$userId',
+      '$mainPoint/api/product/orders/processed-by-user/$userId?status=$status',
       headers: {
         'Authorization': TokenStorage.token ?? "",
         'Content-Type': 'application/json',
@@ -59,7 +102,6 @@ class OrderController extends GetxController {
       throw Exception('Failed to fetch transactions');
     }
   }
-
   /// Place an order method updated to include addressId
   RxBool isPlacingOrder = false.obs;
 
