@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -7,89 +6,76 @@ import 'package:http/http.dart' as http;
 class ChatController extends GetxController {
   var messages = <ResponseModel>[].obs;
   var isLoading = false.obs;
-  var typingText = ''.obs; // Add this
+  var typingText = ''.obs;
+  var selectedModel = 'gpt-4o'.obs;
 
-  final String apiUrl = 'http://192.168.0.105:3000/api/chats'; // ⬅️ Change if deployed
+  final availableModels = [ 'gpt-4o', 'gpt-4.1', 'deepseek-r1', 'blackboxai', 'gemini-2.5-pro']; // Customize
+  final String apiUrl = 'http://192.168.0.105:1337/backend-api/v2/auto/chat';
 
-  // Track chat history (optional, your backend also does this)
-  List<Map<String, dynamic>> conversation = [];
-
-  // Send a message to your OpenAI-powered backend
-  Future<void> sendMessage(String text) async {
+  // Send user message to backend and get assistant reply
+  Future<void> sendMessage(String text, ScrollController scrollController) async {
     if (text.trim().isEmpty) return;
 
     final userMessage = text.trim();
-    messages.add(ResponseModel(
-      role: 'user',
-      content: userMessage,
-    ));
+    messages.add(ResponseModel(role: 'user', content: userMessage));
     isLoading(true);
+
     try {
+      // Send only the latest 20 messages (10 exchanges)
+      final history = messages
+          .skip(messages.length > 20 ? messages.length - 20 : 0)
+          .map((msg) => {'role': msg.role, 'content': msg.content})
+          .toList();
+
       final response = await http.post(
-        Uri.parse('$apiUrl/chat-tubo'),
+        Uri.parse(apiUrl),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({'message': userMessage, 'userId': UserStorage.currentUser?.id ?? '1'}),
+        body: json.encode({
+          'message': userMessage,
+          'model': selectedModel.value,
+          'history': history,
+        }),
       );
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-
-        final replyData = data['data'] ?? data['response'] ?? "No response";
-
-        String cleanReply(String input) {
-          if (input.startsWith('"') && input.endsWith('"')) {
-            return input.substring(1, input.length - 1);
-          }
-          return input;
-        }
-
-        final reply = cleanReply(
-            replyData is String
-                ? replyData
-                : (replyData['content'] is String
-                ? replyData['content']
-                : json.encode(replyData['content']))
-        );
-
-        await animateTyping(reply);
+        final reply = data['reply'] ?? "No reply";
+        await animateTyping(reply, scrollController);
       } else {
-        await animateTyping('❌ Error: ${response.statusCode} - ${response.reasonPhrase}');
+        await animateTyping('❌ ${response.statusCode} - ${response.reasonPhrase}', scrollController);
       }
     } catch (e) {
-      await animateTyping('⚠️ Error sending message: $e');
-      debugPrint("⚠️ Error sending message: $e");
+      await animateTyping('⚠️ Failed: $e', scrollController);
+      debugPrint("⚠️ Error: $e");
     } finally {
       isLoading(false);
     }
   }
 
-  // Clear chat (frontend only — backend memory not cleared)
+  // Typing animation effect (frontend only)
+  Future<void> animateTyping(String reply, ScrollController scrollController) async {
+    typingText.value = '';
+    for (int i = 0; i < reply.length; i++) {
+      await Future.delayed(Duration(milliseconds: 30));
+      typingText.value += reply[i];
+
+      // 👇 Auto-scroll on each character
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent + 60,
+        duration: Duration(milliseconds: 100),
+        curve: Curves.easeOut,
+      );
+    }
+
+    messages.add(ResponseModel(role: 'assistant', content: typingText.value));
+    typingText.value = '';
+  }
+
+
+  // Clear UI chat messages
   void clearChat() {
     messages.clear();
   }
-
-  // Optional: Call your backend to clear server history
-  Future<void> clearServerHistory() async {
-    try {
-      await http.post(Uri.parse('$apiUrl/clear'), headers: {'Content-Type': 'application/json'},
-        body: json.encode({'userId': UserStorage.currentUser?.id ?? ''}),);
-      clearChat();
-    } catch (e) {
-      print("Failed to clear server history: $e");
-    }
-  }
-
-  Future<void> animateTyping(String reply) async {
-    typingText.value = ''; // Clear before start
-    for (int i = 0; i < reply.length; i++) {
-      await Future.delayed(Duration(milliseconds: 30)); // typing speed
-      typingText.value += reply[i];
-    }
-    messages.add(ResponseModel(role: 'assistant', content: typingText.value));
-    typingText.value = ''; // Reset after full message is added
-  }
-
-
 }
 
 class ResponseModel {

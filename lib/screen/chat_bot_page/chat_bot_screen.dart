@@ -2,6 +2,8 @@ import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_text_field_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get/get.dart';
 import 'package:e_commerce_tech/controllers/chat_contoller.dart';
 
@@ -13,7 +15,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController controller = TextEditingController();
   final ChatController chatController = Get.put(ChatController());
-
+  final ScrollController scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -28,7 +30,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
-    chatController.clearServerHistory();
     chatController.clearChat();
     super.dispose();
   }
@@ -36,7 +37,40 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(type: dynamic, title: "Chatbot", context: context),
+      appBar: customAppBar(type: dynamic, title: "Chatbot", context: context, action: [
+        Obx(() {
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: chatController.selectedModel.value,
+                icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+                dropdownColor: Colors.white,
+                style: const TextStyle(color: Colors.white, fontSize: 14),
+                alignment: Alignment.centerRight, // ✅ Text aligns to the end
+                onChanged: (newValue) {
+                  if (newValue != null) {
+                    chatController.selectedModel.value = newValue;
+                    chatController.clearChat();
+                  }
+                },
+                items: chatController.availableModels.map((model) {
+                  return DropdownMenuItem<String>(
+                    value: model,
+                    child: Text(
+                      model.toUpperCase(),
+                      style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          );
+        }),
+      ]),
       body: SafeArea(
         child: Column(
           children: [
@@ -44,6 +78,7 @@ class _ChatScreenState extends State<ChatScreen> {
             Expanded(
               child: Obx(() {
                 return ListView(
+                  controller: scrollController,
                   padding: const EdgeInsets.all(8),
                   children: [
                     ...chatController.messages.map((message) {
@@ -63,23 +98,51 @@ class _ChatScreenState extends State<ChatScreen> {
                             ),
                           SizedBox(width: 6),
                           Flexible(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-                              margin: const EdgeInsets.symmetric(vertical: 4),
-                              constraints: BoxConstraints(
-                                  maxWidth: MediaQuery.of(context).size.width * 0.7),
-                              decoration: BoxDecoration(
-                                color: isUser
-                                    ? Colors.blue.shade100
-                                    : Colors.green.shade100,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Text(
-                                message.content,
-                                style: TextStyle(fontSize: 16),
-                              ),
+                            child: Column(
+                              crossAxisAlignment:
+                              isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                              children: [
+                                // 💬 Message bubble
+                                Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+                                  margin: const EdgeInsets.symmetric(vertical: 4),
+                                  constraints: BoxConstraints(
+                                    maxWidth: MediaQuery.of(context).size.width * 0.7,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: isUser ? Colors.blue.shade100 : Colors.green.shade100,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: MarkdownBody(
+                                    data: message.content,
+                                    styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+                                      p: TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                ),
+
+                                // 📋 Copy button under bubble (both user and assistant)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4, left: 4, right: 4),
+                                  child: Align(
+                                    alignment:
+                                    isUser ? Alignment.centerRight : Alignment.centerLeft,
+                                    child: GestureDetector(
+                                        onTap: () {
+                                          Clipboard.setData(ClipboardData(text: message.content));
+                                          Get.snackbar(
+                                            "Copied",
+                                            "Message copied to clipboard",
+                                            snackPosition: SnackPosition.BOTTOM,
+                                            duration: Duration(seconds: 1),
+                                          );
+                                        },
+                                        child: Icon(Icons.copy, size: 16, color: theme.primaryColor,))
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
+                          )
                         ],
                       );
                     }).toList(),
@@ -129,8 +192,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       controller: controller,
                       onSubmitted: (text) {
                         if (text.isNotEmpty) {
-                          chatController.messages.clear();
-                          chatController.sendMessage(text);
+                          FocusScope.of(context).unfocus();
+                          chatController.sendMessage(text, scrollController);
                           controller.clear();
                         }
                       },
@@ -147,8 +210,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       icon: Icon(Icons.send, color: theme.primaryColor),
                       onPressed: () {
                         if (controller.text.isNotEmpty) {
-                          chatController.messages.clear();
-                          chatController.sendMessage(controller.text);
+                          FocusScope.of(context).unfocus();
+                          chatController.sendMessage(controller.text, scrollController);
                           controller.clear();
                         }
                       },
