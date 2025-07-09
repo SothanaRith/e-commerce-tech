@@ -130,11 +130,6 @@ class LocationController extends GetxController {
         );
       }
     } else {
-      showCustomDialog(
-        context: context,
-        type: DialogType.error,
-        title: "Error: ${response.error}",
-      );
     }
   }
 
