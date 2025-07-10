@@ -249,7 +249,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
                       },
                       okOnPress: () async {
                         if (controller.md5 == '') {
-                          await controller.generateKHQR(currency: KhqrCurrency.khr, amount: "100", context: context).then((value) => PaymentStorage.saveOrder(newBillingNumber: controller.billingNumber, newAddressId: widget.addressId, items: widget.cart, newPaymentType: paymentMethods[selectedMethodIndex ?? 0]
+                          await controller.generateKHQR(currency: KhqrCurrency.khr, amount: totalPrice, context: context).then((value) => PaymentStorage.saveOrder(newBillingNumber: controller.billingNumber, newAddressId: widget.addressId, items: widget.cart, newPaymentType: paymentMethods[selectedMethodIndex ?? 0]
                           ['bankName'] ??
                               ""),);
                         }
@@ -269,7 +269,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
                       barrierDismissible: false,
                       builder: (context) {
                                 return PaymentDialog(
-                                  amount: "${(totalPrice * 4000).toStringAsFixed(2)}",
+                                  amount: totalPrice,
                                   currency: KhqrCurrency.khr,
                                   paymentType:
                                       paymentMethods[selectedMethodIndex ?? 0]
@@ -289,7 +289,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
                         cancelOnPress: () {
                         },
                       okOnPress: () async {
-                        await controller.generateKHQRMerchantInfo(currency: KhqrCurrency.khr, amount: "100", context: context);
+                        await controller.generateKHQRMerchantInfo(currency: KhqrCurrency.khr, amount: totalPrice, context: context);
                       });
                   }
                 },

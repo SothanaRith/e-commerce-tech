@@ -249,19 +249,19 @@ class PaymentController extends GetxController {
   }
 
   // Generate KHQR QR code
-  Future<void> generateKHQR({required KhqrCurrency currency,required String amount, required BuildContext context}) async {
+  Future<void> generateKHQR({required KhqrCurrency currency,required double amount, required BuildContext context}) async {
     isLoading = true;
     billingNumber = await generateBillNumberWithRandom();
     update();
     try {
       final expire = DateTime.now().millisecondsSinceEpoch + 3600000;
       final info = IndividualInfo(
-          bakongAccountId: 'un_virak2@aclb',
+          bakongAccountId: 'un_virak3@aclb',
           // bakongAccountId: 'sothanarith_heang1@aclb',
           merchantName: 'Snap Buy ($billingNumber)',
           billNumber: billingNumber,
           currency: currency,
-          amount: double.parse(amount),
+          amount: amount * 4000,
           expirationTimestamp: expire
       );
       final khqrData = await _khqrSdk.generateIndividual(info);
@@ -287,7 +287,7 @@ class PaymentController extends GetxController {
       update();
     }
   }
-  Future<void> generateKHQRMerchantInfo({required KhqrCurrency currency,required String amount, required BuildContext context}) async {
+  Future<void> generateKHQRMerchantInfo({required KhqrCurrency currency,required double amount, required BuildContext context}) async {
     isLoading = true;
     billingNumber = await generateBillNumberWithRandom();
     update();
@@ -299,7 +299,7 @@ class PaymentController extends GetxController {
         merchantId: '1241779',
         merchantName: 'Heang Sothanarith',
         currency: KhqrCurrency.khr,
-        amount: double.parse((amount * 4000)),
+        amount: amount * 4000,
         merchantCategoryCode: "8220",
         expirationTimestamp: expire,
       );

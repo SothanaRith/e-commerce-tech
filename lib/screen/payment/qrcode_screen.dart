@@ -8,7 +8,7 @@ import 'package:khqr_sdk/khqr_sdk.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class PaymentDialog extends StatefulWidget {
-  final String amount;
+  final double amount;
   final KhqrCurrency currency;
   final String paymentType;
   final String addressId;
@@ -77,7 +77,7 @@ class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserv
                   KhqrCardWidget(
                     width: 280,
                     receiverName: 'Snap Buy',
-                    amount: double.parse(widget.amount),
+                    amount: widget.amount * 4000,
                     keepIntegerDecimal: false,
                     currency: widget.currency,
                     qr: controller.qrCode,
