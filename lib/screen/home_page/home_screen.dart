@@ -34,7 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     });
 
-
     scrollController.addListener(() {
       if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - 200) {
         if (!homeController.isLoading && homeController.hasMore) {
@@ -117,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisSpacing: 12,
                         childAspectRatio: 0.8,
                       ),
-                      itemBuilder: (context, index) {
+                      itemBuilder: (itemContext, index) {
                         if (index < controller.products.length) {
                           final product = controller.products[index];
                           return ItemCardWidget(product: product,
@@ -129,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                             onUpdateWishlist: () {
                               homeController.loadHome(page: 1, userId: UserStorage.currentUser?.id.toString() ?? '', context: context);
-                            }, parentContext: context,);
+                            }, parentContext: context);
                         } else {
                           return const Center(
                             child: Padding(
