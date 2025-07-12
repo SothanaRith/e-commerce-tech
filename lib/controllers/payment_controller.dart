@@ -91,7 +91,7 @@ class PaymentController extends GetxController {
     update();
   }
 
-  Future<void> checkTransactionStatus({required String md5, required BuildContext context, bool isOpenApp = false}) async {
+  Future<void> checkTransactionStatus({required String md5, required BuildContext context, bool isOpenApp = false, bool isOpenDialogKhqr = false}) async {
     if (isLoading) {
       return;
     }
@@ -136,7 +136,6 @@ class PaymentController extends GetxController {
           try {
             final decoded = json.decode(responseData);
             if (decoded is Map<String, dynamic> && decoded['status'] == 'Transaction successful') {
-              print("✅ Transaction successful, do something here");
               isPaymentSuccess = true;
               List<Map<String, String>> items = [];
 
@@ -203,12 +202,14 @@ class PaymentController extends GetxController {
           print("Error: $e");
           isPaymentSuccess = false;
 
-          showCustomDialog(
-            context: context,
-            type: DialogType.error,
-            title: "Failed Payment",
-            desc: "Error occurred while checking transaction",
-          );
+          if(!isOpenDialogKhqr) {
+            showCustomDialog(
+              context: context,
+              type: DialogType.error,
+              title: "Failed Payment",
+              desc: "Error occurred while checking transaction",
+            );
+          }
 
           if (isOpenApp) {
             PaymentStorage.clearCheckPayment();
@@ -256,8 +257,8 @@ class PaymentController extends GetxController {
     try {
       final expire = DateTime.now().millisecondsSinceEpoch + 3600000;
       final info = IndividualInfo(
-          bakongAccountId: 'un_virak3@aclb',
-          // bakongAccountId: 'sothanarith_heang1@aclb',
+          // bakongAccountId: 'un_virak3@aclb',
+          bakongAccountId: 'sothanarith_heang1@aclb',
           merchantName: 'Snap Buy ($billingNumber)',
           billNumber: billingNumber,
           currency: currency,

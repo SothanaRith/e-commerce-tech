@@ -89,6 +89,24 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
     }
   }
 
+  Future<void> changeTransactionWhenDialog() async {
+    if (PaymentStorage.md5 != null) {
+      if (PaymentStorage.md5 != '') {
+        Future.delayed(Duration.zero, () {
+          paymentController.checkTransactionStatus(md5: PaymentStorage.md5 ?? '', context: context).then((value) {
+
+          },);
+        });
+      } else {
+        paymentController.isLoading = false;
+        paymentController.update();
+      }
+    } else {
+      paymentController.isLoading = false;
+      paymentController.update();
+    }
+  }
+
   double get totalPrice {
     double total = 0;
     for (var item in widget.cart) {

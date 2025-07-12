@@ -1,7 +1,9 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/controllers/order_contoller.dart';
 import 'package:e_commerce_tech/controllers/payment_controller.dart';
 import 'package:e_commerce_tech/models/cart_model.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
+import 'package:e_commerce_tech/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:khqr_sdk/khqr_sdk.dart';
@@ -63,7 +65,8 @@ class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserv
         padding: const EdgeInsets.all(24.0),
         child: GetBuilder<PaymentController>(builder: (controller) {
           return Skeletonizer(
-            enabled: controller.isLoading,
+            // enabled: controller.isLoading,
+            enabled: false,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -109,9 +112,12 @@ class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserv
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: () {
-                    controller.resetData();
-                    PaymentStorage.clearCheckPayment();
-                    Navigator.of(context).pop();
+                    showCustomDialog(context: context, type: DialogType.info, title: "Are you sure you want to cancel this payment ?", okOnPress: () {
+                      controller.resetData();
+                      PaymentStorage.clearCheckPayment();
+                      Navigator.of(context).pop();
+                    }, cancelOnPress: () {
+                    }, desc: "if you cancel you need to create khqr code again");
                   },
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.teal,
