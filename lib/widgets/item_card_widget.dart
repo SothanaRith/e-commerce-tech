@@ -139,28 +139,19 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                   child: widget.product.isInWishlist != "null"
                       ? GestureDetector(
                     onTap: () {
-                      showCustomDialog(
-                        context: widget.parentContext,
-                        type: DialogType.info,
-                        title:
-                        "Are you sure you want to ${widget.product.isInWishlist == 'true' ? "remove" : "add"} ${widget.product.name} to wishlist ?",
-                          okOnPress: () {
-                            if (widget.product.isInWishlist == 'true') {
-                              wishlistController.deleteWishlist(
-                                context: widget.parentContext,
-                                userId: UserStorage.currentUser?.id.toString() ?? '',
-                                productId: widget.product.id ?? '',
-                              ).then((_) => widget.onUpdateWishlist?.call());
-                            } else {
-                              wishlistController.createWishlist(
-                                context: widget.parentContext,
-                                userId: UserStorage.currentUser?.id.toString() ?? '',
-                                productId: widget.product.id ?? '',
-                              ).then((_) => widget.onUpdateWishlist?.call());
-                            }
-                          },
-                        cancelOnPress: () {},
-                      );
+                      if (widget.product.isInWishlist == 'true') {
+                        wishlistController.deleteWishlist(
+                          context: widget.parentContext,
+                          userId: UserStorage.currentUser?.id.toString() ?? '',
+                          productId: widget.product.id ?? '',
+                        ).then((_) => widget.onUpdateWishlist?.call());
+                      } else {
+                        wishlistController.createWishlist(
+                          context: widget.parentContext,
+                          userId: UserStorage.currentUser?.id.toString() ?? '',
+                          productId: widget.product.id ?? '',
+                        ).then((_) => widget.onUpdateWishlist?.call());
+                      }
                     },
                     child: Container(
                       padding: const EdgeInsets.all(6),
@@ -212,52 +203,6 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                       ),
                       maxLines: 1,
                     ),
-                  ],
-                ),
-              ),
-              SizedBox(width: 6),
-              if(int.parse(widget.product.totalStock ?? '0') > 0)
-              GestureDetector(
-                onTap: () {
-                  _showAddToCartQuantityDialog();
-                },
-                child: Stack(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(4),
-                      margin: EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: widget.product.isInCart == true
-                            ? theme.primaryColor
-                            : theme.primaryColor.withAlpha(30),
-                      ),
-                      child: SvgPicture.asset(
-                        "assets/images/icons/add_store.svg",
-                        width: 20,
-                        color: widget.product.isInCart == true ? Colors.white : theme.primaryColor,
-                      ),
-                    ),
-                    if (widget.product.isInCart == true)
-                      Positioned(
-                        top: 0,
-                        right: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.red,
-                          ),
-                          child: AppText.caption(
-                            '${widget.product.cartQuantity}',
-                            customStyle: TextStyle(
-                              color: theme.secondaryHeaderColor,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            maxLines: 1,
-                          ),
-                        ),
-                      ),
                   ],
                 ),
               ),

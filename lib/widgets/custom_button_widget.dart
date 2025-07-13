@@ -31,7 +31,7 @@ class CustomButtonWidget extends StatelessWidget {
       onTap: action,
       child: Container(
         width: width ?? MediaQuery.sizeOf(context).width,
-        padding: EdgeInsets.symmetric(vertical: 10),
+        padding: EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(60),
             color: buttonStyle == BtnStyle.action
@@ -52,7 +52,7 @@ class CustomButtonWidget extends StatelessWidget {
             if (icon != null) ...[
               Icon(icon),
             ],
-            AppText.title(title, customStyle: TextStyle(color: buttonStyle == BtnStyle.action ? theme.secondaryHeaderColor : buttonStyle == BtnStyle.normal ? theme.scaffoldBackgroundColor : theme.highlightColor),),
+            AppText.title1(title, customStyle: TextStyle(color: buttonStyle == BtnStyle.action ? theme.secondaryHeaderColor : buttonStyle == BtnStyle.normal ? theme.scaffoldBackgroundColor : theme.highlightColor),),
           ],
         ),
       ),

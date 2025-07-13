@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 
 late final ApiRepository apiRepository;
 
-String mainPoint = "http://192.168.0.102:3000"; // Default value
+String mainPoint = "http://10.10.101.55:3000"; // Default value
 
 // late final String mainPoint = "https://c9f0-58-97-220-69.ngrok-free.app";
 

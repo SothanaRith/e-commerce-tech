@@ -71,21 +71,6 @@ class WishlistController extends GetxController {
         headers: {'Content-Type': 'application/json'}, context: context
     );
     if (response.data != null) {
-      var jsonData = jsonDecode(response.data!);
-      Get.snackbar(
-        "Success",
-        "${jsonData["message"]}",
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-        duration: Duration(milliseconds: 1000),
-        snackPosition: SnackPosition.TOP,
-      );
-      // showCustomDialog(
-      //     context: context,
-      //     type: DialogType.success,
-      //     title: "${jsonData["message"]}",
-      //     okOnPress: () {}
-      //     );
     } else {
       showCustomDialog(
           context: context,
@@ -103,23 +88,6 @@ class WishlistController extends GetxController {
         headers: {'Content-Type': 'application/json'}, context: context
     );
     if (response.data != null) {
-      var jsonData = jsonDecode(response.data!);
-      Get.snackbar(
-        "Success",
-        "${jsonData["message"]}",
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
-      );
-      // showCustomDialog(
-      //     context: context,
-      //     type: DialogType.success,
-      //     title: "${jsonData["message"]}",
-      //     okOnPress: () {
-      //       Future.delayed(Duration.zero, (){
-      //         Navigator.of(context).pop();
-      //       });
-      //     });
     } else {
       var jsonData = jsonDecode(response.error!);
       showCustomDialog(

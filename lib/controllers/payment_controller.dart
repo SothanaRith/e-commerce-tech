@@ -97,12 +97,14 @@ class PaymentController extends GetxController {
     }
 
     if (md5 == '') {
-      showCustomDialog(
-        context: context,
-        type: DialogType.error,
-        title: "Failed Payment",
-        desc: "Something wrong. please do your payment again",
-      );
+      if(!isOpenDialogKhqr) {
+        showCustomDialog(
+          context: context,
+          type: DialogType.error,
+          title: "Failed Payment",
+          desc: "Error occurred while checking transaction",
+        );
+      }
       if (isOpenApp) {
         PaymentStorage.clearCheckPayment();
       }
@@ -183,12 +185,14 @@ class PaymentController extends GetxController {
         onDone: () {
           isLoading = false;
           if (!isPaymentSuccess) {
-            showCustomDialog(
-              context: context,
-              type: DialogType.error,
-              title: "Failed Payment",
-              desc: "Payment Failed please try again...",
-            );
+            if(!isOpenDialogKhqr) {
+              showCustomDialog(
+                context: context,
+                type: DialogType.error,
+                title: "Failed Payment",
+                desc: "Error occurred while checking transaction",
+              );
+            }
             _statusStreamController.add("Transaction check completed but failed");
             if (isOpenApp) {
               PaymentStorage.clearCheckPayment();
@@ -228,12 +232,14 @@ class PaymentController extends GetxController {
         PaymentStorage.clearCheckPayment();
       }
 
-      showCustomDialog(
-        context: context,
-        type: DialogType.error,
-        title: "Failed Payment",
-        desc: "Payment Failed with Error: $e",
-      );
+      if(!isOpenDialogKhqr) {
+        showCustomDialog(
+          context: context,
+          type: DialogType.error,
+          title: "Failed Payment",
+          desc: "Error occurred while checking transaction",
+        );
+      }
 
       isLoading = false;
       update();

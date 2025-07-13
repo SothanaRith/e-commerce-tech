@@ -1,6 +1,8 @@
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/models/user_model.dart';
 
+import 'category_model.dart';
+
 class ProductModel {
   String? id;
   String? categoryId;
@@ -14,7 +16,7 @@ class ProductModel {
   String? createdAt;
   String? updatedAt;
   String? isInWishlist;
-  Category? category;
+  CategoryModel? category;
   List<Variants>? variants;
   List<Reviews>? reviews;
   List<ProductModel>? relatedProducts;
@@ -66,7 +68,7 @@ class ProductModel {
     updatedAt = formatDateString(json['updatedAt'].toString());
     isInWishlist = json['isInWishlist'].toString();
     category =
-    json['Category'] != null ? Category.fromJson(json['Category']) : null;
+    json['category'] != null ? CategoryModel.fromJson(json['category']) : null;
     if (json['Variants'] != null) {
       variants = <Variants>[];
       json['Variants'].forEach((v) {
@@ -118,22 +120,6 @@ class ProductModel {
     if (relatedProducts != null) {
       data['RelatedProducts'] = relatedProducts!.map((v) => v.toJson()).toList();
     }
-    return data;
-  }
-}
-
-class Category {
-  String? id;
-
-  Category({this.id});
-
-  Category.fromJson(Map<String, dynamic> json) {
-    id = json['id'].toString();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
     return data;
   }
 }

@@ -34,7 +34,7 @@ class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserv
         currency: widget.currency,
         amount: widget.amount, context: context,
       ).then((value) {
-        PaymentStorage.saveOrder(newBillingNumber: paymentController.billingNumber, newAddressId: widget.addressId, items: widget.items, newPaymentType: widget.paymentType);
+        PaymentStorage.saveOrder(newBillingNumber: paymentController.billingNumber, newAddressId: widget.addressId, items: widget.items, newPaymentType: widget.paymentType).then((value) async => await checkTransactionWhenDialog(),);
       },);
     });
     WidgetsBinding.instance.addObserver(this);
@@ -46,13 +46,21 @@ class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserv
     super.dispose();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      Future.delayed(Duration.zero, () {
-        paymentController.checkTransactionStatus(md5: paymentController.md5, context: context);
-      });
-    }
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   if (state == AppLifecycleState.resumed) {
+  //     Future.delayed(Duration.zero, () {
+  //       paymentController.checkTransactionStatus(md5: paymentController.md5, context: context);
+  //     });
+  //   }
+  // }
+
+  Future<void> checkTransactionWhenDialog() async {
+    Future.delayed(Duration.zero, () {
+      paymentController.checkTransactionStatus(md5: paymentController.md5, context: context, isOpenDialogKhqr: true).then((value) async {
+        await checkTransactionWhenDialog();
+      },);
+    });
   }
 
   @override
@@ -103,7 +111,7 @@ class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserv
                     } else if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}', style: TextStyle(color: Colors.red));
                     } else if (snapshot.hasData) {
-                      return Text('Status: ${snapshot.data}', style: TextStyle(fontWeight: FontWeight.w500));
+                      return Text('Status: Waiting for transaction status...', style: TextStyle(fontWeight: FontWeight.w500));
                     } else {
                       return const Text('No data available.');
                     }

@@ -21,10 +21,41 @@ class CartController extends GetxController {
   final apiRepository = ApiRepository();
   RxBool isLoadingProducts = false.obs;
   List<CartModel> cartList = [];
+  int totalItemsInCart = 0;
   final WishlistController wishlistController = Get.put(WishlistController());
   final SearchingController searchController = Get.put(SearchingController());
   final HomeController homeController = Get.put(HomeController());
   final ProductController productController = Get.put(ProductController());
+
+  Future<void> fetchTotalItemsInCart({required BuildContext context}) async {
+    try {
+      isLoadingProducts.value = true;
+      update();
+
+      final response = await apiRepository.fetchData(
+        '$mainPoint/api/product/cart/total-items/${UserStorage.currentUser?.id}',
+        headers: {'Content-Type': 'application/json'},
+        context: context,
+      );
+
+      if (response.data != null) {
+        var jsonData = jsonDecode(response.data!);
+        totalItemsInCart = jsonData["totalItems"];
+      } else {
+      }
+    } catch (e) {
+      showCustomDialog(
+        context: context,
+        type: DialogType.error,
+        title: "Unexpected error",
+        desc: e.toString(),
+      );
+    } finally {
+      isLoadingProducts.value = false;
+      update();
+    }
+  }
+
   Future<List<CartModel>?> fetchAllCart({required BuildContext context, required String userId}) async {
     try {
       isLoadingProducts.value = true;
