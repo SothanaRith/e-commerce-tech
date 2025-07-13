@@ -40,6 +40,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
 
   @override
   void dispose() {
+    paymentController.isLoading = false;
+    paymentController.update();
     WidgetsBinding.instance
         .removeObserver(this); // Remove the observer when not needed
     super.dispose();
@@ -86,24 +88,6 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
         isLoading = false;
       });
       // Optionally show error toast or dialog here
-    }
-  }
-
-  Future<void> changeTransactionWhenDialog() async {
-    if (PaymentStorage.md5 != null) {
-      if (PaymentStorage.md5 != '') {
-        Future.delayed(Duration.zero, () {
-          paymentController.checkTransactionStatus(md5: PaymentStorage.md5 ?? '', context: context).then((value) {
-
-          },);
-        });
-      } else {
-        paymentController.isLoading = false;
-        paymentController.update();
-      }
-    } else {
-      paymentController.isLoading = false;
-      paymentController.update();
     }
   }
 

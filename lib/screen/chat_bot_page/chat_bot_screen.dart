@@ -38,38 +38,38 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBar(type: dynamic, title: "Chatbot", context: context, action: [
-        Obx(() {
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: chatController.selectedModel.value,
-                icon: Icon(Icons.arrow_drop_down, color: Colors.white),
-                dropdownColor: Colors.white,
-                style: const TextStyle(color: Colors.white, fontSize: 14),
-                alignment: Alignment.centerRight, // ✅ Text aligns to the end
-                onChanged: (newValue) {
-                  if (newValue != null) {
-                    chatController.selectedModel.value = newValue;
-                    chatController.clearChat();
-                  }
-                },
-                items: chatController.availableModels.map((model) {
-                  return DropdownMenuItem<String>(
-                    value: model,
-                    child: Text(
-                      model.toUpperCase(),
-                      style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-          );
-        }),
+        // Obx(() {
+        //   return Container(
+        //     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        //     decoration: BoxDecoration(
+        //       color: Colors.transparent,
+        //     ),
+        //     child: DropdownButtonHideUnderline(
+        //       child: DropdownButton<String>(
+        //         value: chatController.selectedModel.value,
+        //         icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+        //         dropdownColor: Colors.white,
+        //         style: const TextStyle(color: Colors.white, fontSize: 14),
+        //         alignment: Alignment.centerRight, // ✅ Text aligns to the end
+        //         onChanged: (newValue) {
+        //           if (newValue != null) {
+        //             chatController.selectedModel.value = newValue;
+        //             chatController.clearChat();
+        //           }
+        //         },
+        //         items: chatController.availableModels.map((model) {
+        //           return DropdownMenuItem<String>(
+        //             value: model,
+        //             child: Text(
+        //               model.toUpperCase(),
+        //               style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        //             ),
+        //           );
+        //         }).toList(),
+        //       ),
+        //     ),
+        //   );
+        // }),
       ]),
       body: SafeArea(
         child: Column(
