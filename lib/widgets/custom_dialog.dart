@@ -8,6 +8,7 @@ AwesomeDialog showCustomDialog({
   required String title,
   String desc = "",
   VoidCallback? cancelOnPress,
+  Function(DismissType)? onDismissCallback,
   VoidCallback? okOnPress,
 }) {
   final dialog = AwesomeDialog(
@@ -16,10 +17,12 @@ AwesomeDialog showCustomDialog({
     animType: animType,
     title: title,
     desc: desc,
+    dismissOnTouchOutside: true,
+    dismissOnBackKeyPress: true,
+    onDismissCallback: onDismissCallback,
     btnCancelOnPress: cancelOnPress,
     btnOkOnPress: okOnPress,
   );
-  print(title);
   dialog.show();
   return dialog;
 }

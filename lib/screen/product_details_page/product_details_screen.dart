@@ -18,7 +18,12 @@ import 'package:e_commerce_tech/widgets/safe_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+
+import '../../theme/shadow.dart';
+import '../../widgets/custom_button_widget.dart';
+import '../my_order_page/my_order_screen.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   const ProductDetailsScreen({super.key, required this.id, this.onBackAction});
@@ -125,6 +130,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       body: GetBuilder<ProductController>(
         builder: (controller) {
           var product = controller.product;
@@ -520,6 +526,104 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           );
         },
       ),
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        height: 50,
+        child: Row(
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          spacing: 32,
+          children: [
+            Icon(Icons.message),
+            Icon(Icons.shopping_cart_sharp),
+            Spacer(),
+            Container(
+              child: CustomButtonWidget(
+                buttonStyle: BtnStyle.action,
+                title: "Add to cart",
+                action:(){
+                  showMaterialModalBottomSheet(
+                    backgroundColor: Colors.transparent,
+                    context: context,
+                    isDismissible: true,
+                    enableDrag: true,
+                    builder: (context) => Stack(
+                      children: [
+                        GestureDetector(
+                          onTap: () => Navigator.of(context).pop(),
+                          child: Container(color: Colors.transparent),
+                        ),
+                        DraggableScrollableSheet(
+                          initialChildSize: 0.6,
+                          minChildSize: 0.4,
+                          maxChildSize: 0.95,
+                          builder: (context, scrollController) {
+                            return _buildCartBottomSheet(scrollController, productController.product);
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                width: MediaQuery.of(context).size.width / 2,
+              ),
+            )
+          ],
+        ),
+      ),
     );
+
+  }
+  Widget _buildCartBottomSheet(ScrollController scrollController, ProductModel product){
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(30),
+        ),
+        boxShadow: [defaultShadow()],
+      ),
+      child: SingleChildScrollView(
+        controller: scrollController,
+        child: StatefulBuilder(
+          builder: (context, setModalState) {
+            return Column(
+              children: [
+                GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Container(
+                    width: MediaQuery.sizeOf(context).width / 7,
+                    margin: const EdgeInsets.all(16),
+                    height: 8,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      color: Colors.grey.withOpacity(0.4),
+                    ),
+                  ),
+                ),
+              Container(
+                child: Column(
+                  // children: product.variants?[0].variantAttributes?.map((attribute) {
+                  //   return Row(
+                  //     children: [
+                  //       AppText.body(
+                  //         "${attribute.name}: ",
+                  //         customStyle: TextStyle(color: theme.highlightColor),
+                  //       ),
+                  //       SizedBox(width: 8),
+                  //       AppText.title(
+                  //         "${attribute.value}",
+                  //         customStyle: TextStyle(color: theme.primaryColor),
+                  //       ),
+                  //     ],
+                  //   );
+                  // }).toList() ?? [],
+                )
+              )
+              ],
+            );
+          },
+        ),
+      ),
+    );;
   }
 }

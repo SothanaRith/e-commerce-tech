@@ -10,7 +10,7 @@ class ChatController extends GetxController {
   var selectedModel = 'gpt-4o'.obs;
 
   final availableModels = [ 'gpt-4o', 'gpt-4.1', 'deepseek-r1', 'blackboxai', 'gemini-2.5-pro']; // Customize
-  final String apiUrl = 'http://192.168.0.105:1337/backend-api/v2/auto/chat';
+  final String apiUrl = 'http://10.10.101.245:1337/backend-api/v2/auto/chat';
 
   // Send user message to backend and get assistant reply
   Future<void> sendMessage(String text, ScrollController scrollController) async {

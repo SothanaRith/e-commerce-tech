@@ -6,6 +6,7 @@ import 'package:e_commerce_tech/controllers/search_controller.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/helper/rest_api_helper.dart';
 import 'package:e_commerce_tech/models/wishlist_model.dart';
+import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -71,12 +72,20 @@ class WishlistController extends GetxController {
     );
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
-      showCustomDialog(
-          context: context,
-          type: DialogType.success,
-          title: "${jsonData["message"]}",
-          okOnPress: () {
-          });
+      Get.snackbar(
+        "Success",
+        "${jsonData["message"]}",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        duration: Duration(milliseconds: 1000),
+        snackPosition: SnackPosition.TOP,
+      );
+      // showCustomDialog(
+      //     context: context,
+      //     type: DialogType.success,
+      //     title: "${jsonData["message"]}",
+      //     okOnPress: () {}
+      //     );
     } else {
       showCustomDialog(
           context: context,
@@ -95,12 +104,22 @@ class WishlistController extends GetxController {
     );
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
-      showCustomDialog(
-          context: context,
-          type: DialogType.success,
-          title: "${jsonData["message"]}",
-          okOnPress: () {
-          });
+      Get.snackbar(
+        "Success",
+        "${jsonData["message"]}",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      // showCustomDialog(
+      //     context: context,
+      //     type: DialogType.success,
+      //     title: "${jsonData["message"]}",
+      //     okOnPress: () {
+      //       Future.delayed(Duration.zero, (){
+      //         Navigator.of(context).pop();
+      //       });
+      //     });
     } else {
       var jsonData = jsonDecode(response.error!);
       showCustomDialog(
