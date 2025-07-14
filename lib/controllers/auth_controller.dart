@@ -397,12 +397,13 @@ class AuthController extends GetxController {
           if (type == ScreenVerifyType.signup) {
             final prefs = await SharedPreferences.getInstance();
             await prefs.setBool('isLoggedIn', true);
+            await TokenStorage.loadToken();
             showCustomDialog(
                 context: context,
                 type: DialogType.success,
                 title: "${jsonData["message"]}",
                 okOnPress: () {
-                  goOff(this, LocationScreen());
+                  goOff(this, MainScreen());
                 });
           } else if (type == ScreenVerifyType.signinPhoneNumber) {
             final prefs = await SharedPreferences.getInstance();
