@@ -4,8 +4,10 @@ import 'package:e_commerce_tech/controllers/wishlist_contoller.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
+import 'package:e_commerce_tech/screen/category/product_by_category.dart';
 import 'package:e_commerce_tech/screen/product_details_page/product_details_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
+import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_dialog.dart';
 import 'package:e_commerce_tech/widgets/safe_network_image.dart';
@@ -30,82 +32,6 @@ class ItemCardWidget extends StatefulWidget {
 
 class _ItemCardWidgetState extends State<ItemCardWidget> {
   final WishlistController wishlistController = Get.put(WishlistController());
-  final CartController cartController = Get.put(CartController());
-
-  int _dialogQuantity = 1;
-
-  void _showAddToCartQuantityDialog() {
-    _dialogQuantity = widget.product.cartQuantity == 0 ? 1 : widget.product.cartQuantity ?? 1;
-    AwesomeDialog(
-      context: context,
-      dialogType: DialogType.info,
-      animType: AnimType.bottomSlide,
-      title: 'select_quantity'.tr,
-      body: StatefulBuilder(
-        builder: (context, setState) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
-            child: Column(
-              children: [
-                AppText.title('select_quantity'.tr),
-                SizedBox(height: 10,),
-                AppText.body2('before_add_to_cart_you_need_to_insert_quantity'.tr),
-                SizedBox(height: 10,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Decrement Button
-                    IconButton(
-                      icon: Icon(Icons.remove_circle_outline),
-                      iconSize: 32,
-                      onPressed: () {
-                        if (_dialogQuantity > 1) {
-                          setState(() {
-                            _dialogQuantity--;
-                          });
-                        }
-                      },
-                    ),
-
-                    SizedBox(width: 20),
-
-                    // Quantity display
-                    Text(
-                      '$_dialogQuantity',
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-
-                    SizedBox(width: 20),
-
-                    // Increment Button
-                    IconButton(
-                      icon: Icon(Icons.add_circle_outline),
-                      iconSize: 32,
-                      onPressed: () {
-                        setState(() {
-                          if (int.parse(widget.product.totalStock ?? '0') > _dialogQuantity )
-                          _dialogQuantity++;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-      btnCancelOnPress: () {},
-      btnOkOnPress: () {
-        cartController.addItemToCart(
-          context: widget.parentContext,
-          userId: UserStorage.currentUser?.id.toString() ?? '',
-          productId: widget.product.id ?? '0',
-          quantity: _dialogQuantity.toString(),
-        ).then((_) => widget.onUpdateCheckOut?.call());
-      },
-    ).show();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -178,22 +104,45 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
               ],
             ),
           ),
-          const SizedBox(height: 4),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppText.title2(
-                      widget.product.name ?? '',
-                      customStyle: const TextStyle(
-                        fontSize: 12,
+          const SizedBox(height: 6),
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if(widget.product.category != null)
+                GestureDetector(
+                  onTap: () {
+                    goTo(this, ProductByCategoryScreen(categoryId: widget.product.category?.id ?? '', categoryName: widget.product.category?.name ?? ''));
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: theme.primaryColor.withAlpha(100)
+                    ),
+                    child: AppText.caption(
+                      widget.product.category?.name ?? '',
+                      customStyle: TextStyle(
                         overflow: TextOverflow.ellipsis,
+                        fontWeight: FontWeight.w500,
+                        color: theme.primaryColor
                       ),
                       maxLines: 1,
                     ),
+                  ),
+                ),
+                AppText.title2(
+                  widget.product.name ?? '',
+                  customStyle: const TextStyle(
+                    fontSize: 12,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  maxLines: 1,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
                     AppText.title1(
                       '\$${widget.product.price}',
                       customStyle: TextStyle(
@@ -203,10 +152,33 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                       ),
                       maxLines: 1,
                     ),
+                    Row(
+                      children: [
+                        AppText.title2(
+                          "${widget.product.totalStock}'s",
+                          customStyle: TextStyle(
+                            color: theme.primaryColor,
+                            fontSize: 10,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          maxLines: 1,
+                        ),
+                        SizedBox(width: 3,),
+                        AppText.caption(
+                          'in stock',
+                          customStyle: TextStyle(
+                            color: theme.primaryColor,
+                            fontSize: 10,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          maxLines: 1,
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
