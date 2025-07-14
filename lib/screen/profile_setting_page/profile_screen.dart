@@ -46,7 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ),
     MenuItem(
       title: 'chat_bot'.tr,
-      iconName: "assets/images/icons/store.svg",
+      iconName: "assets/images/icons/chat_bot.svg",
       screen: ChatScreen(),
       hasSpecialAction: false,
     ),
