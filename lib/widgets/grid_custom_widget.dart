@@ -11,7 +11,7 @@ class GridCustomWidget extends StatelessWidget {
       {super.key,
         required this.items, this.crossAxisSpacing = 14,
         this.crossAxisCount = 2,
-        this.childAspectRatio = 0.75,
+        this.childAspectRatio = 0.73,
         this.mainAxisSpacing = 12, this.padding
       });
 

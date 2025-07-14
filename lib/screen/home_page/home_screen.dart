@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:e_commerce_tech/screen/profile_setting_page/last_order_widget.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:flutter/material.dart';
@@ -90,7 +91,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     imageUrls: homeController.imagesSlide,
                     height: 200,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 18),
+                  LastOrderWidget(),
+                  const SizedBox(height: 4),
                   const CategoryHomeScreenWidget(),
                   const SizedBox(height: 8),
                   Padding(
@@ -114,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisCount: 2,
                         crossAxisSpacing: 14,
                         mainAxisSpacing: 14,
-                        childAspectRatio: 0.75,
+                        childAspectRatio: 0.73,
                       ),
                       itemBuilder: (itemContext, index) {
                         if (index < controller.products.length) {

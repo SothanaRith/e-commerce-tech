@@ -130,6 +130,7 @@ class Variants {
   String? sku;
   String? price;
   String? stock;
+  String? title;
   String? imageUrl;
   List<VariantAttributes>? variantAttributes;
 
@@ -139,6 +140,7 @@ class Variants {
         this.sku,
         this.price,
         this.stock,
+        this.title,
         this.imageUrl,
         this.variantAttributes});
 
@@ -148,6 +150,7 @@ class Variants {
     sku = json['sku'].toString();
     price = json['price'].toString();
     stock = json['stock'].toString();
+    title = json['title'].toString();
     imageUrl = json['imageUrl'].toString();
     if (json['VariantAttributes'] != null) {
       variantAttributes = <VariantAttributes>[];
@@ -164,6 +167,7 @@ class Variants {
     data['sku'] = sku;
     data['price'] = price;
     data['stock'] = stock;
+    data['title'] = title;
     data['imageUrl'] = imageUrl;
     if (variantAttributes != null) {
       data['VariantAttributes'] =

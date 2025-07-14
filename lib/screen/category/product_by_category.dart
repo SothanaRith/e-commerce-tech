@@ -54,7 +54,7 @@ class _ProductByCategoryScreenState extends State<ProductByCategoryScreen> {
               crossAxisCount: 2,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              childAspectRatio: 0.75,
+              childAspectRatio: 0.73,
             ),
             itemBuilder: (contextList, index) {
               final product = controller.productByCategories[index];

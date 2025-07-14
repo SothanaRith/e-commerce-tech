@@ -1,6 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce_tech/controllers/auth_controller.dart';
+import 'package:e_commerce_tech/controllers/order_contoller.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/models/Transaction_model.dart';
 import 'package:e_commerce_tech/models/user_model.dart';
 import 'package:e_commerce_tech/screen/chat_bot_page/chat_bot_screen.dart';
 import 'package:e_commerce_tech/screen/check_out_page/check_out_screen.dart';
@@ -9,10 +12,14 @@ import 'package:e_commerce_tech/screen/forget_password_page/forget_password_scre
 import 'package:e_commerce_tech/screen/forget_password_page/help_center.dart';
 import 'package:e_commerce_tech/screen/language_screen.dart';
 import 'package:e_commerce_tech/screen/my_order_page/my_order_screen.dart';
+import 'package:e_commerce_tech/screen/product_details_page/product_details_screen.dart';
+import 'package:e_commerce_tech/screen/profile_setting_page/last_order_widget.dart';
 import 'package:e_commerce_tech/screen/profile_setting_page/user_profile_screen.dart';
+import 'package:e_commerce_tech/screen/track_order_page/order_transaction_detail_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
+import 'package:e_commerce_tech/widgets/custom_button_widget.dart';
 import 'package:e_commerce_tech/widgets/safe_network_image.dart';
 import 'package:e_commerce_tech/widgets/select_image_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,30 +39,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final List<MenuItem> menuItems = [
-    MenuItem(
-      title: 'your_profile'.tr,
-      iconName: "assets/images/icons/person.svg",
-      screen: const UserProfileScreen(),
-      hasSpecialAction: false,
-    ),
-    MenuItem(
-      title: 'check_out'.tr,
-      iconName: "assets/images/icons/store.svg",
-      screen: const CheckOutScreen(),
-      hasSpecialAction: false,
-    ),
-    MenuItem(
-      title: 'chat_bot'.tr,
-      iconName: "assets/images/icons/chat_bot.svg",
-      screen: ChatScreen(),
-      hasSpecialAction: false,
-    ),
-    MenuItem(
-      title: 'my_orders'.tr,
-      iconName: "assets/images/icons/shopping_bag.svg",
-      screen: const MyOrderScreen(),
-      hasSpecialAction: false,
-    ),
     MenuItem(
       title: 'my_delivery_address'.tr,
       iconName: "assets/images/icons/delivery.svg",
@@ -92,7 +75,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
       hasSpecialAction: true, // Flag for special action (bottom sheet)
     ),
   ];
+  final List<MenuItem> menuItemsTop = [
+    MenuItem(
+      title: 'your_profile'.tr,
+      iconName: "assets/images/icons/person.svg",
+      screen: const UserProfileScreen(),
+      hasSpecialAction: false,
+    ),
+    MenuItem(
+      title: 'check_out'.tr,
+      iconName: "assets/images/icons/store.svg",
+      screen: const CheckOutScreen(),
+      hasSpecialAction: false,
+    ),
+    MenuItem(
+      title: 'chat_bot'.tr,
+      iconName: "assets/images/icons/chat_bot.svg",
+      screen: ChatScreen(),
+      hasSpecialAction: false,
+    ),
+    MenuItem(
+      title: 'my_orders'.tr,
+      iconName: "assets/images/icons/shopping_bag.svg",
+      screen: const MyOrderScreen(),
+      hasSpecialAction: false,
+    ),
+  ];
   final AuthController authController = Get.put(AuthController());
+  final OrderController orderController = Get.put(OrderController());
 
   User? user = UserStorage.currentUser;
 
@@ -221,114 +231,177 @@ class _ProfileScreenState extends State<ProfileScreen> {
             enabled: logic.isLoading,
             child: SingleChildScrollView(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Profile section
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 20.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Stack(
-                          alignment: Alignment.bottomRight,
+                        Row(
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                showOptionsSheet(context);
-                              },
-                              child: CircleAvatar(
-                                radius: 50,
-                                backgroundColor: Colors.grey[300],
-                                // Placeholder color
-                                backgroundImage: NetworkImage(
-                                    safeImageUrl(logic.userProfile != null ? logic.userProfile ?? 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740' :
-                                  user?.coverImage != null
-                                      ? "${user!.coverImage}"
-                                      : 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740',
-                                )),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                showOptionsSheet(context);
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.grey,
-                                    width: 1.0,
+                            Stack(
+                              alignment: Alignment.bottomRight,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    showOptionsSheet(context);
+                                  },
+                                  child: CircleAvatar(
+                                    radius: 40,
+                                    backgroundColor: Colors.grey[300],
+                                    // Placeholder color
+                                    backgroundImage: NetworkImage(
+                                        safeImageUrl(logic.userProfile != null ? logic.userProfile ?? 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740' :
+                                      user?.coverImage != null
+                                          ? "${user!.coverImage}"
+                                          : 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740',
+                                    )),
                                   ),
                                 ),
-                                child: CircleAvatar(
-                                    radius: 12,
-                                    backgroundColor: Colors.white,
-                                    child: SvgPicture.asset(
-                                        "assets/images/icons/edit-2.svg")
+                                // GestureDetector(
+                                //   onTap: () {
+                                //     showOptionsSheet(context);
+                                //   },
+                                //   child: Container(
+                                //     decoration: BoxDecoration(
+                                //       shape: BoxShape.circle,
+                                //       border: Border.all(
+                                //         color: Colors.grey,
+                                //         width: 1.0,
+                                //       ),
+                                //     ),
+                                //     child: CircleAvatar(
+                                //         radius: 12,
+                                //         backgroundColor: Colors.white,
+                                //         child: SvgPicture.asset(
+                                //             "assets/images/icons/edit-2.svg")
+                                //     ),
+                                //   ),
+                                // ),
+                              ],
+                            ),
+                            const SizedBox(width: 14),
+                            // Spacing between avatar and text
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AppText.title(
+                                  user?.name ?? 'Rose BanSon',
                                 ),
-                              ),
+                                AppText.body2(
+                                  user?.phone ?? 'Rose BanSon',
+                                ),
+                              ],
                             ),
                           ],
-                        ),
-                        const SizedBox(height: 10),
-                        // Spacing between avatar and text
-                        Text(
-                          user?.name ?? 'Rose BanSon',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
                         ),
                       ],
                     ),
                   ),
-                  // Menu items list
-                  ListView.builder(
-                    shrinkWrap: true,
-                    // Allows ListView to take only the space it needs
-                    physics: const NeverScrollableScrollPhysics(),
-                    // Disables ListView's scrolling
-                    itemCount: menuItems.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          ListTile(
-                            leading: SvgPicture.asset(
-                              menuItems[index].iconName,
-                              color: theme.primaryColor,
-                            ),
-                            title: AppText.title2(
-                              menuItems[index].title,
-                              customStyle: const TextStyle(fontSize: 16),
-                            ),
-                            trailing: SvgPicture.asset(
-                                "assets/images/icons/arrow-down.svg"
-                            ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: menuItemsTop.map((item) {
+                          return GestureDetector(
                             onTap: () {
-                              if (menuItems[index].hasSpecialAction) {
+                              if (item.hasSpecialAction) {
                                 // Handle special actions like showing a bottom sheet
-                                if (menuItems[index].title == 'log_out'.tr) {
+                                if (item.title == 'log_out'.tr) {
                                   _showLogoutBottomSheet(context);
                                 }
-                              } else if (menuItems[index].screen != null) {
+                              } else if (item.screen != null) {
                                 // Navigate to the screen if it exists
-                                goTo(this, menuItems[index].screen!);
+                                goTo(this, item.screen!);
                               }
                             },
-                          ),
-                          if (index < menuItems.length - 1)
-                            Divider(
-                              height: 1,
-                              thickness: 1,
-                              color: Colors.grey.withAlpha(35),
-                              indent: 16,
-                              // Optional: adds padding on the left
-                              endIndent: 16, // Optional: adds padding on the right
+                            child: Container(
+                              width: MediaQuery.sizeOf(context).width / 4.8,
+                              padding: EdgeInsets.symmetric(vertical: 12),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadiusGeometry.circular(12),
+                                color: theme.primaryColor.withAlpha(60)
+                              ),
+                              child: Column(
+                                children: [
+                                  SvgPicture.asset(
+                                    item.iconName,
+                                    color: theme.primaryColor,
+                                    height: 28,
+                                  ),
+                                  SizedBox(height: 8,),
+                                  AppText.caption(
+                                    item.title,
+                                    customStyle: const TextStyle(fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ),
                             ),
-                        ],
-                      );
-                    },
+                          );
+                        },).toList()
+                    ),
+                  ),
+                  SizedBox(height: 18,),
+                  LastOrderWidget(),
+                  SizedBox(height: 18,),
+                  // Menu items list
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      // Allows ListView to take only the space it needs
+                      physics: const NeverScrollableScrollPhysics(),
+                      // Disables ListView's scrolling
+                      itemCount: menuItems.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            ListTile(
+                              leading: SvgPicture.asset(
+                                menuItems[index].iconName,
+                                color: theme.primaryColor,
+                              ),
+                              title: AppText.title2(
+                                menuItems[index].title,
+                                customStyle: const TextStyle(fontSize: 16),
+                              ),
+                              trailing: SvgPicture.asset(
+                                  "assets/images/icons/arrow-down.svg"
+                              ),
+                              onTap: () {
+                                if (menuItems[index].hasSpecialAction) {
+                                  // Handle special actions like showing a bottom sheet
+                                  if (menuItems[index].title == 'log_out'.tr) {
+                                    _showLogoutBottomSheet(context);
+                                  }
+                                } else if (menuItems[index].screen != null) {
+                                  // Navigate to the screen if it exists
+                                  goTo(this, menuItems[index].screen!);
+                                }
+                              },
+                            ),
+                            if (index < menuItems.length - 1)
+                              Divider(
+                                height: 1,
+                                thickness: 1,
+                                color: Colors.grey.withAlpha(35),
+                                indent: 16,
+                                // Optional: adds padding on the left
+                                endIndent: 16, // Optional: adds padding on the right
+                              ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 10,),
+                  Center(
+                    child: AppText.body2(
+                      'version 1.0.01',
+                      customStyle: TextStyle(color: theme.highlightColor),
+                    ),
                   ),
                   const SizedBox(height: 110,)
                 ],
