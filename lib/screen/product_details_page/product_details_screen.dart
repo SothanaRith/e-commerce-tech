@@ -485,53 +485,77 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               }),
                         ),
                       ],
-
                       if (product.variants != null &&
                           product.variants!.isNotEmpty) ...[
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: theme.primaryColor.withAlpha(50)
-                            ),
-                            child: Row(
-                              children: [
-                                CachedNetworkImage(
-                                  imageUrl: safeImageUrl(
-                                      product.variants?[0].imageUrl ?? ''),
-                                  placeholder: (context, url) =>
-                                      Center(child: CircularProgressIndicator(
-                                          color: theme.primaryColor)),
-                                  errorWidget: (context, url,
-                                      error) => const Icon(Icons.error),
-                                  height: 50, fit: BoxFit.cover,
+                          child: AppText.title1("detail".tr),
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: product.variants!.map((item) {
+                              return ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  minWidth: 100,
+                                  maxWidth: 520,
                                 ),
-                                SizedBox(width: 8,),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: product.variants?[0].variantAttributes
-                                      ?.map((attribute) {
-                                    return Row(
+                                child: IntrinsicWidth(
+                                  stepWidth: 50,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8),
+                                    margin: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: theme.primaryColor.withAlpha(50),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        AppText.body2(
-                                          "${attribute.name}: ",
-                                          customStyle: TextStyle(
-                                              color: theme.highlightColor),
+                                        CachedNetworkImage(
+                                          imageUrl: safeImageUrl(item.imageUrl ?? ''),
+                                          placeholder: (context, url) => Center(
+                                            child: CircularProgressIndicator(color: theme.primaryColor),
+                                          ),
+                                          errorWidget: (context, url, error) => const Icon(Icons.error),
+                                          height: 50,
+                                          width: 50,
+                                          fit: BoxFit.cover,
                                         ),
-                                        SizedBox(width: 8),
-                                        AppText.title2(
-                                          "${attribute.value}",
-                                          customStyle: TextStyle(
-                                              color: theme.primaryColor),
+                                        const SizedBox(width: 8),
+                                        Flexible(
+                                          child: Wrap(
+                                            spacing: 8,
+                                            runSpacing: 6,
+                                            children: item.variantAttributes?.map((attribute) {
+                                              return Container(
+                                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                                decoration: BoxDecoration(
+                                                  color: theme.primaryColor.withAlpha(30),
+                                                  borderRadius: BorderRadius.circular(8),
+                                                ),
+                                                child: RichText(
+                                                  text: TextSpan(
+                                                    style: TextStyle(fontSize: 13, color: theme.primaryColor),
+                                                    children: [
+                                                      TextSpan(text: "${attribute.name}: "),
+                                                      TextSpan(
+                                                        text: "${attribute.value}",
+                                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList() ?? [],
+                                          ),
                                         ),
                                       ],
-                                    );
-                                  }).toList() ?? [],
+                                    ),
+                                  ),
                                 ),
-                              ],
-                            ),
+                              );
+                            }).toList(),
                           ),
                         ),
                         const SizedBox(height: 24),

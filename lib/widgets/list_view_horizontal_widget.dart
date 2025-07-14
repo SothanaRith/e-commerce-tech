@@ -14,18 +14,14 @@ class ListViewHorizontalWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return SizedBox(
       height: height,
-      child: ListView.builder(
-        itemCount: items.length,
+      child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-            child: items[index],
-          );
-        },
+        itemCount: items.length,
+        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+        separatorBuilder: (_, __) => SizedBox(width: horizontalPadding),
+        itemBuilder: (context, index) => items[index],
       ),
     );
   }
