@@ -579,16 +579,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               if(item.title != 'null')
-                                              AppText.title(item.title ?? ''),
+                                              AppText.title2(item.title ?? ''),
                                               Row(
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: [
-                                                  AppText.body2('\$ ${item.price}', customStyle: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.bold),),
+                                                  AppText.body2('\$ ${item.price}', customStyle: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.w400),),
                                                   const SizedBox(width: 4),
                                                   AppText.body1('|'),
                                                   const SizedBox(width: 4),
-                                                  AppText.body2("${item.stock}'s in stock", customStyle: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.bold),),
+                                                  AppText.body2("${item.stock}'s in stock", customStyle: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.w400),),
                                                 ],
                                               ),
                                             ],
