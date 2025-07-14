@@ -12,7 +12,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart' as http;
 
-const String googleApiKey = "AIzaSyCeg1mvZuONTxxAJZtPJnqdPZfBf2CqpV4"; // Replace with your real key
+const String googleApiKey = "AIzaSyCeg1mvZuONTxxAJZtPJnqdPZfBf2CqpV4";
 
 class LocationSelectScreen extends StatefulWidget {
   const LocationSelectScreen({super.key});
@@ -261,7 +261,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
                 if (_selectedLatLng != null && _currentAddress.isNotEmpty) {
                   locationController.createAddress(
                     street: _currentAddress,
-                    isDefault: false,
+                    isDefault: true,
                     context: context,
                   );
                 } else {

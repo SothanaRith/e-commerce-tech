@@ -24,7 +24,7 @@ class HomeController extends GetxController {
   List<CategoryModel> categories = [];
   List<ProductModel> products = [];
   List<SliderModel> slides = [];
-  List<String> imagesSlide = [];
+  List<SliderModel> imagesSlide = [];
 
   Future<void> loadHome({required int page, required String userId, required BuildContext context}) async {
     if (isLoading) return; // Prevent reloading while data is being fetched
@@ -66,7 +66,8 @@ class HomeController extends GetxController {
       slides = homeResponse.slides;
       imagesSlide = [];
       for(var item in slides) {
-        imagesSlide.add(item.imageUrl ?? '');
+        print("slide data ${item.order}");
+        imagesSlide.add(item);
       }
 
       // Debugging: Check if hasMore flag is set correctly

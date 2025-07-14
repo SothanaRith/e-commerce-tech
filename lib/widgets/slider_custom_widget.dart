@@ -1,8 +1,11 @@
 import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/models/slide_model.dart';
+import 'package:e_commerce_tech/screen/product_details_page/product_details_screen.dart';
+import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:flutter/material.dart';
 
 class ImageSlider extends StatefulWidget {
-  final List<String> imageUrls;
+  final List<SliderModel> imageUrls;
   final Duration duration;
   final double height;
 
@@ -80,9 +83,14 @@ class _ImageSliderState extends State<ImageSlider> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.network(widget.imageUrls[index], fit: BoxFit.cover),
+                child: GestureDetector(
+                  onTap: () {
+                    goTo(this, ProductDetailsScreen(id: widget.imageUrls[index].order ?? ''));
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.network(widget.imageUrls[index].imageUrl ?? '', fit: BoxFit.cover),
+                  ),
                 ),
               );
             },
