@@ -116,16 +116,16 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                     goTo(this, ProductByCategoryScreen(categoryId: widget.product.category?.id ?? '', categoryName: widget.product.category?.name ?? ''));
                   },
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
+                    padding: EdgeInsets.symmetric(vertical: 3, horizontal: 6),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
-                      color: theme.primaryColor.withAlpha(100)
+                      color: theme.primaryColor.withAlpha(70)
                     ),
                     child: AppText.caption(
                       widget.product.category?.name ?? '',
                       customStyle: TextStyle(
                         overflow: TextOverflow.ellipsis,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                         color: theme.primaryColor
                       ),
                       maxLines: 1,
@@ -147,7 +147,7 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                       '\$${widget.product.price}',
                       customStyle: TextStyle(
                         color: theme.primaryColor,
-                        fontSize: 12,
+                        fontSize: 14,
                         overflow: TextOverflow.ellipsis,
                       ),
                       maxLines: 1,

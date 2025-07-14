@@ -102,6 +102,41 @@ class OrderController extends GetxController {
       throw Exception('Failed to fetch transactions');
     }
   }
+
+  Future<OrderModel> getOrderDetailById({
+    required BuildContext context,
+    required String orderId,
+  }) async {
+    isLoading = true;
+    update();
+
+    final response = await apiRepository.fetchData(
+      '$mainPoint/api/product/orders/$orderId/detail',
+      headers: {
+        'Authorization': TokenStorage.token ?? "",
+        'Content-Type': 'application/json',
+      },
+      context: context,
+    );
+
+    isLoading = false;
+    update();
+
+    if (response.data != null) {
+      final dynamic jsonData = jsonDecode(response.data!);
+      OrderModel order = OrderModel.fromJson(jsonData);
+      update();
+      return order;
+    } else {
+      // Show error dialog on failure
+      showCustomDialog(
+        context: context,
+        type: DialogType.error,
+        title: "Error: ${response.error ?? 'Failed to fetch transactions'}",
+      );
+      throw Exception('Failed to fetch transactions');
+    }
+  }
   /// Place an order method updated to include addressId
   RxBool isPlacingOrder = false.obs;
 

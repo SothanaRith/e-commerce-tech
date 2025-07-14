@@ -1,5 +1,8 @@
 import 'package:e_commerce_tech/controllers/notification_controller.dart';
+import 'package:e_commerce_tech/controllers/order_contoller.dart';
 import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/screen/track_order_page/order_transaction_detail_screen.dart';
+import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +19,7 @@ class NotificationScreen extends StatefulWidget {
 
 class _NotificationScreenState extends State<NotificationScreen> {
   final NotificationController notificationController = Get.put(NotificationController());
+  final OrderController orderController = Get.put(OrderController());
 
   @override
   void initState() {
@@ -71,11 +75,21 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 }
                 final notification = controller.notifications[index];
                 return InkWell(
-                  onTap: () {
+                  onTap: () async {
                     // Mark the notification as 'read' when tapped
                     if (notification.status != 'read') {
                       controller.updateNotification(
                           notificationId: notification.id ?? '', status: 'read', context: context);
+                    }
+                    String message = notification.title ?? '';
+
+                    final match = RegExp(r'#(\d+)').firstMatch(message);
+
+                    if (match != null) {
+                      int orderId = int.parse(match.group(1)!);
+                      await orderController.getOrderDetailById(context: context, orderId: orderId.toString()).then((value) => goTo(this, OrderTransactionDetailScreen(data: value)));
+                    } else {
+                      print("Order ID not found");
                     }
                   },
                   child: Container(
