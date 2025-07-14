@@ -490,26 +490,48 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           product.variants!.isNotEmpty) ...[
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: product.variants?[0].variantAttributes
-                                ?.map((attribute) {
-                              return Row(
-                                children: [
-                                  AppText.body(
-                                    "${attribute.name}: ",
-                                    customStyle: TextStyle(
-                                        color: theme.highlightColor),
-                                  ),
-                                  SizedBox(width: 8),
-                                  AppText.title(
-                                    "${attribute.value}",
-                                    customStyle: TextStyle(
-                                        color: theme.primaryColor),
-                                  ),
-                                ],
-                              );
-                            }).toList() ?? [],
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: theme.primaryColor.withAlpha(50)
+                            ),
+                            child: Row(
+                              children: [
+                                CachedNetworkImage(
+                                  imageUrl: safeImageUrl(
+                                      product.variants?[0].imageUrl ?? ''),
+                                  placeholder: (context, url) =>
+                                      Center(child: CircularProgressIndicator(
+                                          color: theme.primaryColor)),
+                                  errorWidget: (context, url,
+                                      error) => const Icon(Icons.error),
+                                  height: 50, fit: BoxFit.cover,
+                                ),
+                                SizedBox(width: 8,),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: product.variants?[0].variantAttributes
+                                      ?.map((attribute) {
+                                    return Row(
+                                      children: [
+                                        AppText.body2(
+                                          "${attribute.name}: ",
+                                          customStyle: TextStyle(
+                                              color: theme.highlightColor),
+                                        ),
+                                        SizedBox(width: 8),
+                                        AppText.title2(
+                                          "${attribute.value}",
+                                          customStyle: TextStyle(
+                                              color: theme.primaryColor),
+                                        ),
+                                      ],
+                                    );
+                                  }).toList() ?? [],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         const SizedBox(height: 24),
