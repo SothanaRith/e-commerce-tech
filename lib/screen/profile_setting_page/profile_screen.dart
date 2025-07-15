@@ -241,38 +241,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Stack(
                         alignment: Alignment.centerLeft,
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              showOptionsSheet(context);
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(color: theme.primaryColor, width: 3),
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                              child: Container(
-                                padding: EdgeInsets.all(2),
-                                decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                ),
-                                child: CircleAvatar(
-                                  radius: 40,
-                                  backgroundColor: Colors.grey[300],
-                                  backgroundImage: NetworkImage(
-                                    safeImageUrl(
-                                      logic.userProfile != null
-                                          ? logic.userProfile ?? 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740'
-                                          : user?.coverImage != null
-                                          ? "${user!.coverImage}"
-                                          : 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740',
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          // Foreground container with name & phone
                           Positioned(
                             left: 60,
                             child: Container(
@@ -294,6 +262,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                   SizedBox(width: 16),
                                 ],
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              showOptionsSheet(context);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: theme.primaryColor, width: 3),
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              child: Container(
+                                padding: EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                ),
+                                child: CircleAvatar(
+                                  radius: 40,
+                                  backgroundColor: Colors.grey,
+                                  backgroundImage: NetworkImage(
+                                    safeImageUrl(
+                                      logic.userProfile != null
+                                          ? logic.userProfile ?? 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740'
+                                          : user?.coverImage != null
+                                          ? "${user!.coverImage}"
+                                          : 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740',
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
