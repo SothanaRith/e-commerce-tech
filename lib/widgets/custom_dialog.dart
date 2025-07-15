@@ -95,7 +95,7 @@ void showCustomDialog({
                         Navigator.pop(context);
                         cancelOnPress?.call();
                       },
-                      child: AppText.body2("Cancel", customStyle: TextStyle(color: theme.secondaryHeaderColor),),
+                      child: AppText.body2("Cancel", customStyle: TextStyle(color: theme.primaryColor),),
                     ),
                   ),
                   const SizedBox(width: 12),
