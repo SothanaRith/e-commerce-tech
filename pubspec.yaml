@@ -73,6 +73,7 @@ dependencies:
   marquee: ^2.3.0
   flutter_markdown: ^0.7.7+1
   animated_text_kit: ^4.2.3
+  network_info_plus: ^6.1.4
 
 dev_dependencies:
   flutter_test:

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/models/Transaction_model.dart';
+import 'package:e_commerce_tech/models/user_model.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -100,6 +101,53 @@ class OrderController extends GetxController {
         title: "Error: ${response.error ?? 'Failed to fetch transactions'}",
       );
       throw Exception('Failed to fetch transactions');
+    }
+  }
+
+  Future<OrderModel> getLastOrder({
+    required BuildContext context,
+  }) async {
+    try {
+      isLoading = true;
+      update();
+
+      // Fetch the last order of the user from the API
+      final response = await apiRepository.fetchData(
+        '$mainPoint/api/product/orders/last/${UserStorage.currentUser?.id ?? ''}',
+        headers: {
+          'Authorization': TokenStorage.token ?? "",
+          'Content-Type': 'application/json',
+        },
+        context: context,
+      );
+
+      isLoading = false;
+      update();
+
+      if (response.data != null) {
+        final dynamic jsonData = jsonDecode(response.data!);
+        // Assuming the response returns a single order
+        OrderModel order = OrderModel.fromJson(jsonData);
+        update();
+        return order;
+      } else {
+        // Show error dialog on failure
+        showCustomDialog(
+          context: context,
+          type: CustomDialogType.error,
+          title: "Error: ${response.error ?? 'Failed to fetch last order'}",
+        );
+        throw Exception('Failed to fetch last order');
+      }
+    } catch (e) {
+      // Handle unexpected errors
+      showCustomDialog(
+        context: context,
+        type: CustomDialogType.error,
+        title: "Unexpected Error",
+        desc: e.toString(),
+      );
+      rethrow;
     }
   }
 

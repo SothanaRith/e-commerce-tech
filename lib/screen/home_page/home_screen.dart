@@ -1,5 +1,7 @@
+import 'dart:math';
+
+import 'package:e_commerce_tech/controllers/poster_controller.dart';
 import 'package:e_commerce_tech/controllers/wishlist_contoller.dart';
-import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/product_details_page/product_details_screen.dart';
 import 'package:e_commerce_tech/screen/profile_setting_page/last_order_widget.dart';
@@ -13,6 +15,7 @@ import 'package:e_commerce_tech/widgets/item_card_widget.dart';
 import 'package:e_commerce_tech/widgets/slider_custom_widget.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../controllers/home_controller.dart';
 
@@ -26,7 +29,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final HomeController homeController = Get.put(HomeController());
   final WishlistController wishlistController = Get.put(WishlistController());
+  final PosterController posterController = Get.put(PosterController());
   final ScrollController scrollController = ScrollController();
+  bool hasShownPopup = false;
 
   @override
   void initState() {
@@ -37,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
         context: context,
         userId: UserStorage.currentUser?.id.toString() ?? '',
       );
+      await _checkPopupStatus();
     });
 
     scrollController.addListener(() {
@@ -53,6 +59,50 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
     });
+  }
+
+  Future<void> _checkPopupStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    hasShownPopup = prefs.getBool('hasShownPopup') ?? false;
+    if (!hasShownPopup) {
+      // Random pop-up logic if not shown yet
+      Future.delayed(Duration(seconds: 4), () async {
+        await posterController.getAllPosters(context: context);
+        _showRandomPopup(prefs);
+      });
+    }
+  }
+
+  // Random pop-up logic
+  void _showRandomPopup(SharedPreferences prefs) {
+    Random random = Random();
+    _showPopupDialog(0);
+    prefs.setBool('hasShownPopup', true); // Mark as shown
+    // if (random.nextInt(5) == 0) {
+    //
+    // }
+  }
+
+  // Display a simple pop-up
+  void _showPopupDialog(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.transparent,
+          title: Text(posterController.posterData[index].title),
+          content: Image.network(safeImageUrl(posterController.posterData[index].imageUrl)),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override

@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
     bool? isLoggedIn = prefs.getBool('isLoggedIn');
 
     AuthController authController = AuthController();
-
+    await prefs.setBool('hasShownPopup', false);
     // Add small delay to show splash animation
     await Future.delayed(const Duration(seconds: 3));
 

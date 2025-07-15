@@ -342,7 +342,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   SizedBox(height: 18,),
-                  LastOrderWidget(),
+                  Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: LastOrderWidget(),
+                  ),
                   SizedBox(height: 18,),
                   // Menu items list
                   Padding(
