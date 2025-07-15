@@ -32,7 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      await getExchangeRateUSDToKHR();
       homeController.loadHome(
         page: homeController.currentPage,
         context: context,
