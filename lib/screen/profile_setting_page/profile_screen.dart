@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce_tech/controllers/auth_controller.dart';
 import 'package:e_commerce_tech/controllers/order_contoller.dart';
@@ -237,31 +238,124 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Container(
                     width: double.infinity,
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.only(left: 16.0, top: 16, bottom: 16),
                       child: Stack(
                         alignment: Alignment.centerLeft,
                         children: [
                           Positioned(
                             left: 60,
-                            child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 18),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: theme.primaryColor.withAlpha(30),
-                              ),
-                              child: Row(
-                                children: [
-                                  SizedBox(width: 22),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      AppText.title(user?.name ?? 'Rose BanSon'),
-                                      AppText.caption(user?.phone ?? 'Rose BanSon'),
-                                    ],
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: theme.primaryColor.withAlpha(30),
                                   ),
-                                  SizedBox(width: 16),
-                                ],
-                              ),
+                                  child: SizedBox(
+                                    width: MediaQuery.sizeOf(context).width,
+                                    child: Row(
+                                      children: [
+                                        SizedBox(width: 22),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            AppText.title1(user?.name ?? 'Rose BanSon'),
+                                            AppText.caption(user?.phone ?? 'Rose BanSon'),
+                                          ],
+                                        ),
+                                        SizedBox(width: 16),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                // SizedBox(width: 12,),
+                                // Stack(
+                                //   children: [
+                                //     GestureDetector(
+                                //       onTap: () {
+                                //         goTo(this, ChatScreen());
+                                //       },
+                                //       child: Padding(
+                                //         padding: const EdgeInsets.only(right: 120.0),
+                                //         child: Column(
+                                //           mainAxisAlignment: MainAxisAlignment.center,
+                                //           crossAxisAlignment: CrossAxisAlignment.center,
+                                //           children: [
+                                //             Stack(
+                                //               alignment: Alignment.center,
+                                //               children: [
+                                //                 Container(
+                                //                   width: 60,
+                                //                   height: 60,
+                                //                   padding: EdgeInsets.all(8),
+                                //                   decoration: BoxDecoration(
+                                //                     borderRadius: BorderRadiusGeometry.circular(40),
+                                //                     gradient: LinearGradient(
+                                //                       colors: [
+                                //                         theme.primaryColor.withAlpha(200),
+                                //                         theme.primaryColor.withAlpha(50)
+                                //                       ],
+                                //                     ),
+                                //                   ),
+                                //                   child: Image.asset(
+                                //                     "assets/icon/robot.png",
+                                //                     fit: BoxFit.cover,
+                                //                   ),
+                                //                 ),
+                                //               ],
+                                //             ),
+                                //           ],
+                                //         ),
+                                //       ),
+                                //     ),
+                                //     Positioned(
+                                //       top: 0,
+                                //       right: 5,
+                                //       child: Padding(
+                                //         padding: const EdgeInsets.only(left: 10.0),
+                                //         child: Container(
+                                //           padding:
+                                //           EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                //           decoration: BoxDecoration(
+                                //               color: theme.primaryColor.withAlpha(90),
+                                //               borderRadius: BorderRadiusGeometry.circular(12)),
+                                //           child: Align(
+                                //             alignment: Alignment.centerLeft,
+                                //             child: SizedBox(
+                                //               width: 100,
+                                //               child: DefaultTextStyle(
+                                //                 style: const TextStyle(
+                                //                   fontSize: 10,
+                                //                   fontWeight: FontWeight.bold,
+                                //                   color: Colors.white,
+                                //                 ),
+                                //                 child: AnimatedTextKit(
+                                //                   repeatForever: true,
+                                //                   isRepeatingAnimation: true,
+                                //                   animatedTexts: [
+                                //                     TyperAnimatedText('Hello, Ask me now !',
+                                //                         speed: Duration(milliseconds: 80)),
+                                //                     TyperAnimatedText('Do u need my help?',
+                                //                         speed: Duration(milliseconds: 80)),
+                                //                     TyperAnimatedText('how was your day ?',
+                                //                         speed: Duration(milliseconds: 80)),
+                                //                     TyperAnimatedText('Hi, Can I help u ?',
+                                //                         speed: Duration(milliseconds: 80)),
+                                //                   ],
+                                //                   onTap: () {},
+                                //                   displayFullTextOnTap: true,
+                                //                   pause: Duration(milliseconds: 1500),
+                                //                 ),
+                                //               ),
+                                //             ),
+                                //           ),
+                                //         ),
+                                //       ),
+                                //     ),
+                                //   ],
+                                // ),
+                              ],
                             ),
                           ),
                           GestureDetector(

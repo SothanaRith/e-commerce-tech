@@ -114,7 +114,6 @@ class _MainScreenState extends State<MainScreen> {
                                   children: [
                                     _buildNavItem(CupertinoIcons.house_fill, "Home", 0),
                                     _buildNavItem(CupertinoIcons.search_circle_fill, "Search", 1),
-                                    SizedBox(),
                                     _buildNavItem(CupertinoIcons.square_favorites_alt_fill, "Wishlist", 2),
                                     _buildNavItem(CupertinoIcons.person_alt_circle, "Profile", 3),
                                   ],
@@ -126,90 +125,6 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      goTo(this, ChatScreen());
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Container(
-                              width: 70,
-                              height: 70,
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadiusGeometry.circular(40),
-                                gradient: LinearGradient(
-                                  colors: [
-                                    theme.primaryColor.withAlpha(200),
-                                    theme.primaryColor.withAlpha(50)
-                                  ],
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: theme.primaryColor.withOpacity(0.3),
-                                    blurRadius: 10,
-                                    spreadRadius: 1,
-                                  ),
-                                ],
-                              ),
-                              child: Image.asset(
-                                "assets/icon/robot.png",
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Positioned(
-                  //   top: 35,
-                  //   child: Padding(
-                  //     padding: const EdgeInsets.only(left: 140.0),
-                  //     child: Container(
-                  //       padding:
-                  //           EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  //       decoration: BoxDecoration(
-                  //           color: theme.primaryColor.withAlpha(90),
-                  //           borderRadius: BorderRadiusGeometry.circular(12)),
-                  //       child: Align(
-                  //         alignment: Alignment.centerLeft,
-                  //         child: SizedBox(
-                  //           width: 100,
-                  //           child: DefaultTextStyle(
-                  //             style: const TextStyle(
-                  //               fontSize: 10,
-                  //               fontWeight: FontWeight.bold,
-                  //               color: Colors.white,
-                  //             ),
-                  //             child: AnimatedTextKit(
-                  //               repeatForever: true,
-                  //               isRepeatingAnimation: true,
-                  //               animatedTexts: [
-                  //                 TyperAnimatedText('Hello, Ask me now !',
-                  //                     speed: Duration(milliseconds: 80)),
-                  //                 TyperAnimatedText('Do u need my help?',
-                  //                     speed: Duration(milliseconds: 80)),
-                  //                 TyperAnimatedText('how was your day ?',
-                  //                     speed: Duration(milliseconds: 80)),
-                  //                 TyperAnimatedText('Hi, Can I help u ?',
-                  //                     speed: Duration(milliseconds: 80)),
-                  //               ],
-                  //               onTap: () {},
-                  //               displayFullTextOnTap: true,
-                  //               pause: Duration(milliseconds: 1500),
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),

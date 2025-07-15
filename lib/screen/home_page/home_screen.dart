@@ -6,8 +6,10 @@ import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/product_details_page/product_details_screen.dart';
 import 'package:e_commerce_tech/screen/profile_setting_page/last_order_widget.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
+import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/safe_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_tech/screen/home_page/widgets/category_home_screen_widget.dart';
 import 'package:e_commerce_tech/screen/home_page/widgets/home_top_bar_screen_widget.dart';
@@ -66,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
     hasShownPopup = prefs.getBool('hasShownPopup') ?? false;
     if (!hasShownPopup) {
       // Random pop-up logic if not shown yet
-      Future.delayed(Duration(seconds: 4), () async {
+      Future.delayed(Duration.zero, () async {
         await posterController.getAllPosters(context: context);
         _showRandomPopup(prefs);
       });
@@ -76,11 +78,10 @@ class _HomeScreenState extends State<HomeScreen> {
   // Random pop-up logic
   void _showRandomPopup(SharedPreferences prefs) {
     Random random = Random();
-    _showPopupDialog(0);
-    prefs.setBool('hasShownPopup', true); // Mark as shown
-    // if (random.nextInt(5) == 0) {
-    //
-    // }
+    if (random.nextInt(5) == 0) {
+      _showPopupDialog(random.nextInt(posterController.posterData.length));
+      prefs.setBool('hasShownPopup', true);
+    }
   }
 
   // Display a simple pop-up
@@ -90,16 +91,33 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.transparent,
-          title: Text(posterController.posterData[index].title),
-          content: Image.network(safeImageUrl(posterController.posterData[index].imageUrl)),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
+          contentPadding: EdgeInsets.all(0),
+          titlePadding: EdgeInsets.all(0),
+          buttonPadding: EdgeInsets.all(0),
+          scrollable: true,
+          title: Text(""),
+          content: GestureDetector(
+              onTap: () {
+                goTo(this, ProductDetailsScreen(id: posterController.posterData[index].order));
               },
-              child: Text('Close'),
-            ),
-          ],
+              child: Column(
+                children: [
+                  Image.network(safeImageUrl(posterController.posterData[index].imageUrl), fit: BoxFit.fill, width: MediaQuery.sizeOf(context).width / 1.5,),
+                  SizedBox(height: 22,),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadiusGeometry.circular(100),
+                            color: theme.primaryColor
+                        ),
+                        child: AppText.title2("close".tr, customStyle: TextStyle(color: theme.secondaryHeaderColor),)),
+                  )
+                ],
+              )),
         );
       },
     );

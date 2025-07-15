@@ -31,15 +31,15 @@ class PosterController extends GetxController {
 
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
-      print("Fetched Posters Data: $jsonData");
+      print("Fetched Posters Data: ${jsonData["data"]}");
 
       // Assuming the data is a list of posters
-      List<PosterModel> posters = (jsonData as List)
+      List<PosterModel> posters = await (jsonData["data"] as List)
           .map((item) => PosterModel.fromJson(item))
           .toList();
 
+      print("Fetched Posters Data: $posters");
       posterData = posters;
-      print("Fetched Posters Data: $posterData");
       isLoading = false;
       update();
       return posters;
