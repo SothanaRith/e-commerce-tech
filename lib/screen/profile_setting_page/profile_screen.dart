@@ -234,70 +234,71 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Profile section
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Stack(
-                              alignment: Alignment.bottomRight,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    showOptionsSheet(context);
-                                  },
-                                  child: CircleAvatar(
-                                    radius: 40,
-                                    backgroundColor: Colors.grey[300],
-                                    // Placeholder color
-                                    backgroundImage: NetworkImage(
-                                        safeImageUrl(logic.userProfile != null ? logic.userProfile ?? 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740' :
-                                      user?.coverImage != null
+                  Container(
+                    width: double.infinity,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Stack(
+                        alignment: Alignment.centerLeft,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              showOptionsSheet(context);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: theme.primaryColor, width: 3),
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              child: Container(
+                                padding: EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                ),
+                                child: CircleAvatar(
+                                  radius: 40,
+                                  backgroundColor: Colors.grey[300],
+                                  backgroundImage: NetworkImage(
+                                    safeImageUrl(
+                                      logic.userProfile != null
+                                          ? logic.userProfile ?? 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740'
+                                          : user?.coverImage != null
                                           ? "${user!.coverImage}"
                                           : 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740',
-                                    )),
+                                    ),
                                   ),
                                 ),
-                                // GestureDetector(
-                                //   onTap: () {
-                                //     showOptionsSheet(context);
-                                //   },
-                                //   child: Container(
-                                //     decoration: BoxDecoration(
-                                //       shape: BoxShape.circle,
-                                //       border: Border.all(
-                                //         color: Colors.grey,
-                                //         width: 1.0,
-                                //       ),
-                                //     ),
-                                //     child: CircleAvatar(
-                                //         radius: 12,
-                                //         backgroundColor: Colors.white,
-                                //         child: SvgPicture.asset(
-                                //             "assets/images/icons/edit-2.svg")
-                                //     ),
-                                //   ),
-                                // ),
-                              ],
+                              ),
                             ),
-                            const SizedBox(width: 14),
-                            // Spacing between avatar and text
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AppText.title(
-                                  user?.name ?? 'Rose BanSon',
-                                ),
-                                AppText.body2(
-                                  user?.phone ?? 'Rose BanSon',
-                                ),
-                              ],
+                          ),
+
+                          // Foreground container with name & phone
+                          Positioned(
+                            left: 60,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: theme.primaryColor.withAlpha(30),
+                              ),
+                              child: Row(
+                                children: [
+                                  SizedBox(width: 22),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      AppText.title(user?.name ?? 'Rose BanSon'),
+                                      SizedBox(height: 2,),
+                                      AppText.caption(user?.phone ?? 'Rose BanSon'),
+                                    ],
+                                  ),
+                                  SizedBox(width: 16),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Padding(
