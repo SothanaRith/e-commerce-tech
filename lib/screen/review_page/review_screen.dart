@@ -82,7 +82,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
               Padding(
                 padding: EdgeInsets.all(12.0),
                 child: ItemSelectWidget(
-                  imageUrl: widget.product.imageUrl ?? [],
+                  imageUrl: widget.product.imageUrl?[0] ?? '',
                   title: widget.product.name ?? '',
                   prices: widget.product.price ?? "--",
                   countNumber: 4.toString(), // Passing the callback

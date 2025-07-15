@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:e_commerce_tech/models/cart_model.dart';
 import 'package:e_commerce_tech/models/language_model.dart';
@@ -60,6 +61,7 @@ class PaymentStorage {
   static String? paymentType;
   static String? addressId;
   static String? billingNumber;
+  static double? rate;
 
 
   static Future<void> loadCheckPayment() async {
@@ -73,6 +75,7 @@ class PaymentStorage {
     quantity = prefs.getStringList('quantity');
     addressId = prefs.getString('address_id');
     billingNumber = prefs.getString('billing_number');
+    rate = prefs.getDouble('rate');
   }
 
   static Future<void> clearCheckPayment() async {
@@ -137,6 +140,11 @@ class PaymentStorage {
   static Future<void> saveBillingNumber(String NewBillingNumber) async {
     billingNumber = NewBillingNumber;
     (await SharedPreferences.getInstance()).setString('billing_number', NewBillingNumber);
+  }
+
+  static Future<void> saveRate(double rateNumber) async {
+    rate = rateNumber;
+    (await SharedPreferences.getInstance()).setDouble('rate', rateNumber);
   }
 
   static Future<List<String>> convertListProductId (List<CartModel> items) async {

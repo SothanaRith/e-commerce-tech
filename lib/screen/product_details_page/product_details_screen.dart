@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce_tech/controllers/cart_controller.dart';
@@ -9,6 +11,7 @@ import 'package:e_commerce_tech/models/product_model.dart';
 import 'package:e_commerce_tech/screen/category/product_by_category.dart';
 import 'package:e_commerce_tech/screen/chat_bot_page/chat_bot_screen.dart';
 import 'package:e_commerce_tech/screen/check_out_page/check_out_screen.dart';
+import 'package:e_commerce_tech/screen/product_details_page/variant_widget.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
@@ -45,97 +48,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   final CartController cartController = Get.put(CartController());
 
-  int _dialogQuantity = 1;
-
-  void _showAddToCartQuantityDialog() {
-    _dialogQuantity = productController.product.cartQuantity == 0
-        ? 1
-        : productController.product.cartQuantity ?? 1;
-    AwesomeDialog(
-      context: context,
-      dialogType: DialogType.info,
-      animType: AnimType.bottomSlide,
-      title: 'Select Quantity',
-      body: StatefulBuilder(
-        builder: (context, setState) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
-            child: Column(
-              children: [
-                AppText.title('Select Quantity'),
-                SizedBox(
-                  height: 10,
-                ),
-                AppText.body2('Before add to cart you need to insert quantity'),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Decrement Button
-                    IconButton(
-                      icon: Icon(Icons.remove_circle_outline),
-                      iconSize: 32,
-                      onPressed: () {
-                        if (_dialogQuantity > 1) {
-                          setState(() {
-                            _dialogQuantity--;
-                          });
-                        }
-                      },
-                    ),
-
-                    SizedBox(width: 20),
-
-                    // Quantity display
-                    Text(
-                      '$_dialogQuantity',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-
-                    SizedBox(width: 20),
-                    // Increment Button
-                    IconButton(
-                      icon: Icon(Icons.add_circle_outline),
-                      iconSize: 32,
-                      onPressed: () {
-                        setState(() {
-                          if (int.parse(
-                                  productController.product.totalStock ?? '0') >
-                              _dialogQuantity) _dialogQuantity++;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-      btnCancelOnPress: () {},
-      btnOkOnPress: () {
-        cartController
-            .addItemToCart(
-          context: context,
-          userId: UserStorage.currentUser?.id.toString() ?? '',
-          productId: productController.product.id ?? '0',
-          quantity: _dialogQuantity.toString(),
-        )
-            .then(
-          (value) {
-            productController.getProductById(
-                context: context,
-                id: widget.id,
-                userId: UserStorage.currentUser?.id ?? '');
-          },
-        );
-      },
-    ).show();
-  }
-
   @override
   void initState() {
     super.initState();
@@ -167,28 +79,37 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        height: MediaQuery.sizeOf(context).height / 1.5,
-                        width: MediaQuery.sizeOf(context).width,
+                        height: MediaQuery
+                            .sizeOf(context)
+                            .height / 1.5,
+                        width: MediaQuery
+                            .sizeOf(context)
+                            .width,
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
                             if (controller.selectedImageUrl.isNotEmpty)
                               GestureDetector(
-                                onTap: () => goTo(
-                                    this,
-                                    FlexibleImagePreview(
-                                        image: controller.selectedImageUrl)),
+                                onTap: () =>
+                                    goTo(
+                                        this,
+                                        FlexibleImagePreview(
+                                            image: controller
+                                                .selectedImageUrl)),
                                 child: CachedNetworkImage(
                                   imageUrl:
-                                      safeImageUrl(controller.selectedImageUrl),
-                                  placeholder: (context, url) => Center(
-                                      child: CircularProgressIndicator(
-                                          color: theme.primaryColor)),
+                                  safeImageUrl(controller.selectedImageUrl),
+                                  placeholder: (context, url) =>
+                                      Center(
+                                          child: CircularProgressIndicator(
+                                              color: theme.primaryColor)),
                                   errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
+                                  const Icon(Icons.error),
                                   height:
-                                      MediaQuery.sizeOf(context).height / 1.5 -
-                                          35,
+                                  MediaQuery
+                                      .sizeOf(context)
+                                      .height / 1.5 -
+                                      35,
                                   width: double.infinity,
                                   fit: BoxFit.cover,
                                 ),
@@ -196,7 +117,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             Positioned(
                               bottom: 0,
                               child: Container(
-                                width: MediaQuery.sizeOf(context).width * 0.90,
+                                width: MediaQuery
+                                    .sizeOf(context)
+                                    .width * 0.90,
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 8, horizontal: 4),
                                 decoration: BoxDecoration(
@@ -208,7 +131,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   height: 60,
                                   items: List.generate(
                                     product.imageUrl?.length ?? 0,
-                                    (index) {
+                                        (index) {
                                       final url = product.imageUrl![index];
                                       return GestureDetector(
                                         onTap: () {
@@ -223,13 +146,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                           height: 60,
                                           decoration: BoxDecoration(
                                             borderRadius:
-                                                BorderRadius.circular(5),
+                                            BorderRadius.circular(5),
                                             border: Border.all(
                                               color:
-                                                  controller.selectedImageUrl ==
-                                                          url
-                                                      ? theme.primaryColor
-                                                      : Colors.transparent,
+                                              controller.selectedImageUrl ==
+                                                  url
+                                                  ? theme.primaryColor
+                                                  : Colors.transparent,
                                               width: 2,
                                             ),
                                             image: DecorationImage(
@@ -253,29 +176,29 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   if (product.isInWishlist == 'true') {
                                     wishlistController
                                         .deleteWishlist(
-                                            context: context,
-                                            userId: UserStorage.currentUser?.id
-                                                    .toString() ??
-                                                '',
-                                            productId: product.id ?? '')
+                                        context: context,
+                                        userId: UserStorage.currentUser?.id
+                                            .toString() ??
+                                            '',
+                                        productId: product.id ?? '')
                                         .then(
-                                      (value) {
+                                          (value) {
                                         productController.getProductById(
                                             context: context,
                                             id: widget.id,
                                             userId:
-                                                UserStorage.currentUser?.id ??
-                                                    "");
+                                            UserStorage.currentUser?.id ??
+                                                "");
                                       },
                                     );
                                   } else {
                                     wishlistController
                                         .createWishlist(
-                                            context: context,
-                                            userId: UserStorage.currentUser?.id
-                                                    .toString() ??
-                                                '',
-                                            productId: product.id ?? '')
+                                        context: context,
+                                        userId: UserStorage.currentUser?.id
+                                            .toString() ??
+                                            '',
+                                        productId: product.id ?? '')
                                         .then((value) {
                                       productController.getProductById(
                                           context: context,
@@ -297,14 +220,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                       ),
                                       child: product.isInWishlist == 'true'
                                           ? SvgPicture.asset(
-                                              "assets/images/icons/heart.svg",
-                                              width: 20,
-                                              color: Colors.white,
-                                            )
+                                        "assets/images/icons/heart.svg",
+                                        width: 20,
+                                        color: Colors.white,
+                                      )
                                           : SvgPicture.asset(
-                                              "assets/images/icons/heart.svg",
-                                              width: 20,
-                                            ),
+                                        "assets/images/icons/heart.svg",
+                                        width: 20,
+                                      ),
                                     ),
                                     const SizedBox(width: 6),
                                   ],
@@ -327,7 +250,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       GestureDetector(
                                         onTap: () {
@@ -335,39 +258,39 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                               this,
                                               ProductByCategoryScreen(
                                                   categoryId:
-                                                      product.category?.id ??
-                                                          '',
+                                                  product.category?.id ??
+                                                      '',
                                                   categoryName:
-                                                      product.category?.name ??
-                                                          ''));
+                                                  product.category?.name ??
+                                                      ''));
                                         },
                                         child: Container(
                                           decoration: BoxDecoration(
                                               color: theme.primaryColor,
                                               borderRadius:
-                                                  BorderRadius.circular(100)),
+                                              BorderRadius.circular(100)),
                                           padding: EdgeInsets.symmetric(
                                               vertical: 0, horizontal: 10),
                                           child: Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                             children: [
                                               Row(
                                                 children: [
                                                   CachedNetworkImage(
                                                     imageUrl: safeImageUrl(
                                                         product.category
-                                                                ?.imageUrl ??
+                                                            ?.imageUrl ??
                                                             ''),
                                                     placeholder: (context,
-                                                            url) =>
+                                                        url) =>
                                                         Center(
                                                             child: CircularProgressIndicator(
                                                                 color: theme
                                                                     .primaryColor)),
                                                     errorWidget: (context, url,
-                                                            error) =>
-                                                        const Icon(Icons.error),
+                                                        error) =>
+                                                    const Icon(Icons.error),
                                                     height: 40,
                                                     fit: BoxFit.cover,
                                                   ),
@@ -386,7 +309,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                               Icon(
                                                 Icons.navigate_next_outlined,
                                                 color:
-                                                    theme.secondaryHeaderColor,
+                                                theme.secondaryHeaderColor,
                                               )
                                             ],
                                           ),
@@ -411,7 +334,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                       ),
                                       Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: [
                                           AppText.h2(
                                             "\$${product.price}",
@@ -448,82 +371,85 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         ListViewHorizontalWidget(
                           height: 160,
                           items: List.generate(product.reviews?.length ?? 0,
-                              (index) {
-                            final review = product.reviews![index];
-                            return Container(
-                              padding: const EdgeInsets.all(12),
-                              width: 300,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(18),
-                                color: theme.secondaryHeaderColor,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                  (index) {
+                                final review = product.reviews![index];
+                                return Container(
+                                  padding: const EdgeInsets.all(12),
+                                  width: 300,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(18),
+                                    color: theme.secondaryHeaderColor,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
                                     children: [
-                                      AppText.title1(
-                                          review.user?.name ?? "Anonymous"),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
+                                      Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Row(
-                                            children: List.generate(
-                                              int.tryParse(
+                                          AppText.title1(
+                                              review.user?.name ?? "Anonymous"),
+                                          Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                            children: [
+                                              Row(
+                                                children: List.generate(
+                                                  int.tryParse(
                                                       review.rating ?? '0') ??
-                                                  0,
-                                              (index) => const Icon(
-                                                Icons.star_rounded,
-                                                size: 18,
-                                                color: Colors.amber,
+                                                      0,
+                                                      (index) =>
+                                                  const Icon(
+                                                    Icons.star_rounded,
+                                                    size: 18,
+                                                    color: Colors.amber,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
+                                            ],
                                           ),
                                         ],
                                       ),
+                                      const SizedBox(height: 10),
+                                      AppText.caption(review.comment ?? ""),
+                                      const SizedBox(height: 10),
+                                      if (review.images != null &&
+                                          review.images!.isNotEmpty)
+                                        ListViewHorizontalWidget(
+                                          horizontalPadding: 4,
+                                          items: List.generate(
+                                              review.images!.length, (i) {
+                                            final imageUrl = "${review
+                                                .images![i]}";
+                                            return GestureDetector(
+                                              onTap: () {
+                                                goTo(
+                                                    this,
+                                                    FlexibleImagePreview(
+                                                        image: imageUrl));
+                                              },
+                                              child: Container(
+                                                width: 60,
+                                                height: 60,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                  BorderRadius.circular(5),
+                                                  image: DecorationImage(
+                                                    image: NetworkImage(
+                                                        safeImageUrl(imageUrl)),
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          }),
+                                          height: 60,
+                                        ),
                                     ],
                                   ),
-                                  const SizedBox(height: 10),
-                                  AppText.caption(review.comment ?? ""),
-                                  const SizedBox(height: 10),
-                                  if (review.images != null &&
-                                      review.images!.isNotEmpty)
-                                    ListViewHorizontalWidget(
-                                      horizontalPadding: 4,
-                                      items: List.generate(
-                                          review.images!.length, (i) {
-                                        final imageUrl = "${review.images![i]}";
-                                        return GestureDetector(
-                                          onTap: () {
-                                            goTo(
-                                                this,
-                                                FlexibleImagePreview(
-                                                    image: imageUrl));
-                                          },
-                                          child: Container(
-                                            width: 60,
-                                            height: 60,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              image: DecorationImage(
-                                                image: NetworkImage(
-                                                    safeImageUrl(imageUrl)),
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                                      height: 60,
-                                    ),
-                                ],
-                              ),
-                            );
-                          }),
+                                );
+                              }),
                         ),
                       ],
                       if (product.variants != null &&
@@ -534,120 +460,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             children: product.variants!.map((item) {
                               return GestureDetector(
                                 onTap: () {
-                                  showBottomBar();
+                                  cartController.selectedVariant = null;
+                                  cartController.dialogQuantity = 0;
+                                  cartController.update();
+                                  showBottomBar(product: product);
                                 },
-                                child: Container(
-                                  constraints: BoxConstraints(
-                                    minWidth: 100,
-                                    maxWidth: MediaQuery.sizeOf(context).width * 0.8,
-                                  ),
-                                  padding: const EdgeInsets.all(12),
-                                  margin: EdgeInsets.only(left: product.variants?[0].title == item.title ? 12 : 0, right: product.variants?.last.title != item.title ? 12 : 12),
-                                  decoration: BoxDecoration(
-                                    color: theme.primaryColor.withAlpha(50),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          if (item.imageUrl != null &&
-                                              item.imageUrl != 'null') ...[
-                                            ClipRRect(
-                                              borderRadius: BorderRadiusGeometry.circular(8),
-                                              child: CachedNetworkImage(
-                                                imageUrl:
-                                                    safeImageUrl(item.imageUrl ?? ''),
-                                                placeholder: (context, url) => Center(
-                                                  child: CircularProgressIndicator(
-                                                      color: theme.primaryColor),
-                                                ),
-                                                errorWidget: (context, url, error) =>
-                                                    const Icon(Icons.error),
-                                                height: 50,
-                                                width: 50,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 8),
-                                          ],
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              if(item.title != 'null')
-                                              AppText.title2(item.title ?? ''),
-                                              Row(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: [
-                                                  AppText.body2('\$ ${item.price}', customStyle: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.w400),),
-                                                  const SizedBox(width: 4),
-                                                  AppText.body1('|'),
-                                                  const SizedBox(width: 4),
-                                                  AppText.body2("${item.stock}'s in stock", customStyle: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.w400),),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      IntrinsicWidth(
-                                        stepWidth: 160,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            const SizedBox(height: 8),
-                                            Wrap(
-                                              spacing: 6,
-                                              runSpacing: 6,
-                                              children: item.variantAttributes
-                                                  ?.map((attribute) {
-                                                return Container(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 10,
-                                                      vertical: 6),
-                                                  decoration: BoxDecoration(
-                                                    color: theme.primaryColor
-                                                        .withAlpha(30),
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        8),
-                                                  ),
-                                                  child: RichText(
-                                                    text: TextSpan(
-                                                      style: TextStyle(
-                                                          fontSize: 9,
-                                                          color: theme
-                                                              .primaryColor),
-                                                      children: [
-                                                        TextSpan(
-                                                            text:
-                                                            "${attribute.name}: "),
-                                                        TextSpan(
-                                                          text:
-                                                          "${attribute.value}",
-                                                          style: const TextStyle(
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .bold),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
-                                              }).toList() ??
-                                                  [],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: product.variants?[0].title ==
+                                          item.title ? 12 : 0,
+                                      right: product.variants?.last.title !=
+                                          item.title ? 12 : 12),
+                                  child: VariantWidget(variants: item),
                                 ),
                               );
                             }).toList(),
@@ -731,8 +555,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             ]),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          spacing: 6,
+          spacing: 8,
           children: [
+            SizedBox(width: 6,),
             GestureDetector(
                 onTap: () {
                   goTo(this, ChatScreen());
@@ -741,7 +566,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border:
-                            Border.all(width: 1, color: theme.primaryColor)),
+                        Border.all(width: 1, color: theme.primaryColor)),
                     padding: EdgeInsets.all(8),
                     child: Icon(CupertinoIcons.chat_bubble_fill,
                         color: theme.primaryColor))),
@@ -755,11 +580,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     Container(
                       decoration: BoxDecoration(
                           border:
-                              Border.all(width: 1, color: theme.highlightColor),
+                          Border.all(width: 1, color: theme.highlightColor),
                           shape: BoxShape.circle),
                       margin: EdgeInsets.only(left: 5),
                       padding:
-                          EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                      EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                       child: Icon(Icons.shopping_cart_rounded,
                           color: theme.highlightColor),
                     ),
@@ -776,7 +601,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           child: AppText.body1(
                             cartLogic.totalItemsInCart.toString(),
                             customStyle:
-                                TextStyle(color: theme.secondaryHeaderColor),
+                            TextStyle(color: theme.secondaryHeaderColor),
                           )),
                     )
                   ],
@@ -789,9 +614,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 buttonStyle: BtnStyle.action,
                 title: "Add to cart",
                 action: () {
-                  showBottomBar();
+                  cartController.selectedVariant = null;
+                  cartController.dialogQuantity = 0;
+                  cartController.update();
+                  showBottomBar(product: productController.product);
                 },
-                width: MediaQuery.of(context).size.width / 2.5,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width / 2.5,
               ),
             )
           ],
@@ -800,34 +631,37 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
-  Future<void> showBottomBar() async {
+  Future<void> showBottomBar({
+    required ProductModel product,
+  }) async {
     showMaterialModalBottomSheet(
       backgroundColor: Colors.transparent,
       context: context,
       isDismissible: true,
       enableDrag: true,
-      builder: (context) => Stack(
-        children: [
-          GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
-            child: Container(color: Colors.transparent),
+      builder: (context) =>
+          Stack(
+            children: [
+              GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+                child: Container(color: Colors.transparent),
+              ),
+              DraggableScrollableSheet(
+                initialChildSize: 0.6,
+                minChildSize: 0.4,
+                maxChildSize: 0.95,
+                builder: (context, scrollController) {
+                  return _buildCartBottomSheet(
+                      scrollController, productController.product);
+                },
+              ),
+            ],
           ),
-          DraggableScrollableSheet(
-            initialChildSize: 0.6,
-            minChildSize: 0.4,
-            maxChildSize: 0.95,
-            builder: (context, scrollController) {
-              return _buildCartBottomSheet(
-                  scrollController, productController.product);
-            },
-          ),
-        ],
-      ),
     );
   }
 
-  Widget _buildCartBottomSheet(
-      ScrollController scrollController, ProductModel product) {
+  Widget _buildCartBottomSheet(ScrollController scrollController,
+      ProductModel product) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -840,40 +674,222 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         controller: scrollController,
         child: StatefulBuilder(
           builder: (context, setModalState) {
-            return Column(
-              children: [
-                GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: Container(
-                    width: MediaQuery.sizeOf(context).width / 7,
-                    margin: const EdgeInsets.all(16),
-                    height: 8,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      color: Colors.grey.withOpacity(0.4),
+            return GetBuilder<CartController>(builder: (logic) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Center(
+                      child: Container(
+                        width: MediaQuery
+                            .sizeOf(context)
+                            .width / 7,
+                        margin: const EdgeInsets.all(16),
+                        height: 8,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: Colors.grey.withOpacity(0.4),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                Container(
-                    child: Column(
-                        // children: product.variants?[0].variantAttributes?.map((attribute) {
-                        //   return Row(
-                        //     children: [
-                        //       AppText.body(
-                        //         "${attribute.name}: ",
-                        //         customStyle: TextStyle(color: theme.highlightColor),
-                        //       ),
-                        //       SizedBox(width: 8),
-                        //       AppText.title(
-                        //         "${attribute.value}",
-                        //         customStyle: TextStyle(color: theme.primaryColor),
-                        //       ),
-                        //     ],
-                        //   );
-                        // }).toList() ?? [],
-                        ))
-              ],
-            );
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6),
+                    child: AppText.title(product.name ?? ''),
+                  ),
+                  if (product.imageUrl != null &&
+                      product.imageUrl != 'null') ...[
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadiusGeometry.circular(8),
+                            child: CachedNetworkImage(
+                              imageUrl:
+                              safeImageUrl(product.imageUrl?.first ?? ''),
+                              placeholder: (context, url) =>
+                                  Center(
+                                    child: CircularProgressIndicator(
+                                        color: theme.primaryColor),
+                                  ),
+                              errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                              height: MediaQuery
+                                  .sizeOf(context)
+                                  .width / 4,
+                              width: MediaQuery
+                                  .sizeOf(context)
+                                  .width / 4,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if(logic.selectedVariant != null)...[
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  AppText.body('\$', customStyle: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.bold),),
+                                  SizedBox(width: 3,),
+                                  AppText.h3('${logic.selectedVariant?.price}', customStyle: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.bold),),
+                                ],
+                              ),
+                              // Row(
+                              //   crossAxisAlignment: CrossAxisAlignment.end,
+                              //   children: [
+                              //     AppText.title2(
+                              //       '\៛',
+                              //       customStyle: TextStyle(color: theme.primaryColor),
+                              //     ),
+                              //     SizedBox(width: 2,),
+                              //     AppText.title(
+                              //       ' ${(double.parse(logic.selectedVariant?.price ?? '0') * rate).toStringAsFixed(2)}',
+                              //       customStyle: TextStyle(color: theme.primaryColor),
+                              //     ),
+                              //   ],
+                              // ),
+                            ],
+                            SizedBox(height: 4,),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    if (logic.dialogQuantity > 1) {
+                                      logic.dialogQuantity--;
+                                      logic.update();
+                                    }
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 7, horizontal: 12),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadiusGeometry
+                                            .circular(8),
+                                        color: theme.primaryColor.withAlpha(50)
+                                    ),
+                                    child: AppText.body2("-",
+                                      customStyle: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: theme.primaryColor),),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 18.0),
+                                  child: AppText.body(
+                                    '${logic.dialogQuantity}',
+                                    customStyle: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: theme.highlightColor),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (logic.selectedVariant != null &&
+                                        int.parse(logic.selectedVariant?.stock ?? '0') > logic.dialogQuantity)
+                                    {
+                                      logic.dialogQuantity++;
+                                      logic.update();
+                                    }
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 7, horizontal: 12),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadiusGeometry
+                                            .circular(8),
+                                        color: theme.primaryColor.withAlpha(50)
+                                    ),
+                                    child: AppText.body2("+",
+                                      customStyle: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: theme.primaryColor),),
+                                  ),
+                                ),
+                                SizedBox(width: 16,),
+                                AppText.title2("${logic.selectedVariant?.stock ?? '0'}'s in stock now", customStyle: TextStyle(color: theme.highlightColor, fontWeight: FontWeight.w400),),
+
+                              ],),
+                            SizedBox(height: 12,),
+                            GestureDetector(
+                              onTap: () {
+                                if(logic.selectedVariant != null)
+                                logic
+                                    .addItemToCart(
+                                  context: context,
+                                  userId: UserStorage.currentUser?.id.toString() ?? '',
+                                  productId: productController.product.id ?? '0',
+                                  quantity: logic.dialogQuantity.toString(), variant: logic.selectedVariant ?? Variants(),
+                                )
+                                    .then(
+                                      (value) {
+                                    productController.getProductById(
+                                        context: context,
+                                        id: widget.id,
+                                        userId: UserStorage.currentUser?.id ?? '');
+                                    cartController.fetchTotalItemsInCart(context: context);
+                                  },
+                                );
+                              },
+                              child: Container(
+                                  padding: EdgeInsets.symmetric(vertical: 7, horizontal: 32),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadiusGeometry.circular(100),
+                                      color: theme.primaryColor
+                                  ),
+                                  child: AppText.body1("check_out".tr, customStyle: TextStyle(color: theme.secondaryHeaderColor, fontWeight: FontWeight.bold),)),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ],
+                  SizedBox(height: 18,),
+                  Container(width: double.infinity, height: 4, color: theme.highlightColor.withAlpha(30),),
+                  SizedBox(height: 10,),
+                  if (product.variants != null &&
+                      product.variants!.isNotEmpty) ...[
+                    SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: product.variants!.map((item) {
+                            return GestureDetector(
+                              onTap: () {
+                                logic.selectedVariant = item;
+                                logic.dialogQuantity = 0;
+                                logic.update();
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(top: product
+                                    .variants?[0].title == item.title ? 10 : 0,
+                                    bottom: product.variants?.last.title !=
+                                        item.title ? 10 : 10, left: 12),
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadiusGeometry.circular(14),
+                                      border: Border.all(width: 2, color: logic.selectedVariant == item ? theme.primaryColor : Colors.transparent)
+                                    ),
+                                    child: VariantWidget(variants: item, isSelected: logic.selectedVariant == item)),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                  ],
+                ],
+              );
+            });
           },
         ),
       ),

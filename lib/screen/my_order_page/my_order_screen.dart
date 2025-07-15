@@ -127,7 +127,7 @@ class _OrdersTabState extends State<OrdersTab> {
                 }
               }
               return ItemSelectWidget(
-                imageUrl: imageList,
+                imageUrl: imageList[0],
                 onTap: () async {
                   goTo(this, OrderTransactionDetailScreen(data: tx.order ?? OrderModel(),));
                 },

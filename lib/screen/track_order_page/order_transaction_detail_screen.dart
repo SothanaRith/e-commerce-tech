@@ -47,7 +47,7 @@ class _OrderTransactionDetailScreenState extends State<OrderTransactionDetailScr
           ListViewCustomWidget(
             items: (showAllItems ? widget.data.orderItems : widget.data.orderItems?.take(3))!.map((item) {
               return ItemSelectWidget(
-              imageUrl: item.product?.imageUrl ?? [],
+              imageUrl: item.product?.imageUrl?[0] ?? '',
               onTap: () {
                 goTo(this, ProductDetailsScreen(id: item.product?.id ?? ''));
               },

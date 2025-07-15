@@ -66,7 +66,7 @@ void showCustomDialog({
               style: const TextStyle(color: Colors.black54),
               textAlign: TextAlign.center,
             ),
-            if(desc == '')
+            if(desc != '')
             const SizedBox(height: 24),
             if (type == CustomDialogType.success)
               SizedBox(

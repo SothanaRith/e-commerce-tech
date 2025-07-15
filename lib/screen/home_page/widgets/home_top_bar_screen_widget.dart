@@ -91,14 +91,13 @@ class _HomeTopBarScreenWidgetState extends State<HomeTopBarScreenWidget> {
                   ),
                   if(cartController.totalItemsInCart != 0)
                     Positioned(
-                      right: -2,
+                      right: 0,
                       top: -2,
                       child: Container(
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: Colors.red,
-                            border: Border.all(width: 2, color: Colors.white)
                         ),
                         child: AppText.caption(cartController.totalItemsInCart.toString(), customStyle: TextStyle(color: Colors.white),),
                       ),

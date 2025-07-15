@@ -10,6 +10,7 @@ class CartModel {
   String? quantity;
   String? createdAt;
   String? updatedAt;
+  Variants? variant;
   ProductModel? product;
 
   CartModel({
@@ -22,6 +23,7 @@ class CartModel {
     this.createdAt,
     this.updatedAt,
     this.product,
+    this.variant,
   });
 
   CartModel.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class CartModel {
     userId = json['userId'].toString();
     productId = json['productId'].toString();
     variantId = json['variantId'].toString();
+    variant = json['Variant'] != null ? Variants.fromJson(json['Variant']) : null;
     priceAtPurchase = json['priceAtPurchase'].toString();
     quantity = json['quantity'].toString();
     createdAt = formatDateString(json['createdAt'].toString());

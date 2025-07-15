@@ -22,6 +22,8 @@ class CartController extends GetxController {
   RxBool isLoadingProducts = false.obs;
   List<CartModel> cartList = [];
   int totalItemsInCart = 0;
+  int dialogQuantity = 1;
+  Variants? selectedVariant;
   final WishlistController wishlistController = Get.put(WishlistController());
   final SearchingController searchController = Get.put(SearchingController());
   final HomeController homeController = Get.put(HomeController());
@@ -101,13 +103,12 @@ class CartController extends GetxController {
   Future<void> addItemToCart(
       {required BuildContext context,
         required String userId,
+        required Variants variant,
         required String productId,
         required String quantity,
       }) async {
 
-    ProductModel product = await productController.getProductById(context: context, id: productId, userId: UserStorage.currentUser?.id ?? '');
-
-    if (int.parse(product.totalStock ?? "0") < int.parse(quantity)) {
+    if (int.parse(variant.stock ?? "0") < int.parse(quantity)) {
       showCustomDialog(
           context: context,
           type: CustomDialogType.info,
@@ -121,6 +122,7 @@ class CartController extends GetxController {
         body: {
           "userId": userId,
           "productId": productId,
+          "variantId": variant.id,
           "quantity": quantity,
         },
         headers: {'Content-Type': 'application/json'}, context: context

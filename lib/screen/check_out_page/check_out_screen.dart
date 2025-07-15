@@ -121,8 +121,10 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                   ListViewCustomWidget(
                     items: logic.cartList.map((item) {
                       final product = item.product;
+                      final priceAtPurchase = item.priceAtPurchase;
+                      final variant = item.variant;
                       if (product != null) {
-                        double price = double.tryParse(product.price ?? '') ??
+                        double price = double.tryParse(priceAtPurchase ?? '') ??
                             0.0;
                         int quantity = int.tryParse(item.quantity ?? '') ?? 0;
                         final totalPrice = "\$${(price * quantity)
@@ -172,7 +174,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                     '');
                           },
                           child: ItemSelectWidget(
-                            imageUrl: product.imageUrl ?? [],
+                            imageUrl: variant?.imageUrl ?? '',
                             title: product.name ?? '',
                             prices: totalPrice,
                             onTap: () {
@@ -198,7 +200,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
           double totalPrice = 0;
 
           for (var item in logic.cartList) {
-            double price = double.tryParse(item.product?.price ?? '') ?? 0.0;
+            double price = double.tryParse(item.priceAtPurchase ?? '') ?? 0.0;
             int quantity = int.tryParse(item.quantity ?? '') ?? 0;
             totalPrice += price * quantity;
           }

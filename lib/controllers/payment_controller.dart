@@ -21,6 +21,7 @@ class PaymentController extends GetxController {
   var deeplink = '';  // Observable variable for Deeplink
   var transactionStatus = '';  // Observable variable for Transaction Status
   var isLoading = false;  // Observable variable for loading state
+  var isGenerateLoading = false;  // Observable variable for loading state
   var isPaymentSuccess = false;  // Observable variable for loading state
   var qrCode = '';
   var md5 = '';
@@ -257,19 +258,19 @@ class PaymentController extends GetxController {
 
   // Generate KHQR QR code
   Future<void> generateKHQR({required KhqrCurrency currency,required double amount, required BuildContext context}) async {
-    isLoading = true;
+    isGenerateLoading = true;
     billingNumber = await generateBillNumberWithRandom();
     update();
     try {
       final expire = DateTime.now().millisecondsSinceEpoch + 3600000;
-      final rate = await getExchangeRateUSDToKHR();
+      final rate = PaymentStorage.rate ?? 4000;
       final info = IndividualInfo(
-          // bakongAccountId: 'un_virak3@aclb',
-          bakongAccountId: 'sothanarith_heang1@aclb',
-          merchantName: 'Snap Buy ($billingNumber)',
+          bakongAccountId: 'un_virak3@aclb',
+          // bakongAccountId: 'sothanarith_heang1@aclb',
+          merchantName: 'SnapBuy ($billingNumber)',
           billNumber: billingNumber,
           currency: currency,
-          amount: amount * rate,
+          amount: double.parse((amount * rate).toStringAsFixed(0)),
           expirationTimestamp: expire
       );
       final khqrData = await _khqrSdk.generateIndividual(info);
@@ -292,23 +293,24 @@ class PaymentController extends GetxController {
       update();
     } finally {
       isLoading = false;
+      isGenerateLoading = false;
       update();
     }
   }
   Future<void> generateKHQRMerchantInfo({required KhqrCurrency currency,required double amount, required BuildContext context}) async {
-    isLoading = true;
+    isGenerateLoading = true;
     billingNumber = await generateBillNumberWithRandom();
     update();
     try {
       final expire = DateTime.now().millisecondsSinceEpoch + 3600000;
-      final rate = await getExchangeRateUSDToKHR();
+      final rate = PaymentStorage.rate ?? 4000;
       final info = MerchantInfo(
         bakongAccountId: 'un_virak2@aclb',
         acquiringBank: 'ABA Bank',
         merchantId: '1241779',
         merchantName: 'Heang Sothanarith',
         currency: KhqrCurrency.khr,
-        amount: amount * rate,
+        amount: double.parse((amount * rate).toStringAsFixed(0)),
         merchantCategoryCode: "8220",
         expirationTimestamp: expire,
       );
@@ -329,6 +331,7 @@ class PaymentController extends GetxController {
       update();
     } finally {
       isLoading = false;
+      isGenerateLoading = false;
       update();
     }
   }

@@ -28,6 +28,8 @@ void main() async {
   // Initialize languages
   Map<String, Map<String, String>> _languages = await dep.init();
 
+  await getExchangeRateUSDToKHR().then((value) => PaymentStorage.saveRate(value));
+
   // Load token and user data
   await TokenStorage.loadToken();
   await TokenStorage.loadRefresh();

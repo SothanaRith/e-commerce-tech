@@ -35,7 +35,6 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
   int? selectedMethodIndex;
   bool isLoading = true;
   List<Map<String, String>> paymentMethods = [];
-  double rate = 0;
   final PaymentController paymentController = Get.put(PaymentController());
 
   @override
@@ -78,7 +77,6 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
 
   Future<void> _loadPaymentMethods() async {
     try {
-      rate = await getExchangeRateUSDToKHR();
       final methods = await orderController.fetchPaymentMethods();
       setState(() {
         paymentMethods = methods;
@@ -95,7 +93,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
   double get totalPrice {
     double total = 0;
     for (var item in widget.cart) {
-      final price = double.tryParse(item.product?.price ?? '') ?? 0;
+      final price = double.tryParse(item.priceAtPurchase ?? '') ?? 0;
       final quantity = int.tryParse(item.quantity ?? '') ?? 0;
       total += price * quantity;
     }
@@ -136,7 +134,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         AppText.title1("TO REAL".tr),
-                        AppText.title1("\៛${(totalPrice * rate).toStringAsFixed(2)}"),
+                        AppText.title1("\៛ ${(totalPrice * (PaymentStorage.rate ?? 4000)).toStringAsFixed(0)}"),
                       ],
                     )
                   ],

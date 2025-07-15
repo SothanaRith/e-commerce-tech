@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
@@ -6,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ItemSelectWidget extends StatelessWidget {
-  final List<String> imageUrl;
+  final String imageUrl;
   final String title;
   final String prices;
   final String countNumber;
@@ -23,51 +24,6 @@ class ItemSelectWidget extends StatelessWidget {
     required this.countNumber,
     this.count, this.onTap, this.onAction, this.actionTitle,
   });
-
-  Widget _buildStackedImages() {
-    List<Widget> imageStack = [];
-
-    for (int i = 0; i < imageUrl.length && i < 3; i++) {
-      imageStack.add(
-        Positioned(
-          left: i * 12.0,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(100),
-            child: Image.network(
-              safeImageUrl("${imageUrl[i]}"),
-              width: 50.w,
-              height: 50.w,
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-      );
-    }
-
-    final extraCount = imageUrl.length - 3;
-    if (extraCount > 0) {
-      imageStack.add(
-        Positioned(
-          left: 28.0,
-          child: Container(
-            width: 50.w,
-            height: 50.w,
-            decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.8),
-              shape: BoxShape.circle,
-            ),
-            child: Center(child: AppText.title("+$extraCount")),
-          ),
-        ),
-      );
-    }
-
-    return SizedBox(
-      width: 80.w,
-      height: 60.w,
-      child: Stack(children: imageStack),
-    );
-  }
 
   Widget _buildPriceSection() {
     return Column(
@@ -141,21 +97,26 @@ class ItemSelectWidget extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if (imageUrl.length >= 2) ...[
-              _buildStackedImages(),
-            ] else ...[
-              ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    safeImageUrl( imageUrl.isEmpty ? '' : imageUrl[0]),
-                    width: 90.w,
-                    height: 90.w,
-                    fit: BoxFit.cover,
-                  )),
-              SizedBox(
-                width: 12,
+            ClipRRect(
+              borderRadius: BorderRadiusGeometry.circular(8),
+              child: CachedNetworkImage(
+                imageUrl:
+                safeImageUrl( imageUrl.isEmpty ? '' : imageUrl),
+                width: 90.w,
+                height: 90.w,
+                fit: BoxFit.cover,
+                placeholder: (context, url) =>
+                    Center(
+                      child: CircularProgressIndicator(
+                          color: theme.primaryColor),
+                    ),
+                errorWidget: (context, url, error) =>
+                const Icon(Icons.image),
               ),
-            ],
+            ),
+            SizedBox(
+              width: 12,
+            ),
             SizedBox(width: 12.w),
             Expanded(
               child: Column(

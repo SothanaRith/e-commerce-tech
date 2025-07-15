@@ -26,13 +26,11 @@ class PaymentDialog extends StatefulWidget {
 class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserver {
   final PaymentController paymentController = Get.put(PaymentController());
   final OrderController orderController = OrderController();
-  double rate = 0;
 
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      rate = await getExchangeRateUSDToKHR();
       await paymentController.generateKHQR(
         currency: widget.currency,
         amount: widget.amount, context: context,
@@ -76,8 +74,7 @@ class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserv
         padding: const EdgeInsets.all(24.0),
         child: GetBuilder<PaymentController>(builder: (controller) {
           return Skeletonizer(
-            // enabled: controller.isLoading,
-            enabled: false,
+            enabled: controller.isGenerateLoading,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -91,7 +88,7 @@ class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserv
                   KhqrCardWidget(
                     width: 280,
                     receiverName: 'Snap Buy',
-                    amount: widget.amount * rate,
+                    amount: double.parse((widget.amount * (PaymentStorage.rate ?? 4000)).toStringAsFixed(0)),
                     keepIntegerDecimal: false,
                     currency: widget.currency,
                     qr: controller.qrCode,
