@@ -360,7 +360,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               padding: EdgeInsets.all(8.0),
                               child: Center(child: CircularProgressIndicator()),
                             ),
-                          SizedBox(height: 40,)
+                          SizedBox(height: 80,)
                         ],
                       );
                     },

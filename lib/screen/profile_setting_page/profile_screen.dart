@@ -256,7 +256,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       AppText.title(user?.name ?? 'Rose BanSon'),
-                                      SizedBox(height: 2,),
                                       AppText.caption(user?.phone ?? 'Rose BanSon'),
                                     ],
                                   ),
