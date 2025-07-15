@@ -53,7 +53,7 @@ class OrderController extends GetxController {
   //     // Show error dialog on failure
   //     showCustomDialog(
   //       context: context,
-  //       type: DialogType.error,
+  //       type: CustomDialogType.error,
   //       title: "Error: ${response.error ?? 'Failed to fetch transactions'}",
   //     );
   //     throw Exception('Failed to fetch transactions');
@@ -96,7 +96,7 @@ class OrderController extends GetxController {
       // Show error dialog on failure
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Error: ${response.error ?? 'Failed to fetch transactions'}",
       );
       throw Exception('Failed to fetch transactions');
@@ -131,7 +131,7 @@ class OrderController extends GetxController {
       // Show error dialog on failure
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Error: ${response.error ?? 'Failed to fetch transactions'}",
       );
       throw Exception('Failed to fetch transactions');
@@ -171,7 +171,7 @@ class OrderController extends GetxController {
         var jsonData = jsonDecode(response.data!);
         showCustomDialog(
           context: context,
-          type: DialogType.success,
+          type: CustomDialogType.success,
           title: "Success",
           desc: jsonData["message"] ?? "Order placed successfully",
           okOnPress: () {},
@@ -180,7 +180,7 @@ class OrderController extends GetxController {
       } else {
         showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Error",
           desc: response.error ?? "Failed to place order",
         );
@@ -189,7 +189,7 @@ class OrderController extends GetxController {
     } catch (e) {
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Unexpected Error",
         desc: e.toString(),
       );

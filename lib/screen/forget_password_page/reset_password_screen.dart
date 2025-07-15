@@ -80,7 +80,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             confirmPasswordTextField.text) {
                           showCustomDialog(
                               context: context,
-                              type: DialogType.error,
+                              type: CustomDialogType.error,
                               title: "error_confirm_password_is_wrong_!".tr);
                         } else {
                           authController.resetPassword(newPassword: passwordTextField.text, context: context);

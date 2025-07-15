@@ -58,7 +58,7 @@ class ReviewController extends GetxController {
         final jsonData = jsonDecode(response.body);
         showCustomDialog(
           context: context,
-          type: DialogType.success,
+          type: CustomDialogType.success,
           title: "${jsonData["message"]}",
           okOnPress: () {
             popBack(this);
@@ -68,7 +68,7 @@ class ReviewController extends GetxController {
         final jsonData = jsonDecode(response.body);
         showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Error: ${jsonData["message"]}",
         );
       }
@@ -76,7 +76,7 @@ class ReviewController extends GetxController {
       print('Exception: $e');
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: 'Error: $e',
       );
     }

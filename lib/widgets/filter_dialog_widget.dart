@@ -71,19 +71,22 @@ class _FilterDialogWidgetState extends State<FilterDialogWidget> {
                               widget.filterContent(setModalState),
                               Padding(
                                 padding: const EdgeInsets.all(12.0),
-                                child: Column(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     CustomButtonWidget(
                                       title: 'Apply Filters',
                                       action: () { Navigator.of(context).pop();
                                       widget.onApply(); },
                                       buttonStyle: BtnStyle.action,
+                                      width: MediaQuery.sizeOf(context).width / 3,
                                     ),
-                                    SizedBox(height: 12,),
+                                    SizedBox(width: 12,),
                                     CustomButtonWidget(
                                       title: 'Clear Filters',
                                       action: () { Navigator.of(context).pop();
                                       widget.onClear(); },
+                                      width: MediaQuery.sizeOf(context).width / 3,
                                     ),
                                   ],
                                 ),

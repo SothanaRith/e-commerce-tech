@@ -180,69 +180,115 @@ class _SearchScreenState extends State<SearchScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: AppText.title1("category".tr),
-                        ),
-                        categoryController.category == null
-                            ? const Center(
-                            child: CircularProgressIndicator())
-                            : ListViewHorizontalWidget(
-                          items: categoryController
-                              .category!.categories
-                              .map((cat) {
-                            return TextBtnWidget(
-                              title: cat.name,
-                              isSelected:
-                              selectedCategories.contains(cat
-                                  .id),
-                              // <-- Add this if your widget supports it
-                              onTap: () {
-                                toggleCategory(
-                                    cat.id, setModalState);
-                              },
-                            );
-                          }).toList(),
-                          height: 40,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: AppText.title1("pricing_range".tr),
-                        ),
-                        RangeSliderWidget(
-                          min: 0,
-                          max: 3000,
-                          start: priceRange.start,
-                          end: priceRange.end,
-                          onChanged: (values) {
-                            setModalState(() {});
-                            setState(() => priceRange = values);
-                          },
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12.0, vertical: 6),
-                          child: AppText.title1("reviews".tr),
-                        ),
-                        Row(
-                          children: List.generate(5, (index) {
-                            return IconButton(
-                              icon: Icon(
-                                Icons.star,
-                                color: selectedRating! >= index + 1
-                                    ? Colors.amber
-                                    : Colors.grey,
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadiusGeometry.circular(12),
+                              color: theme.highlightColor.withAlpha(10)
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                child: AppText.title2("category".tr),
                               ),
-                              onPressed: () {
-                                setModalState(() {});
-                                setState(() =>
-                                selectedRating =
-                                    (index + 1).toDouble());
-                              },
-                            );
-                          }),
+                              categoryController.category == null
+                                  ? const Center(
+                                  child: CircularProgressIndicator())
+                                  : ListViewHorizontalWidget(
+                                items: categoryController
+                                    .category!.categories
+                                    .map((cat) {
+                                  return TextBtnWidget(
+                                    title: cat.name,
+                                    isSelected:
+                                    selectedCategories.contains(cat
+                                        .id),
+                                    // <-- Add this if your widget supports it
+                                    onTap: () {
+                                      toggleCategory(
+                                          cat.id, setModalState);
+                                    },
+                                  );
+                                }).toList(),
+                                height: 40,
+                              ),
+                              SizedBox(height: 16,),
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: 12),
+                        SizedBox(height: 8,),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadiusGeometry.circular(12),
+                              color: theme.highlightColor.withAlpha(10)
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                                child: AppText.title2("pricing_range".tr),
+                              ),
+                              RangeSliderWidget(
+                                min: 0,
+                                max: 3000,
+                                start: priceRange.start,
+                                end: priceRange.end,
+                                onChanged: (values) {
+                                  setModalState(() {});
+                                  setState(() => priceRange = values);
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 8,),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadiusGeometry.circular(12),
+                              color: theme.highlightColor.withAlpha(10)
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              AppText.title2("reviews".tr),
+                              Row(
+                                children: List.generate(5, (index) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      setModalState(() {});
+                                      setState(() =>
+                                      selectedRating =
+                                          (index + 1).toDouble());
+                                    },
+                                    child: Container(
+                                        padding: EdgeInsets.all(8),
+                                        margin: EdgeInsets.only(left: 8),
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadiusGeometry.circular(8),
+                                            color: selectedRating! >= index + 1
+                                                ? Colors.amber.withAlpha(40) : theme.highlightColor.withAlpha(30)
+                                        ),
+                                        child: Icon(
+                                          Icons.star,
+                                          color: selectedRating! >= index + 1
+                                              ? Colors.amber
+                                              : Colors.grey,
+                                        )
+                                    ),
+                                  );
+                                }),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 8,),
                       ],
                     ),
                   ),

@@ -50,7 +50,7 @@ class WishlistController extends GetxController {
     } else {
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Error: ${response.error}",
       );
       return []; // Return empty list if error
@@ -74,7 +74,7 @@ class WishlistController extends GetxController {
     } else {
       showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Error: ${response.error}");
     }
   }
@@ -92,7 +92,7 @@ class WishlistController extends GetxController {
       var jsonData = jsonDecode(response.error!);
       showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "${jsonData["message"]}");
     }
   }

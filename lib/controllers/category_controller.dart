@@ -37,14 +37,14 @@ class CategoryController extends GetxController {
       } else {
         showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Error: ${response.error}",
         );
       }
     } catch (e) {
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Unexpected error",
         desc: e.toString(),
       );
@@ -76,14 +76,14 @@ class CategoryController extends GetxController {
       } else {
         showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Error: ${response.error}",
         );
       }
     } catch (e) {
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Unexpected error",
         desc: e.toString(),
       );

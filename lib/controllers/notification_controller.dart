@@ -74,7 +74,7 @@ class NotificationController extends GetxController {
     } else {
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Error: ${response.error}",
       );
     }
@@ -105,7 +105,7 @@ class NotificationController extends GetxController {
       var jsonData = jsonDecode(response.data!);
       showCustomDialog(
         context: context,
-        type: DialogType.success,
+        type: CustomDialogType.success,
         title: "${jsonData["message"]}",
         okOnPress: () {
           // Handle success (e.g., refresh notification list)
@@ -114,7 +114,7 @@ class NotificationController extends GetxController {
     } else {
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Error: ${response.error}",
       );
     }
@@ -142,7 +142,7 @@ class NotificationController extends GetxController {
       var jsonData = jsonDecode(response.data!);
       showCustomDialog(
         context: context,
-        type: DialogType.success,
+        type: CustomDialogType.success,
         title: "${jsonData["message"]}",
         okOnPress: () async {
           currentPage = 1;
@@ -152,7 +152,7 @@ class NotificationController extends GetxController {
     } else {
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Error: ${response.error}",
       );
     }
@@ -176,7 +176,7 @@ class NotificationController extends GetxController {
       var jsonData = jsonDecode(response.data!);
       showCustomDialog(
         context: context,
-        type: DialogType.success,
+        type: CustomDialogType.success,
         title: "${jsonData["message"]}",
         okOnPress: () {
           // Handle success (e.g., remove notification from list)
@@ -185,7 +185,7 @@ class NotificationController extends GetxController {
     } else {
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Error: ${response.error}",
       );
     }

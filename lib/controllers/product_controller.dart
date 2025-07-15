@@ -45,7 +45,7 @@ class ProductController extends GetxController {
     } else {
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Error: ${response.error}",
       );
       return []; // Return empty list if error
@@ -83,7 +83,7 @@ class ProductController extends GetxController {
     } else {
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Error: ${response.error}",
       );
       // Optionally throw or return a default
@@ -117,7 +117,7 @@ class ProductController extends GetxController {
       var jsonData = jsonDecode(response.data!);
       showCustomDialog(
           context: context,
-          type: DialogType.success,
+          type: CustomDialogType.success,
           title: "${jsonData["message"]}",
           okOnPress: () {
 
@@ -125,7 +125,7 @@ class ProductController extends GetxController {
     } else {
       showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Error: ${response.error}");
     }
   }
@@ -141,7 +141,7 @@ class ProductController extends GetxController {
       var jsonData = jsonDecode(response.data!);
       showCustomDialog(
           context: context,
-          type: DialogType.success,
+          type: CustomDialogType.success,
           title: "${jsonData["message"]}",
           okOnPress: () {
             goOff(
@@ -154,7 +154,7 @@ class ProductController extends GetxController {
       var jsonData = jsonDecode(response.error!);
       showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "${jsonData["message"]}");
     }
   }
@@ -187,7 +187,7 @@ class ProductController extends GetxController {
       var jsonData = jsonDecode(response.data!);
       showCustomDialog(
           context: context,
-          type: DialogType.success,
+          type: CustomDialogType.success,
           title: "${jsonData["message"]}",
           okOnPress: () {
 
@@ -195,7 +195,7 @@ class ProductController extends GetxController {
     } else {
       showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Error: ${response.error}");
     }
   }

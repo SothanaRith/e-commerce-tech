@@ -92,7 +92,7 @@ class SearchingController extends GetxController {
 
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Error: ${response.error}",
       );
     }

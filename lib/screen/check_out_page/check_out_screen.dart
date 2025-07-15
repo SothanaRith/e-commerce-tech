@@ -230,7 +230,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                         ),
                       ) : showCustomDialog(
                         context: context,
-                        type: DialogType.info,
+                        type: CustomDialogType.info,
                         title: "Please add your addresses",
                       );
                       // Proceed to payment or order confirmation

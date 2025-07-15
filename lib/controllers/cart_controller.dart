@@ -46,7 +46,7 @@ class CartController extends GetxController {
     } catch (e) {
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Unexpected error",
         desc: e.toString(),
       );
@@ -80,7 +80,7 @@ class CartController extends GetxController {
       } else {
         showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Error: ${response.error}",
         );
         throw Exception('Failed to fetch product');
@@ -88,7 +88,7 @@ class CartController extends GetxController {
     } catch (e) {
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Unexpected error",
         desc: e.toString(),
       );
@@ -110,7 +110,7 @@ class CartController extends GetxController {
     if (int.parse(product.totalStock ?? "0") < int.parse(quantity)) {
       showCustomDialog(
           context: context,
-          type: DialogType.info,
+          type: CustomDialogType.info,
           title: "product is out of stock or have no enough",
           okOnPress: () async {
           });
@@ -129,7 +129,7 @@ class CartController extends GetxController {
       var jsonData = jsonDecode(response.data!);
       showCustomDialog(
           context: context,
-          type: DialogType.success,
+          type: CustomDialogType.success,
           title: "${jsonData["message"]}",
           okOnPress: () async {
             await fetchAllCart(context: context, userId: UserStorage.currentUser?.id ?? '');
@@ -137,7 +137,7 @@ class CartController extends GetxController {
     } else {
       showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Error: ${response.error}");
     }
   }
@@ -154,7 +154,7 @@ class CartController extends GetxController {
       var jsonData = jsonDecode(response.data!);
       showCustomDialog(
           context: context,
-          type: DialogType.success,
+          type: CustomDialogType.success,
           title: "${jsonData["message"]}",
           okOnPress: () async {
             fetchAllCart(context: context, userId: UserStorage.currentUser?.id ?? '');
@@ -163,7 +163,7 @@ class CartController extends GetxController {
       var jsonData = jsonDecode(response.error!);
       showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "${jsonData["message"]}");
     }
   }

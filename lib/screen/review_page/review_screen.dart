@@ -175,7 +175,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
               if (selectedRating == 0) {
                 showCustomDialog(
                   context: context,
-                  type: DialogType.warning,
+                  type: CustomDialogType.info,
                   title: "Please select a rating",
                 );
                 return;

@@ -50,7 +50,7 @@ class AuthController extends GetxController {
         } else {
           showCustomDialog(
             context: context,
-            type: DialogType.error,
+            type: CustomDialogType.error,
             title: "Failed to fetch user: ${jsonData["message"] ?? "Unknown error"}",
           );
           return false;
@@ -58,7 +58,7 @@ class AuthController extends GetxController {
       } catch (e) {
       showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Invalid user response: ${e.toString()}",
         );
       return false;
@@ -66,7 +66,7 @@ class AuthController extends GetxController {
     } else {
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Error: ${response.error}",
       );
       return false;
@@ -94,7 +94,7 @@ class AuthController extends GetxController {
             (value) {
           showCustomDialog(
               context: context,
-              type: DialogType.success,
+              type: CustomDialogType.success,
               title: "${jsonData["message"]}",
               okOnPress: () async {
                 await getUser(context: context);
@@ -109,7 +109,7 @@ class AuthController extends GetxController {
     } else {
       showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Error: ${response.error}");
     }
   }
@@ -152,7 +152,7 @@ class AuthController extends GetxController {
               (value) {
             showCustomDialog(
               context: context,
-              type: DialogType.success,
+              type: CustomDialogType.success,
               title: "${jsonData["message"]}",
               okOnPress: () async {
                 await getUser(context: context);
@@ -167,7 +167,7 @@ class AuthController extends GetxController {
       } else {
         showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Something went wrong",
         );
       }
@@ -175,7 +175,7 @@ class AuthController extends GetxController {
       print('Exception: $e');
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: 'Error: $e',
       );
     } finally {
@@ -212,7 +212,7 @@ class AuthController extends GetxController {
         (value) {
           showCustomDialog(
               context: context,
-              type: DialogType.success,
+              type: CustomDialogType.success,
               title: "${jsonData["message"]}",
               okOnPress: () {
                 goOff(
@@ -226,7 +226,7 @@ class AuthController extends GetxController {
     } else {
       showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Error: ${response.error}");
     }
   }
@@ -250,7 +250,7 @@ class AuthController extends GetxController {
         (value) {
           showCustomDialog(
               context: context,
-              type: DialogType.success,
+              type: CustomDialogType.success,
               title: "${jsonData["message"]}",
               okOnPress: () {
                 goOff(
@@ -265,7 +265,7 @@ class AuthController extends GetxController {
       var jsonData = jsonDecode(response.error!);
       showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "${jsonData["message"]}");
     }
   }
@@ -291,7 +291,7 @@ class AuthController extends GetxController {
         (value) {
           showCustomDialog(
               context: context,
-              type: DialogType.success,
+              type: CustomDialogType.success,
               title: "${jsonData["message"]}",
               okOnPress: () {
                 goOff(
@@ -305,7 +305,7 @@ class AuthController extends GetxController {
     } else {
       showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Error: ${response.error}");
     }
   }
@@ -340,7 +340,7 @@ class AuthController extends GetxController {
         await TokenStorage.saveToken(jsonData["accessToken"]);
         showCustomDialog(
           context: context,
-          type: DialogType.success,
+          type: CustomDialogType.success,
           title: "Token refreshed successfully",
           okOnPress: () async {
             final prefs = await SharedPreferences.getInstance();
@@ -351,7 +351,7 @@ class AuthController extends GetxController {
       } else {
         showCustomDialog(
           context: context,
-          type: DialogType.warning,
+          type: CustomDialogType.info,
           title: "Invalid refresh response: accessToken missing",
           okOnPress: () async {
             final prefs = await SharedPreferences.getInstance();
@@ -364,7 +364,7 @@ class AuthController extends GetxController {
     } else {
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Refresh token failed: ${response.error}",
       );
     }
@@ -400,7 +400,7 @@ class AuthController extends GetxController {
             await TokenStorage.loadToken();
             showCustomDialog(
                 context: context,
-                type: DialogType.success,
+                type: CustomDialogType.success,
                 title: "${jsonData["message"]}",
                 okOnPress: () {
                   goOff(this, MainScreen());
@@ -411,7 +411,7 @@ class AuthController extends GetxController {
             await TokenStorage.loadToken();
             showCustomDialog(
                 context: context,
-                type: DialogType.success,
+                type: CustomDialogType.success,
                 title: "${jsonData["message"]}",
                 okOnPress: () {
                   goOff(this, MainScreen());
@@ -419,7 +419,7 @@ class AuthController extends GetxController {
           } else if (type == ScreenVerifyType.forgetPassword) {
             showCustomDialog(
                 context: context,
-                type: DialogType.success,
+                type: CustomDialogType.success,
                 title: "${jsonData["message"]}",
                 okOnPress: () {
                   goOff(this, ResetPasswordScreen());
@@ -430,7 +430,7 @@ class AuthController extends GetxController {
     } else {
       showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Error: ${response.error}");
     }
   }
@@ -454,7 +454,7 @@ class AuthController extends GetxController {
     } else {
       showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Error: ${response.error}");
     }
   }
@@ -478,7 +478,7 @@ class AuthController extends GetxController {
       var jsonData = jsonDecode(response.data!);
       showCustomDialog(
           context: context,
-          type: DialogType.success,
+          type: CustomDialogType.success,
           title: "${jsonData["message"]}",
           okOnPress: () {
             goOff(this, LoginScreen());
@@ -486,7 +486,7 @@ class AuthController extends GetxController {
     } else {
       showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Error: ${response.error}");
     }
   }
@@ -500,7 +500,7 @@ class AuthController extends GetxController {
 
     showCustomDialog(
         context: context,
-        type: DialogType.success,
+        type: CustomDialogType.success,
         title: "logout successfully",
         okOnPress: () {
           goOff(this, LoginScreen());

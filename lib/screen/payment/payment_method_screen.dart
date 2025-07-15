@@ -244,7 +244,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
                   if (selectedMethodIndex == 0) {
                     showCustomDialog(
                       context: context,
-                      type: DialogType.info,
+                      type: CustomDialogType.info,
                       title: "Process Payment",
                       desc: "are you sure you want to continues payment?",
                       cancelOnPress: () {
@@ -285,7 +285,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
                   } else if (selectedMethodIndex == 2) {
                     showCustomDialog(
                       context: context,
-                      type: DialogType.info,
+                      type: CustomDialogType.info,
                       title: "Process Payment",
                       desc: "are you sure you want to continues payment?",
                         cancelOnPress: () {

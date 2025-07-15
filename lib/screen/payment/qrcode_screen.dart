@@ -120,7 +120,7 @@ class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserv
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: () {
-                    showCustomDialog(context: context, type: DialogType.info, title: "Are you sure you want to cancel this payment ?", okOnPress: () {
+                    showCustomDialog(context: context, type: CustomDialogType.info, title: "Are you sure you want to cancel this payment ?", okOnPress: () {
                       controller.resetData();
                       PaymentStorage.clearCheckPayment();
                       Navigator.of(context).pop();

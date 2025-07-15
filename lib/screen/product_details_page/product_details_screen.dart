@@ -166,7 +166,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Header image + thumbnails
                       SizedBox(
                         height: MediaQuery.sizeOf(context).height / 1.5,
                         width: MediaQuery.sizeOf(context).width,

@@ -70,7 +70,7 @@ class PaymentController extends GetxController {
       deeplink = '';
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Failed Payment",
         desc: "Something wrong. please do your payment again",
       );
@@ -100,7 +100,7 @@ class PaymentController extends GetxController {
       if(!isOpenDialogKhqr) {
         showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Failed Payment",
           desc: "Error occurred while checking transaction",
         );
@@ -188,7 +188,7 @@ class PaymentController extends GetxController {
             if(!isOpenDialogKhqr) {
               showCustomDialog(
                 context: context,
-                type: DialogType.error,
+                type: CustomDialogType.error,
                 title: "Failed Payment",
                 desc: "Error occurred while checking transaction",
               );
@@ -209,7 +209,7 @@ class PaymentController extends GetxController {
           if(!isOpenDialogKhqr) {
             showCustomDialog(
               context: context,
-              type: DialogType.error,
+              type: CustomDialogType.error,
               title: "Failed Payment",
               desc: "Error occurred while checking transaction",
             );
@@ -235,7 +235,7 @@ class PaymentController extends GetxController {
       if(!isOpenDialogKhqr) {
         showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Failed Payment",
           desc: "Error occurred while checking transaction",
         );
@@ -284,7 +284,7 @@ class PaymentController extends GetxController {
       qrCode = '';
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Failed Payment",
         desc: "Something wrong. please do your payment again",
       );
@@ -320,7 +320,7 @@ class PaymentController extends GetxController {
       qrCode = '';
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Failed Payment",
         desc: "Something wrong. please do your payment again",
       );

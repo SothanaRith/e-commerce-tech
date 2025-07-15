@@ -29,9 +29,9 @@ class TextBtnWidget extends StatelessWidget {
           ),
         ),
         child: Center(
-          child: AppText.title2(
+          child: AppText.body2(
             title,
-            customStyle: TextStyle(color: isSelected ? Colors.white : Colors.black87,),
+            customStyle: TextStyle(color: isSelected ? Colors.white : Colors.black87, fontWeight: FontWeight.bold),
           ),
         ),
       ),

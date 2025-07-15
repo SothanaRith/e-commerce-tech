@@ -52,7 +52,7 @@ class LocationController extends GetxController {
       }
       showCustomDialog(
         context: context,
-        type: DialogType.success,
+        type: CustomDialogType.success,
         title: "${jsonData["message"]}",
         desc: "${jsonData["address"]['street']}",
         okOnPress: () => goTo(context, ShippingAddressScreen()),
@@ -60,7 +60,7 @@ class LocationController extends GetxController {
     } else {
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Error: ${response.error}",
       );
     }
@@ -89,14 +89,14 @@ class LocationController extends GetxController {
       } catch (e) {
         showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Invalid response: ${e.toString()}",
         );
       }
     } else {
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Error: ${response.error}",
       );
     }
@@ -125,7 +125,7 @@ class LocationController extends GetxController {
       } catch (e) {
         showCustomDialog(
           context: context,
-          type: DialogType.error,
+          type: CustomDialogType.error,
           title: "Invalid response: ${e.toString()}",
         );
       }
@@ -167,7 +167,7 @@ class LocationController extends GetxController {
       }
       showCustomDialog(
         context: context,
-        type: DialogType.success,
+        type: CustomDialogType.success,
         title: "${jsonData["message"]}",
         okOnPress: () async => await getDefaultAddresses(context: context).then((_) async {
           await getUserAddresses(context: context);
@@ -177,7 +177,7 @@ class LocationController extends GetxController {
     } else {
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Error: ${response.error}",
       );
     }
@@ -204,14 +204,14 @@ class LocationController extends GetxController {
       final jsonData = jsonDecode(response.data!);
       showCustomDialog(
         context: context,
-        type: DialogType.success,
+        type: CustomDialogType.success,
         title: "${jsonData["message"]}",
         okOnPress: () => Get.back(),
       );
     } else {
       showCustomDialog(
         context: context,
-        type: DialogType.error,
+        type: CustomDialogType.error,
         title: "Error: ${response.error}",
       );
     }
