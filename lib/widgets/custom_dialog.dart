@@ -1,49 +1,47 @@
+import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/widgets/app_text_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 enum CustomDialogType { error, info, success }
 
-class showCustomDialog extends StatelessWidget {
-  final CustomDialogType type;
-  final BuildContext? context;
-  final String title;
-  final String? desc;
-  final VoidCallback? cancelOnPress;
-  final VoidCallback? okOnPress;
-
-  const showCustomDialog({
-    super.key,
-    required this.type,
-    required this.title,
-    this.desc,
-    this.cancelOnPress,
-    this.okOnPress, this.context,
-  });
-
-  IconData get icon {
-    switch (type) {
-      case CustomDialogType.error:
-        return Icons.delete;
-      case CustomDialogType.info:
-        return Icons.warning_amber_rounded;
-      case CustomDialogType.success:
-        return Icons.check_circle_outline;
-    }
+IconData _getIcon(CustomDialogType type) {
+  switch (type) {
+    case CustomDialogType.error:
+      return Icons.dangerous_rounded;
+    case CustomDialogType.info:
+      return Icons.warning_amber_rounded;
+    case CustomDialogType.success:
+      return CupertinoIcons.checkmark_alt_circle_fill;
   }
+}
 
-  Color get color {
-    switch (type) {
-      case CustomDialogType.error:
-        return Colors.redAccent;
-      case CustomDialogType.info:
-        return Colors.orange;
-      case CustomDialogType.success:
-        return Colors.green;
-    }
+Color _getColor(CustomDialogType type) {
+  switch (type) {
+    case CustomDialogType.error:
+      return Colors.redAccent;
+    case CustomDialogType.info:
+      return Colors.orange;
+    case CustomDialogType.success:
+      return theme.primaryColor;
   }
+}
 
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
+/// Call this function to show the dialog directly
+void showCustomDialog({
+  required BuildContext context,
+  required CustomDialogType type,
+  required String title,
+  String? desc,
+  VoidCallback? cancelOnPress,
+  VoidCallback? okOnPress,
+}) {
+  final color = _getColor(type);
+  final icon = _getIcon(type);
+
+  showDialog(
+    context: context,
+    builder: (context) => Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 24),
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -55,7 +53,7 @@ class showCustomDialog extends StatelessWidget {
             CircleAvatar(
               backgroundColor: color.withOpacity(0.1),
               radius: 28,
-              child: Icon(icon, color: color, size: 28),
+              child: Icon(icon, color: color, size: 32),
             ),
             const SizedBox(height: 16),
             Text(
@@ -68,6 +66,7 @@ class showCustomDialog extends StatelessWidget {
               style: const TextStyle(color: Colors.black54),
               textAlign: TextAlign.center,
             ),
+            if(desc == '')
             const SizedBox(height: 24),
             if (type == CustomDialogType.success)
               SizedBox(
@@ -81,7 +80,7 @@ class showCustomDialog extends StatelessWidget {
                     Navigator.pop(context);
                     okOnPress?.call();
                   },
-                  child: const Text("Confirm"),
+                  child: AppText.body2("Confirm", customStyle: TextStyle(color: theme.secondaryHeaderColor),),
                 ),
               )
             else
@@ -96,7 +95,7 @@ class showCustomDialog extends StatelessWidget {
                         Navigator.pop(context);
                         cancelOnPress?.call();
                       },
-                      child: const Text("Cancel"),
+                      child: AppText.body2("Cancel", customStyle: TextStyle(color: theme.secondaryHeaderColor),),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -110,7 +109,7 @@ class showCustomDialog extends StatelessWidget {
                         Navigator.pop(context);
                         okOnPress?.call();
                       },
-                      child: const Text("Confirm"),
+                      child: AppText.body2("Confirm", customStyle: TextStyle(color: theme.secondaryHeaderColor),),
                     ),
                   ),
                 ],
@@ -118,6 +117,6 @@ class showCustomDialog extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
 }

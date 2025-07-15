@@ -40,16 +40,16 @@ class _RangeSliderWidgetState extends State<RangeSliderWidget> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
-              width: MediaQuery.sizeOf(context).width * 0.10,
+              width: MediaQuery.sizeOf(context).width * 0.14,
               child: AppText.title2(
-                _values.start.toInt().toString(),
+                "\$ ${_values.start.toInt()}",
                 customStyle: TextStyle(color: theme.primaryColor),
                 textAlign: TextAlign.end,
                 maxLines: 1,
               ),
             ),
             SizedBox(
-              width: MediaQuery.sizeOf(context).width * 0.65,
+              width: MediaQuery.sizeOf(context).width * 0.55,
               child: SliderTheme(
                 data: SliderTheme.of(context).copyWith(
                   activeTrackColor: theme.primaryColor,
@@ -74,9 +74,9 @@ class _RangeSliderWidgetState extends State<RangeSliderWidget> {
               ),
             ),
             SizedBox(
-              width: MediaQuery.sizeOf(context).width * 0.10,
+              width: MediaQuery.sizeOf(context).width * 0.12,
               child: AppText.title2(
-                _values.end.toInt().toString(),
+                "\$ ${_values.end.toInt()}",
                 customStyle: TextStyle(color: theme.primaryColor),
                 textAlign: TextAlign.start,
               ),

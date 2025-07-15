@@ -226,34 +226,6 @@ class _SearchScreenState extends State<SearchScreen> {
                               borderRadius: BorderRadiusGeometry.circular(12),
                               color: theme.highlightColor.withAlpha(10)
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                                child: AppText.title2("pricing_range".tr),
-                              ),
-                              RangeSliderWidget(
-                                min: 0,
-                                max: 3000,
-                                start: priceRange.start,
-                                end: priceRange.end,
-                                onChanged: (values) {
-                                  setModalState(() {});
-                                  setState(() => priceRange = values);
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 8,),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadiusGeometry.circular(12),
-                              color: theme.highlightColor.withAlpha(10)
-                          ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -284,6 +256,34 @@ class _SearchScreenState extends State<SearchScreen> {
                                     ),
                                   );
                                 }),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 8,),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadiusGeometry.circular(12),
+                              color: theme.highlightColor.withAlpha(10)
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                                child: AppText.title2("pricing_range".tr),
+                              ),
+                              RangeSliderWidget(
+                                min: 0,
+                                max: 3000,
+                                start: priceRange.start,
+                                end: priceRange.end,
+                                onChanged: (values) {
+                                  setModalState(() {});
+                                  setState(() => priceRange = values);
+                                },
                               ),
                             ],
                           ),
