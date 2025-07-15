@@ -262,13 +262,14 @@ class PaymentController extends GetxController {
     update();
     try {
       final expire = DateTime.now().millisecondsSinceEpoch + 3600000;
+      final rate = await getExchangeRateUSDToKHR();
       final info = IndividualInfo(
           // bakongAccountId: 'un_virak3@aclb',
           bakongAccountId: 'sothanarith_heang1@aclb',
           merchantName: 'Snap Buy ($billingNumber)',
           billNumber: billingNumber,
           currency: currency,
-          amount: amount * 4000,
+          amount: amount * rate,
           expirationTimestamp: expire
       );
       final khqrData = await _khqrSdk.generateIndividual(info);
@@ -300,13 +301,14 @@ class PaymentController extends GetxController {
     update();
     try {
       final expire = DateTime.now().millisecondsSinceEpoch + 3600000;
+      final rate = await getExchangeRateUSDToKHR();
       final info = MerchantInfo(
         bakongAccountId: 'un_virak2@aclb',
         acquiringBank: 'ABA Bank',
         merchantId: '1241779',
         merchantName: 'Heang Sothanarith',
         currency: KhqrCurrency.khr,
-        amount: amount * 4000,
+        amount: amount * rate,
         merchantCategoryCode: "8220",
         expirationTimestamp: expire,
       );

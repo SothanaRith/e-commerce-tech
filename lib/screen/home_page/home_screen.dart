@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import 'package:e_commerce_tech/controllers/wishlist_contoller.dart';
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/product_details_page/product_details_screen.dart';
 import 'package:e_commerce_tech/screen/profile_setting_page/last_order_widget.dart';
@@ -15,7 +14,6 @@ import 'package:e_commerce_tech/widgets/slider_custom_widget.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-
 import '../../controllers/home_controller.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -33,7 +31,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () {
+    Future.delayed(Duration.zero, () async {
+      await getExchangeRateUSDToKHR();
       homeController.loadHome(
         page: homeController.currentPage,
         context: context,
@@ -117,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: AppText.title2(
-                          "New Arrival".tr,
+                          "Latest Products".tr,
                           customStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                         ),
                       ),
@@ -126,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: IntrinsicWidth(
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            children: controller.products.take(10).map((product) {
+                            children: controller.latestProducts.map((product) {
                               return GestureDetector(
                                 onTap: () {
                                   Navigator.push(

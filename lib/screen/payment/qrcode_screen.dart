@@ -1,6 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/controllers/order_contoller.dart';
 import 'package:e_commerce_tech/controllers/payment_controller.dart';
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/models/cart_model.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/widgets/custom_dialog.dart';
@@ -25,11 +26,13 @@ class PaymentDialog extends StatefulWidget {
 class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserver {
   final PaymentController paymentController = Get.put(PaymentController());
   final OrderController orderController = OrderController();
+  double rate = 0;
 
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
+      rate = await getExchangeRateUSDToKHR();
       await paymentController.generateKHQR(
         currency: widget.currency,
         amount: widget.amount, context: context,
@@ -88,7 +91,7 @@ class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserv
                   KhqrCardWidget(
                     width: 280,
                     receiverName: 'Snap Buy',
-                    amount: widget.amount * 4000,
+                    amount: widget.amount * rate,
                     keepIntegerDecimal: false,
                     currency: widget.currency,
                     qr: controller.qrCode,

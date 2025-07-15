@@ -23,6 +23,7 @@ class HomeController extends GetxController {
 
   List<CategoryModel> categories = [];
   List<ProductModel> products = [];
+  List<ProductModel> latestProducts = [];
   List<SliderModel> slides = [];
   List<SliderModel> imagesSlide = [];
 
@@ -69,6 +70,8 @@ class HomeController extends GetxController {
         print("slide data ${item.order}");
         imagesSlide.add(item);
       }
+
+      latestProducts = homeResponse.latestProducts;
 
       // Debugging: Check if hasMore flag is set correctly
       log('Has more data: $hasMore');
