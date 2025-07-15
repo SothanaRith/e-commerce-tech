@@ -142,28 +142,66 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                             // Show confirmation dialog
                             return await showDialog<bool>(
                               context: context,
-                              builder: (context) =>
-                                  AlertDialog(
-                                    title: Text('confirm_delete'.tr),
-                                    content: Text(
+                              builder: (context) => Dialog(
+                                insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(24),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundColor: Colors.orange.withOpacity(0.1),
+                                        radius: 28,
+                                        child: Icon(Icons.dangerous_rounded, color: Colors.orange, size: 32),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      Text(
+                                        'confirm_delete'.tr,
+                                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
                                         'Are you sure you want to delete "${product
-                                            .name}" from your cart?'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(false),
-                                        // Cancel
-                                        child: Text('cancel'.tr),
+                                            .name}" from your cart?',
+                                        style: const TextStyle(color: Colors.black54),
+                                        textAlign: TextAlign.center,
                                       ),
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(true),
-                                        // Confirm
-                                        child: Text('delete'.tr,
-                                            style: TextStyle(color: Colors.red)),
+                                        const SizedBox(height: 24),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: OutlinedButton(
+                                              style: OutlinedButton.styleFrom(
+                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                              ),
+                                              onPressed: () {
+                                                Navigator.of(context).pop(false);
+                                              },
+                                              child: AppText.body2("Cancel", customStyle: TextStyle(color: theme.primaryColor),),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.orange,
+                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                              ),
+                                              onPressed: () {
+                                                Navigator.of(context).pop(true);
+                                              },
+                                              child: AppText.body2("Confirm", customStyle: TextStyle(color: theme.secondaryHeaderColor),),
+                                            ),
+                                          ),
+                                        ],
                                       ),
+
                                     ],
                                   ),
+                                ),
+                              ),
                             ) ??
                                 false; // Return false if dialog dismissed by other means
                           },

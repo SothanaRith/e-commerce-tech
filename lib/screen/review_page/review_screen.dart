@@ -18,8 +18,9 @@ import 'package:get/get.dart';
 
 class ReviewScreen extends StatefulWidget {
   final ProductModel product;
+  final int variantId;
 
-  const ReviewScreen({super.key, required this.product});
+  const ReviewScreen({super.key, required this.product, required this.variantId});
 
   @override
   State<ReviewScreen> createState() => _ReviewScreenState();
@@ -82,7 +83,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
               Padding(
                 padding: EdgeInsets.all(12.0),
                 child: ItemSelectWidget(
-                  imageUrl: widget.product.imageUrl?[0] ?? '',
+                  imageUrl: widget.product.variants?[widget.variantId].imageUrl ?? '',
                   title: widget.product.name ?? '',
                   prices: widget.product.price ?? "--",
                   countNumber: 4.toString(), // Passing the callback

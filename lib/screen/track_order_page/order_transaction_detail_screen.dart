@@ -47,14 +47,14 @@ class _OrderTransactionDetailScreenState extends State<OrderTransactionDetailScr
           ListViewCustomWidget(
             items: (showAllItems ? widget.data.orderItems : widget.data.orderItems?.take(3))!.map((item) {
               return ItemSelectWidget(
-              imageUrl: item.product?.imageUrl?[0] ?? '',
+              imageUrl: item.product?.variants?[int.parse(item.variantId ?? '0')].imageUrl ?? '',
               onTap: () {
                 goTo(this, ProductDetailsScreen(id: item.product?.id ?? ''));
               },
               actionTitle: "review_this_product".tr,
               onAction: () {
                 if (item.product != null)
-                goTo(this, ReviewScreen(product: item.product!,));
+                goTo(this, ReviewScreen(product: item.product!, variantId: int.parse(item.variantId ?? '0'),));
               },
               title: item.product?.name ?? '--',
               prices: '\$${item.product?.price}',
