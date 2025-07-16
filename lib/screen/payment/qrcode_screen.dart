@@ -58,8 +58,13 @@ class _PaymentDialogState extends State<PaymentDialog> with WidgetsBindingObserv
 
   Future<void> checkTransactionWhenDialog() async {
     Future.delayed(Duration.zero, () {
+      if (paymentController.isPaymentSuccess) {
+        return;
+      }
       paymentController.checkTransactionStatus(md5: paymentController.md5, context: context, isOpenDialogKhqr: true).then((value) async {
-        await checkTransactionWhenDialog();
+        if (!paymentController.isPaymentSuccess) {
+          await checkTransactionWhenDialog();
+        }
       },);
     });
   }

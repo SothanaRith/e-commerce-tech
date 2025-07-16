@@ -26,7 +26,11 @@ Future<double> getExchangeRateUSDToKHR() async {
 
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body);
-    return data['quotes']['USDKHR'];
+    if (data['quotes'] != null) {
+      return data['quotes']['USDKHR'];
+    } else {
+      return 4000;
+    }
   } else {
     throw Exception('Failed to fetch exchange rate');
   }

@@ -144,10 +144,13 @@ class PaymentController extends GetxController {
 
               for (var quantity in PaymentStorage.quantity ?? []) {
                 for (var productId in PaymentStorage.listProductId ?? []) {
-                  items.add({
-                    "productId": productId ?? '',
-                    "quantity": quantity ?? '0'
-                  });
+                  for (var variantId in PaymentStorage.listVariantId ?? []) {
+                    items.add({
+                      "productId": productId ?? '',
+                      "variantId": variantId ?? '',
+                      "quantity": quantity ?? '0'
+                    });
+                  }
                 }
               }
 
@@ -263,14 +266,14 @@ class PaymentController extends GetxController {
     update();
     try {
       final expire = DateTime.now().millisecondsSinceEpoch + 3600000;
-      final rate = PaymentStorage.rate ?? 4000;
       final info = IndividualInfo(
           bakongAccountId: 'un_virak3@aclb',
           // bakongAccountId: 'sothanarith_heang1@aclb',
           merchantName: 'SnapBuy ($billingNumber)',
           billNumber: billingNumber,
           currency: currency,
-          amount: double.parse((amount * rate).toStringAsFixed(0)),
+          // amount: double.parse((amount * rate).toStringAsFixed(0)),
+          amount: 100,
           expirationTimestamp: expire
       );
       final khqrData = await _khqrSdk.generateIndividual(info);

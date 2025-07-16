@@ -57,6 +57,7 @@ class PaymentStorage {
   static bool? isPaymentCompleted;
 
   static List<String>? listProductId;
+  static List<String>? listVariantId;
   static List<String>? quantity;
   static String? paymentType;
   static String? addressId;
@@ -72,6 +73,7 @@ class PaymentStorage {
 
     paymentType = prefs.getString('payment_type');
     listProductId = prefs.getStringList('list_product_id');
+    listVariantId = prefs.getStringList('list_variant_id');
     quantity = prefs.getStringList('quantity');
     addressId = prefs.getString('address_id');
     billingNumber = prefs.getString('billing_number');
@@ -85,6 +87,7 @@ class PaymentStorage {
 
     paymentType = null;
     listProductId = null;
+    listVariantId = null;
     quantity = null;
     addressId = null;
     billingNumber = null;
@@ -96,6 +99,7 @@ class PaymentStorage {
 
     await prefs.remove('payment_type');
     await prefs.remove('list_product_id');
+    await prefs.remove('list_variant_id');
     await prefs.remove('quantity');
     await prefs.remove('address_id');
     await prefs.remove('billing_number');
@@ -127,6 +131,11 @@ class PaymentStorage {
     (await SharedPreferences.getInstance()).setStringList('list_product_id', NewListProductId);
   }
 
+  static Future<void> saveListVariantId(List<String> NewListVariantId) async {
+    listProductId = NewListVariantId;
+    (await SharedPreferences.getInstance()).setStringList('list_variant_id', NewListVariantId);
+  }
+
   static Future<void> saveListQuantity(List<String> newListQuantity) async {
     quantity = newListQuantity;
     (await SharedPreferences.getInstance()).setStringList('quantity', newListQuantity);
@@ -155,6 +164,14 @@ class PaymentStorage {
     return listProductId;
   }
 
+  static Future<List<String>> convertListVariantId (List<CartModel> items) async {
+    List<String> listVariantId = [];
+    for (CartModel item in items) {
+      listVariantId.add(item.variantId ?? '');
+    }
+    return listVariantId;
+  }
+
   static Future<List<String>> convertListQuantity (List<CartModel> items) async {
     List<String> listQuantity = [];
     for (CartModel item in items) {
@@ -169,9 +186,11 @@ class PaymentStorage {
     await saveAddressId(newAddressId);
 
     List<String> listProductId = await convertListProductId(items);
+    List<String> listVariantId = await convertListVariantId(items);
     List<String> listQuantity = await convertListQuantity(items);
 
     await saveListProductId(listProductId);
+    await saveListVariantId(listVariantId);
     await saveListQuantity(listQuantity);
     await savePaymentType(newPaymentType);
     await loadCheckPayment();
