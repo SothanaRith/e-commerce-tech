@@ -142,16 +142,22 @@ class PaymentController extends GetxController {
               isPaymentSuccess = true;
               List<Map<String, String>> items = [];
 
-              for (var quantity in PaymentStorage.quantity ?? []) {
-                for (var productId in PaymentStorage.listProductId ?? []) {
-                  for (var variantId in PaymentStorage.listVariantId ?? []) {
-                    items.add({
-                      "productId": productId ?? '',
-                      "variantId": variantId ?? '',
-                      "quantity": quantity ?? '0'
-                    });
-                  }
-                }
+              final quantities = PaymentStorage.quantity ?? [];
+              final productIds = PaymentStorage.listProductId ?? [];
+              final variantIds = PaymentStorage.listVariantId ?? [];
+
+              final itemCount = [
+                quantities.length,
+                productIds.length,
+                variantIds.length,
+              ].reduce((a, b) => a < b ? a : b); // Get the smallest length to avoid index error
+
+              for (int i = 0; i < itemCount; i++) {
+                items.add({
+                  "productId": productIds[i] ?? '',
+                  "variantId": variantIds[i] ?? '',
+                  "quantity": quantities[i] ?? '0',
+                });
               }
 
               await orderController
@@ -166,7 +172,7 @@ class PaymentController extends GetxController {
                   .then(
                     (value) async {
                   if (value.isNotEmpty) {
-                    await orderController.updateTransactionByOrderId(context: context, status: "completed", paymentType: PaymentStorage.paymentType ?? '', orderId: value['orderId'].toString(), amount: value['totalAmount'].toString());
+                    await orderController.updateTransactionByOrderId(context: context, status: "completed", paymentType: PaymentStorage.paymentType ?? '', orderId: value['orderId'].toString(), amount: value['totalAmount'].toString()).then((value) async => await PaymentStorage.clearCheckPayment(),);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -179,7 +185,6 @@ class PaymentController extends GetxController {
                   }
                 },
               );
-              PaymentStorage.clearCheckPayment();
               update();
             }
           } catch (e) {
@@ -253,22 +258,17 @@ class PaymentController extends GetxController {
   // Stream to listen for updates from the transaction status check
   Stream<String> get transactionStatusStream => _statusStreamController.stream;
 
-  @override
-  void onClose() {
-    _statusStreamController.close(); // Close the stream when the controller is disposed
-    super.onClose();
-  }
-
   // Generate KHQR QR code
   Future<void> generateKHQR({required KhqrCurrency currency,required double amount, required BuildContext context}) async {
     isGenerateLoading = true;
+    isPaymentSuccess = false;
     billingNumber = await generateBillNumberWithRandom();
     update();
     try {
       final expire = DateTime.now().millisecondsSinceEpoch + 3600000;
       final info = IndividualInfo(
-          bakongAccountId: 'un_virak3@aclb',
-          // bakongAccountId: 'sothanarith_heang1@aclb',
+          // bakongAccountId: 'un_virak3@aclb',
+          bakongAccountId: 'sothanarith_heang1@aclb',
           merchantName: 'SnapBuy ($billingNumber)',
           billNumber: billingNumber,
           currency: currency,
@@ -302,6 +302,7 @@ class PaymentController extends GetxController {
   }
   Future<void> generateKHQRMerchantInfo({required KhqrCurrency currency,required double amount, required BuildContext context}) async {
     isGenerateLoading = true;
+    isPaymentSuccess = false;
     billingNumber = await generateBillNumberWithRandom();
     update();
     try {

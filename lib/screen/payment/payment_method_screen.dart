@@ -40,6 +40,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
   @override
   void dispose() {
     paymentController.isLoading = false;
+    paymentController.isPaymentSuccess = false;
     paymentController.update();
     WidgetsBinding.instance
         .removeObserver(this); // Remove the observer when not needed

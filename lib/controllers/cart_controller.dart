@@ -134,6 +134,7 @@ class CartController extends GetxController {
           type: CustomDialogType.success,
           title: "${jsonData["message"]}",
           okOnPress: () async {
+            Navigator.pop(context);
             await fetchAllCart(context: context, userId: UserStorage.currentUser?.id ?? '');
           });
     } else {

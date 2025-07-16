@@ -1,6 +1,7 @@
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/Transaction_model.dart';
 import 'package:e_commerce_tech/models/order_tracking_model.dart';
+import 'package:e_commerce_tech/models/product_model.dart';
 import 'package:e_commerce_tech/screen/product_details_page/product_details_screen.dart';
 import 'package:e_commerce_tech/screen/review_page/review_screen.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
@@ -46,8 +47,10 @@ class _OrderTransactionDetailScreenState extends State<OrderTransactionDetailScr
         children: [
           ListViewCustomWidget(
             items: (showAllItems ? widget.data.orderItems : widget.data.orderItems?.take(3))!.map((item) {
+              final matchedVariant = item.product?.variants
+                  ?.firstWhere((v) => v.id == item.variantId, orElse: () => Variants());
               return ItemSelectWidget(
-              imageUrl: item.product?.variants?[int.parse(item.variantId ?? '0')].imageUrl ?? '',
+              imageUrl: matchedVariant?.imageUrl ?? '',
               onTap: () {
                 goTo(this, ProductDetailsScreen(id: item.product?.id ?? ''));
               },

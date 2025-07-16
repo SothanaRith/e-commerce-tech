@@ -310,7 +310,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisCount: 2,
                             crossAxisSpacing: 14,
                             mainAxisSpacing: 14,
-                            childAspectRatio: 0.73,
+                            childAspectRatio: 0.72,
                           ),
                           itemBuilder: (itemContext, index) {
                             if (index < controller.products.length) {
