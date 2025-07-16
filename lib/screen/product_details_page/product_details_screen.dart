@@ -760,7 +760,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    if (logic.dialogQuantity > 1) {
+                                    if (logic.dialogQuantity > 0) {
                                       logic.dialogQuantity--;
                                       logic.update();
                                     }
@@ -796,6 +796,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     {
                                       logic.dialogQuantity++;
                                       logic.update();
+                                    } else {
+                                      Get.snackbar(
+                                        'Missing Information',
+                                        'please_select_variant_first',
+                                        snackPosition: SnackPosition.BOTTOM,
+                                        backgroundColor: Colors.red.withOpacity(0.5),
+                                        colorText: Colors.white,
+                                        duration: Duration(seconds: 2),
+                                      );
                                     }
                                   },
                                   child: Container(
@@ -819,7 +828,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             SizedBox(height: 12,),
                             GestureDetector(
                               onTap: () {
-                                if(logic.selectedVariant != null)
+                                if(logic.selectedVariant == null && logic.dialogQuantity == 0) {
+                                  Get.snackbar(
+                                    'Missing Information',
+                                    'please_select_variant_first',
+                                    snackPosition: SnackPosition.BOTTOM,
+                                    backgroundColor: Colors.red.withOpacity(0.5),
+                                    colorText: Colors.white,
+                                    duration: Duration(seconds: 2),
+                                  );
+                                  return;
+                                }
                                 logic
                                     .addItemToCart(
                                   context: context,
