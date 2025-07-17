@@ -1,5 +1,6 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/controllers/review_controller.dart';
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
@@ -76,6 +77,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
     return Scaffold(
       appBar: customAppBar(type: this, title: "reviews".tr, context: context),
       body: GetBuilder<ReviewController>(builder: (logic) {
+        final variant = widget.product.variants?.firstWhere(
+              (v) => v.id.toString() == widget.variantId.toString(),
+          orElse: () => Variants(),
+        );
         return SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,10 +88,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
               Padding(
                 padding: EdgeInsets.all(12.0),
                 child: ItemSelectWidget(
-                  imageUrl: widget.product.variants?[widget.variantId].imageUrl ?? '',
+                  imageUrl: variant?.imageUrl ?? '',
                   title: widget.product.name ?? '',
-                  prices: widget.product.price ?? "--",
-                  countNumber: 4.toString(), // Passing the callback
+                  prices: calculateFinalPrice(double.parse(variant?.price ?? '0'), variant?.discountType, double.parse(variant?.discountValue ?? '0'), variant?.isPromotion ?? 'false'),
+                  countNumber: 4.toString(), variantTitle: variant?.title ?? '', discount: variant?.isPromotion == 'false' ? '' : "${variant?.discountValue} ${variant?.discountType == 'fixed' ? '\$' : '%'}", // Passing the callback
                 ),
               ),
               Padding(
