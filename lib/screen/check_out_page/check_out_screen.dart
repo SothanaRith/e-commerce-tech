@@ -1,6 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/controllers/cart_controller.dart';
 import 'package:e_commerce_tech/controllers/lacation_controller.dart';
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/payment/payment_method_screen.dart';
 import 'package:e_commerce_tech/screen/check_out_page/shipping_address_screen.dart';
@@ -121,14 +122,9 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                   ListViewCustomWidget(
                     items: logic.cartList.map((item) {
                       final product = item.product;
-                      final priceAtPurchase = item.priceAtPurchase;
                       final variant = item.variant;
                       if (product != null) {
-                        double price = double.tryParse(priceAtPurchase ?? '') ??
-                            0.0;
                         int quantity = int.tryParse(item.quantity ?? '') ?? 0;
-                        final totalPrice = "\$${(price * quantity)
-                            .toStringAsFixed(2)}";
                         return Dismissible(
                           key: Key(item.id.toString()),
                           direction: DismissDirection.endToStart,
@@ -213,12 +209,12 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                           },
                           child: ItemSelectWidget(
                             imageUrl: variant?.imageUrl ?? '',
-                            title: product.name ?? '',
-                            prices: totalPrice,
+                            title: "${product.name}",
+                            prices: calculateFinalPrice(double.parse(variant?.price ?? ''), variant?.discountType, double.parse(variant?.discountValue ?? ''), variant?.isPromotion ?? 'false'),
                             onTap: () {
                               goTo(this, ProductDetailsScreen(id: product.id ?? ''));
                             },
-                            countNumber: quantity.toString(),
+                            countNumber: quantity.toString(), variantTitle: variant?.title ?? '', discount: variant?.isPromotion == 'false' ? '' : "${variant?.discountValue} ${variant?.discountType == 'fixed' ? '\$' : '%'}",
                           ),
                         );
                       } else {

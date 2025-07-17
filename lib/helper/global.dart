@@ -35,3 +35,25 @@ Future<double> getExchangeRateUSDToKHR() async {
     throw Exception('Failed to fetch exchange rate');
   }
 }
+
+String calculateFinalPrice(double price, String? discountType, double discountValue, String isPromotion) {
+
+
+  if (!(isPromotion == "true") || discountType == null || discountValue <= 0) {
+    return '${price.truncate()}.00';
+  }
+
+  double finalPrice;
+
+  if (discountType == 'fixed') {
+    finalPrice = (price - discountValue).clamp(0, double.infinity);
+  } else if (discountType == 'percent') {
+    finalPrice = price * (1 - discountValue / 100);
+  } else {
+    finalPrice = price;
+  }
+
+  return '${finalPrice.truncate()}.00';
+}
+
+

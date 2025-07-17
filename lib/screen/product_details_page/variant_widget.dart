@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
@@ -60,12 +61,50 @@ class _VariantWidgetState extends State<VariantWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if(item.title != 'null')
-                    AppText.title2(item.title ?? ''),
+                    Row(
+                      children: [
+                        AppText.title2(item.title ?? ''),
+                        SizedBox(width: 6,),
+                        if(item.isPromotion == 'true')
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 2, horizontal: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.amber.shade700,
+                            borderRadius: BorderRadiusGeometry.circular(10)
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: theme.secondaryHeaderColor
+                                ),
+                              ),
+                              SizedBox(width: 4,),
+                              AppText.body2(
+                                '${item.discountValue} ${item.discountType == 'fixed' ? '\$ off' : '% off'}', customStyle: TextStyle(color: theme.secondaryHeaderColor, fontWeight: FontWeight.bold),),
+                              SizedBox(width: 4,),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  SizedBox(height: 2,),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      AppText.body2('\$ ${item.price}', customStyle: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.w400),),
+                      if (item.isPromotion == 'true')...[
+                        AppText.caption('\$${item.price}', customStyle: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.w400),),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: AppText.caption('-', customStyle: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.w400),),
+                        ),
+                        AppText.title2('\$${calculateFinalPrice(double.parse(item.price ?? '0'), item.discountType, double.parse(item.discountValue ?? '0'), item.isPromotion ?? 'false')}', customStyle: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.bold),),
+                      ] else ...[
+                        AppText.body1('\$${item.price}', customStyle: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.bold),),
+                      ],
                       const SizedBox(width: 4),
                       AppText.body1('|'),
                       const SizedBox(width: 4),

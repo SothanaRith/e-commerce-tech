@@ -1,6 +1,7 @@
 import 'package:e_commerce_tech/controllers/order_contoller.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/Transaction_model.dart';
+import 'package:e_commerce_tech/models/product_model.dart';
 import 'package:e_commerce_tech/screen/track_order_page/order_transaction_detail_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
@@ -122,18 +123,28 @@ class _OrdersTabState extends State<OrdersTab> {
               final imageList = <String>[];
 
               for (var item in tx.order?.orderItems ?? []) {
-                for (var image in item.product?.imageUrl ?? []) {
-                  imageList.add(image);
+                final matchedVariant = item.product?.variants?.firstWhere(
+                      (v) => v.id.toString() == item.variantId.toString(),
+                  orElse: () => Variants(),
+                );
+
+                final imageUrl = matchedVariant.imageUrl;
+                if (imageUrl != null && imageUrl.toLowerCase() != 'null') {
+                  print("object image , ${matchedVariant.imageUrl}");
+                  imageList.add(imageUrl);
+
                 }
               }
+              print("object image list , ${imageList.length}");
               return ItemSelectWidget(
-                imageUrl: imageList[0],
+                imageUrl: '',
+                imageUrlList: imageList,
                 onTap: () async {
                   goTo(this, OrderTransactionDetailScreen(data: tx.order ?? OrderModel(),));
                 },
-                title: tx.createdAt ?? 'No Title',
-                prices: '\$${tx.amount ?? '0.00'}',
-                countNumber: tx.order?.orderItems?.length.toString() ?? '0',
+                title: tx.order?.paymentType ?? 'No Title',
+                prices: '${tx.amount ?? '0.00'}',
+                countNumber: tx.order?.orderItems?.length.toString() ?? '0', variantTitle: 'Billing ID : ${tx.order?.billingNumber}', discount: '',
               );
             },
           ),

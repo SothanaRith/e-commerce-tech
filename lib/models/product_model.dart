@@ -130,6 +130,9 @@ class Variants {
   String? sku;
   String? price;
   String? stock;
+  String? discountType;
+  String? discountValue;
+  String? isPromotion;
   String? title;
   String? imageUrl;
   List<VariantAttributes>? variantAttributes;
@@ -142,7 +145,10 @@ class Variants {
         this.stock,
         this.title,
         this.imageUrl,
-        this.variantAttributes});
+        this.variantAttributes,
+        this.isPromotion,
+        this.discountType,
+        this.discountValue});
 
   Variants.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
@@ -151,6 +157,9 @@ class Variants {
     price = json['price'].toString();
     stock = json['stock'].toString();
     title = json['title'].toString();
+    isPromotion = json['isPromotion'].toString();
+    discountValue = json['discountValue'].toString();
+    discountType = json['discountType'].toString();
     imageUrl = json['imageUrl'].toString();
     if (json['VariantAttributes'] != null) {
       variantAttributes = <VariantAttributes>[];
@@ -168,6 +177,9 @@ class Variants {
     data['price'] = price;
     data['stock'] = stock;
     data['title'] = title;
+    data['isPromotion'] = isPromotion;
+    data['discountValue'] = discountValue;
+    data['discountType'] = discountType;
     data['imageUrl'] = imageUrl;
     if (variantAttributes != null) {
       data['VariantAttributes'] =

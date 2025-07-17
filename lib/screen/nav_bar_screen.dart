@@ -99,12 +99,12 @@ class _MainScreenState extends State<MainScreen> {
                           child: BackdropFilter(
                             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 15),
                             child: Container(
-                              height: 65,
+                              height: 60,
                               decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.1), // translucent base color
                                 borderRadius: BorderRadius.circular(40),
                                 boxShadow: [
-                                  BoxShadow(color: theme.primaryColor.withAlpha(30), blurRadius: 10),
+                                  BoxShadow(color: theme.secondaryHeaderColor.withAlpha(30), blurRadius: 10),
                                 ],
                               ),
                               child: Padding(
