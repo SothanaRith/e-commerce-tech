@@ -272,29 +272,35 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                               borderRadius:
                                               BorderRadius.circular(100)),
                                           padding: EdgeInsets.symmetric(
-                                              vertical: 0, horizontal: 10),
+                                              vertical: 0, horizontal: 0),
                                           child: Row(
                                             mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                             children: [
                                               Row(
                                                 children: [
-                                                  CachedNetworkImage(
-                                                    imageUrl: safeImageUrl(
-                                                        product.category
-                                                            ?.imageUrl ??
-                                                            ''),
-                                                    placeholder: (context,
-                                                        url) =>
-                                                        Center(
-                                                            child: CircularProgressIndicator(
-                                                                color: theme
-                                                                    .primaryColor)),
-                                                    errorWidget: (context, url,
-                                                        error) =>
-                                                    const Icon(Icons.error),
-                                                    height: 40,
-                                                    fit: BoxFit.cover,
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(4.0),
+                                                    child: ClipRRect(
+                                                      borderRadius: BorderRadiusGeometry.circular(100),
+                                                      child: CachedNetworkImage(
+                                                        imageUrl: safeImageUrl(
+                                                            product.category
+                                                                ?.imageUrl ??
+                                                                ''),
+                                                        placeholder: (context,
+                                                            url) =>
+                                                            Center(
+                                                                child: CircularProgressIndicator(
+                                                                    color: theme
+                                                                        .primaryColor)),
+                                                        errorWidget: (context, url,
+                                                            error) =>
+                                                        const Icon(Icons.error),
+                                                        height: 40,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
                                                   ),
                                                   SizedBox(
                                                     width: 4,
@@ -308,11 +314,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                                   ),
                                                 ],
                                               ),
-                                              Icon(
-                                                Icons.navigate_next_outlined,
-                                                color:
-                                                theme.secondaryHeaderColor,
-                                              )
+                                              Padding(
+                                                padding: const EdgeInsets.only(right: 8.0),
+                                                child: Icon(
+                                                  Icons.navigate_next_outlined,
+                                                  color:
+                                                  theme.secondaryHeaderColor,
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         ),

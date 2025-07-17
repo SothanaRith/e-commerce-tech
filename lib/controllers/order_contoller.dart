@@ -132,21 +132,21 @@ class OrderController extends GetxController {
         return order;
       } else {
         // Show error dialog on failure
-        showCustomDialog(
-          context: context,
-          type: CustomDialogType.error,
-          title: "Error: ${response.error ?? 'Failed to fetch last order'}",
-        );
+        // showCustomDialog(
+        //   context: context,
+        //   type: CustomDialogType.error,
+        //   title: "Error: ${response.error ?? 'Failed to fetch last order'}",
+        // );
         throw Exception('Failed to fetch last order');
       }
     } catch (e) {
       // Handle unexpected errors
-      showCustomDialog(
-        context: context,
-        type: CustomDialogType.error,
-        title: "Unexpected Error",
-        desc: e.toString(),
-      );
+      // showCustomDialog(
+      //   context: context,
+      //   type: CustomDialogType.error,
+      //   title: "Unexpected Error",
+      //   desc: e.toString(),
+      // );
       rethrow;
     }
   }

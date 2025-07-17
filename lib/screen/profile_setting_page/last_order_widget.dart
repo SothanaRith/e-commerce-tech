@@ -39,11 +39,11 @@ class _LastOrderWidgetState extends State<LastOrderWidget> {
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return SizedBox();
           }
 
           if (!snapshot.hasData) {
-            return Center(child: Text('No orders found.'));
+            return SizedBox();
           }
 
           OrderModel lastOrder = snapshot.data!;
