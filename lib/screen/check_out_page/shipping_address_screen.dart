@@ -79,7 +79,6 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                         customStyle: TextStyle(color: theme.secondaryHeaderColor),
                       ),
                       onPressed: () {
-                        Navigator.pop(context);
                         locationController.updateAddress(
                           id: id,
                           fullName: fullName,
@@ -107,7 +106,6 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                         customStyle: const TextStyle(color: Colors.red),
                       ),
                       onPressed: () {
-                        Navigator.pop(context);
                         locationController.deleteAddress(id: id, context: context);
                       },
                     ),
