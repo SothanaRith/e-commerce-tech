@@ -111,7 +111,26 @@ class ItemSelectWidget extends StatelessWidget {
               )
           ],
         ),
-
+        SizedBox(height: 8,),
+        if(actionTitle != null)
+        InkWell(
+          onTap: onAction ?? () {
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: theme.primaryColor.withAlpha(60),
+            ),
+            child: AppText.caption(
+              actionTitle ?? "Free Delivery",
+              customStyle: TextStyle(
+                color: theme.primaryColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
