@@ -97,7 +97,9 @@ class _LastOrderWidgetState extends State<LastOrderWidget> {
                           ),
                           const SizedBox(height: 4,),
                           AppText.caption(
-                            'Your order will be updated soon',
+                          lastOrder.status == "completed"
+                          ? 'Enjoy your product! Rate us if you can.'
+                              : 'Your order will be updated soon.',
                             customStyle: TextStyle(color: theme.primaryColor),
                           ),
                         ],

@@ -78,10 +78,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        height: MediaQuery
-                            .sizeOf(context)
-                            .height / 1.5,
+                      Container(
                         width: MediaQuery
                             .sizeOf(context)
                             .width,
@@ -89,30 +86,35 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           alignment: Alignment.center,
                           children: [
                             if (controller.selectedImageUrl.isNotEmpty)
-                              GestureDetector(
-                                onTap: () =>
-                                    goTo(
-                                        this,
-                                        FlexibleImagePreview(
-                                            image: controller
-                                                .selectedImageUrl)),
-                                child: CachedNetworkImage(
-                                  imageUrl:
-                                  safeImageUrl(controller.selectedImageUrl),
-                                  placeholder: (context, url) =>
-                                      Center(
-                                          child: CircularProgressIndicator(
-                                              color: theme.primaryColor)),
-                                  errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                                  height:
-                                  MediaQuery
-                                      .sizeOf(context)
-                                      .height / 1.5 -
-                                      35,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                ),
+                              Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () =>
+                                        goTo(
+                                            this,
+                                            FlexibleImagePreview(
+                                                image: controller
+                                                    .selectedImageUrl)),
+                                    child: CachedNetworkImage(
+                                      imageUrl:
+                                      safeImageUrl(controller.selectedImageUrl),
+                                      placeholder: (context, url) =>
+                                          Center(
+                                              child: CircularProgressIndicator(
+                                                  color: theme.primaryColor)),
+                                      errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
+                                      height:
+                                      MediaQuery
+                                          .sizeOf(context)
+                                          .height / 1.5 -
+                                          35,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  SizedBox(height: 38,)
+                                ],
                               ),
                             Positioned(
                               bottom: 0,
@@ -360,98 +362,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           ],
                         ),
                       ),
-                      if (product.reviews != null &&
-                          product.reviews!.isNotEmpty) ...[
-                        const SizedBox(height: 32),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: AppText.title("reviews".tr),
-                        ),
-                        const SizedBox(height: 12),
-                        ListViewHorizontalWidget(
-                          height: 160,
-                          items: List.generate(product.reviews?.length ?? 0,
-                                  (index) {
-                                final review = product.reviews![index];
-                                return Container(
-                                  padding: const EdgeInsets.all(12),
-                                  width: 300,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(18),
-                                    color: theme.secondaryHeaderColor,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          AppText.title1(
-                                              review.user?.name ?? "Anonymous"),
-                                          Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                            children: [
-                                              Row(
-                                                children: List.generate(
-                                                  int.tryParse(
-                                                      review.rating ?? '0') ??
-                                                      0,
-                                                      (index) =>
-                                                  const Icon(
-                                                    Icons.star_rounded,
-                                                    size: 18,
-                                                    color: Colors.amber,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 10),
-                                      AppText.caption(review.comment ?? ""),
-                                      const SizedBox(height: 10),
-                                      if (review.images != null &&
-                                          review.images!.isNotEmpty)
-                                        ListViewHorizontalWidget(
-                                          horizontalPadding: 4,
-                                          items: List.generate(
-                                              review.images!.length, (i) {
-                                            final imageUrl = "${review
-                                                .images![i]}";
-                                            return GestureDetector(
-                                              onTap: () {
-                                                goTo(
-                                                    this,
-                                                    FlexibleImagePreview(
-                                                        image: imageUrl));
-                                              },
-                                              child: Container(
-                                                width: 60,
-                                                height: 60,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                  BorderRadius.circular(5),
-                                                  image: DecorationImage(
-                                                    image: NetworkImage(
-                                                        safeImageUrl(imageUrl)),
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          }),
-                                          height: 60,
-                                        ),
-                                    ],
-                                  ),
-                                );
-                              }),
-                        ),
-                      ],
+
                       if (product.variants != null &&
                           product.variants!.isNotEmpty) ...[
                         SingleChildScrollView(
@@ -477,9 +388,107 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             }).toList(),
                           ),
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 26),
                       ],
 
+                      Container(
+                        width: MediaQuery.sizeOf(context).width,
+                        height: 6,
+                        color: theme.highlightColor.withAlpha(50),
+                      ),
+                      const SizedBox(height: 12),
+                      if (product.reviews != null &&
+                          product.reviews!.isNotEmpty) ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                          child: AppText.title("reviews".tr),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: List.generate(product.reviews?.length ?? 0,
+                                      (index) {
+                                    final review = product.reviews![index];
+                                    return Container(
+                                      padding: const EdgeInsets.all(12),
+                                      width: 300,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(18),
+                                        color: theme.secondaryHeaderColor,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment
+                                            .start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              AppText.title1(
+                                                  review.user?.name ?? "Anonymous"),
+                                              Row(
+                                                children: List.generate(
+                                                  int.tryParse(
+                                                      review.rating ?? '0') ??
+                                                      0,
+                                                      (index) =>
+                                                  const Icon(
+                                                    Icons.star_rounded,
+                                                    size: 18,
+                                                    color: Colors.amber,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 10),
+                                          if(review.comment != '')...[
+                                            AppText.caption(review.comment ?? ""),
+                                            const SizedBox(height: 10),
+                                          ],
+                                          if (review.images != null &&
+                                              review.images!.isNotEmpty)
+                                            ListViewHorizontalWidget(
+                                              horizontalPadding: 4,
+                                              items: List.generate(
+                                                  review.images!.length, (i) {
+                                                final imageUrl = "${review
+                                                    .images![i]}";
+                                                return GestureDetector(
+                                                  onTap: () {
+                                                    goTo(
+                                                        this,
+                                                        FlexibleImagePreview(
+                                                            image: imageUrl));
+                                                  },
+                                                  child: Container(
+                                                    width: 60,
+                                                    height: 60,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                      BorderRadius.circular(5),
+                                                      image: DecorationImage(
+                                                        image: NetworkImage(
+                                                            safeImageUrl(imageUrl)),
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              }),
+                                              height: 60,
+                                            ),
+                                        ],
+                                      ),
+                                    );
+                                  }),
+                            ),
+                          ),
+                        )
+                      ],
+                      const SizedBox(height: 12),
                       if (product.relatedProducts != null &&
                           product.relatedProducts!.isNotEmpty) ...[
                         Padding(

@@ -92,9 +92,9 @@ class _HomeTopBarScreenWidgetState extends State<HomeTopBarScreenWidget> {
                   if(cartController.totalItemsInCart != 0)
                     Positioned(
                       right: 0,
-                      top: -2,
+                      top: 0,
                       child: Container(
-                        padding: const EdgeInsets.all(6),
+                        padding: const EdgeInsets.all(7),
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: Colors.red,
@@ -127,14 +127,13 @@ class _HomeTopBarScreenWidgetState extends State<HomeTopBarScreenWidget> {
                   ),
                   if(widget.unReadNotification != 0)
                   Positioned(
-                    right: -2,
-                    top: -2,
+                    right: 0,
+                    top: 0,
                     child: Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.red,
-                        border: Border.all(width: 2, color: Colors.white)
                       ),
                       child: AppText.caption(widget.unReadNotification.toString(), customStyle: TextStyle(color: Colors.white),),
                     ),
