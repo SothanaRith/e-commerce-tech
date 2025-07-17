@@ -1,3 +1,4 @@
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/Transaction_model.dart';
 import 'package:e_commerce_tech/models/order_tracking_model.dart';
@@ -60,8 +61,8 @@ class _OrderTransactionDetailScreenState extends State<OrderTransactionDetailScr
                 goTo(this, ReviewScreen(product: item.product!, variantId: int.parse(item.variantId ?? '0'),));
               },
               title: item.product?.name ?? '--',
-              prices: '\$${item.product?.price}',
-              countNumber: item.quantity ?? '0',
+              prices: calculateFinalPrice(double.parse(matchedVariant?.price ?? '0'), matchedVariant?.discountType, double.parse(matchedVariant?.discountValue ?? '0'), matchedVariant?.isPromotion ?? 'false'),
+              countNumber: item.quantity ?? '0', variantTitle: matchedVariant?.title ?? '', discount: matchedVariant?.isPromotion == 'false' ? '' : "${matchedVariant?.discountValue} ${matchedVariant?.discountType == 'fixed' ? '\$' : '%'}",
             );
           }).toList(),),
           const SizedBox(height: 6),
