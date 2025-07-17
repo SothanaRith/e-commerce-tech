@@ -32,53 +32,98 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
     });
   }
 
-  void _showAddressDialog(String id, String fullName, String street,
-      bool isDefault) {
-    AwesomeDialog(
+  void _showAddressDialog(
+      String id, String fullName, String street, bool isDefault) {
+    showDialog(
       context: context,
-      dialogType: DialogType.info,
-      animType: AnimType.bottomSlide,
-      title: 'manage_address'.tr,
-      body: GetBuilder<LocationController>(builder: (logic) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            AppText.title2("${"address_:".tr} $street"),
-            if (!isDefault)
-              logic.isLoading ? CircularProgressIndicator(color: theme.primaryColor,) : TextButton.icon(
-                icon: Icon(Icons.star, color: theme.primaryColor),
-                label: AppText.body("set_as_default".tr,
-                  customStyle: TextStyle(color: theme.primaryColor),),
-                onPressed: () {
-                  Future.delayed(Duration.zero, () {
-                    locationController.updateAddress(
-                      id: id,
-                      fullName: fullName,
-                      phoneNumber: UserStorage.currentUser?.phone ?? '',
-                      street: street,
-                      isDefault: true,
-                      context: context,
-                    );
-                  });
-                },
-              ),
-            if (!isDefault)
-              logic.isLoading ? CircularProgressIndicator(color: theme.primaryColor,) : TextButton.icon(
-                icon: Icon(Icons.delete, color: Colors.red),
-                label: AppText.body(
-                    "delete".tr, customStyle: TextStyle(color: Colors.red)),
-                onPressed: () {
-                  Future.delayed(Duration.zero, () {
-                    locationController.deleteAddress(id: id, context: context);
-                  });
-                },
-              ),
-          ],
-        );
-      }),
-      btnCancelOnPress: () {},
-    ).show();
+      builder: (context) => Dialog(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: GetBuilder<LocationController>(builder: (logic) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircleAvatar(
+                  backgroundColor: theme.primaryColor.withOpacity(0.1),
+                  radius: 28,
+                  child: Icon(Icons.location_on, color: theme.primaryColor, size: 32),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'manage_address'.tr,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 8),
+                AppText.body(
+                  "${"address_:".tr} $street",
+                  customStyle: const TextStyle(color: Colors.black54), textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                if (!isDefault) ...[
+                  logic.isLoading
+                      ? CircularProgressIndicator(color: theme.primaryColor)
+                      : SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.primaryColor,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                      icon: const Icon(Icons.star_rounded, color: Colors.amber,),
+                      label: AppText.body1(
+                        "set_as_default".tr,
+                        customStyle: TextStyle(color: theme.secondaryHeaderColor),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        locationController.updateAddress(
+                          id: id,
+                          fullName: fullName,
+                          phoneNumber: UserStorage.currentUser?.phone ?? '',
+                          street: street,
+                          isDefault: true,
+                          context: context,
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  logic.isLoading
+                      ? CircularProgressIndicator(color: theme.primaryColor)
+                      : SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      label: AppText.body2(
+                        "delete".tr,
+                        customStyle: const TextStyle(color: Colors.red),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        locationController.deleteAddress(id: id, context: context);
+                      },
+                    ),
+                  ),
+                ],
+                if (isDefault)
+                  AppText.caption(
+                    "This address is already set as default.".tr,
+                    customStyle: TextStyle(color: Colors.grey.shade600),
+                  ),
+              ],
+            );
+          }),
+        ),
+      ),
+    );
   }
 
   @override
