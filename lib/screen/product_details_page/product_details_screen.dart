@@ -388,7 +388,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             }).toList(),
                           ),
                         ),
-                        const SizedBox(height: 26),
+                        const SizedBox(height: 18),
                       ],
 
                       Container(
