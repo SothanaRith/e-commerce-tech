@@ -1,6 +1,7 @@
 import 'package:e_commerce_tech/controllers/auth_controller.dart';
 import 'package:e_commerce_tech/controllers/cart_controller.dart';
 import 'package:e_commerce_tech/controllers/chat_contoller.dart';
+import 'package:e_commerce_tech/controllers/chat_with_store_controller.dart';
 import 'package:e_commerce_tech/controllers/home_controller.dart';
 import 'package:e_commerce_tech/controllers/lacation_controller.dart';
 import 'package:e_commerce_tech/controllers/order_contoller.dart';
@@ -31,6 +32,7 @@ class AllBinding extends Bindings {
     Get.lazyPut(() => PaymentController());
     Get.lazyPut(() => ChatController());
     Get.lazyPut(() => PosterController());
+    Get.lazyPut(() => ChatWithStoreController());
 
   }
 }

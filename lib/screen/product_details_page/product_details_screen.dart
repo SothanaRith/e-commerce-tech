@@ -10,6 +10,7 @@ import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
 import 'package:e_commerce_tech/screen/category/product_by_category.dart';
 import 'package:e_commerce_tech/screen/chat_bot_page/chat_bot_screen.dart';
+import 'package:e_commerce_tech/screen/chat_with_store/chat_with_store_screen.dart';
 import 'package:e_commerce_tech/screen/check_out_page/check_out_screen.dart';
 import 'package:e_commerce_tech/screen/product_details_page/variant_widget.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
@@ -577,8 +578,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           children: [
             SizedBox(width: 6,),
             GestureDetector(
-                onTap: () {
-                  goTo(this, ChatScreen());
+                onTap: (){
+                  goTo(this, ChatWithStoreScreen(senderId: UserStorage.currentUser?.id ?? '', receiverId: "3"));
                 },
                 child: Container(
                     decoration: BoxDecoration(

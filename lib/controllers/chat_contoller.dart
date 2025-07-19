@@ -11,7 +11,7 @@ class ChatController extends GetxController {
   var selectedModel = 'gpt-4o'.obs;
 
   final availableModels = [ 'gpt-4o', 'gpt-4.1', 'deepseek-r1', 'blackboxai', 'gemini-2.5-pro']; // Customize
-  final String apiUrl = 'http://${mainPoint.replaceAll(":3000", ":1337")}/backend-api/v2/auto/chat';
+  final String apiUrl = '${mainPoint.replaceAll(":3000", ":1337")}/backend-api/v2/auto/chat';
 
   // Send user message to backend and get assistant reply
   Future<void> sendMessage(String text, ScrollController scrollController) async {
@@ -24,7 +24,7 @@ class ChatController extends GetxController {
     try {
       // Send only the latest 20 messages (10 exchanges)
       final history = messages
-          .skip(messages.length > 20 ? messages.length - 20 : 0)
+          .skip(messages.length > 3 ? messages.length - 3 : 0)
           .map((msg) => {'role': msg.role, 'content': msg.content})
           .toList();
 
@@ -40,7 +40,13 @@ class ChatController extends GetxController {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        final reply = data['reply'] ?? "No reply";
+
+        String reply = data['reply'] ?? "No reply";
+
+        if (reply.trim().startsWith('<!DOCTYPE html') || reply.trim().startsWith('<html')) {
+          reply = '⚠️ សូមអធ្យាស្រ័យ, ពេលនេះដូចជាមានបញ្ហាអ្វីមួយខុស សូមអនុញ្ញាតសួរម្ដងទៀត';
+        }
+
         await animateTyping(reply, scrollController);
       } else {
         await animateTyping('❌ ${response.statusCode} - ${response.reasonPhrase}', scrollController);
