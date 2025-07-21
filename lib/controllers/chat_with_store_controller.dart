@@ -30,7 +30,7 @@ class ChatWithStoreController extends GetxController {
   }
 
   /// Connect to Socket.IO server and register current user
-  void connectSocket() {
+  void connectSocket(Function scrollToBottomCallback) {
     if (socket != null && socket!.connected) return; // Avoid reconnecting
 
     socket = IO.io(
@@ -55,7 +55,13 @@ class ChatWithStoreController extends GetxController {
       debugPrint('📩 New message received: $data');
       final message = ResponseModel.fromJson(data);
       chatStore.update((chat) {
-        chat?.addMessage(message);
+        chat?.addMessage(message); // Adding the new message
+      });
+
+      // Call the scroll-to-bottom callback to ensure scrolling
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        // After the frame is built, call the scroll to bottom function
+        scrollToBottomCallback();
       });
     });
 

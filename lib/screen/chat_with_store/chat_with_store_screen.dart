@@ -5,6 +5,7 @@ import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class ChatWithStoreScreen extends StatefulWidget {
   final String senderId;
@@ -23,17 +24,29 @@ class ChatWithStoreScreen extends StatefulWidget {
 class _ChatWithStoreScreenState extends State<ChatWithStoreScreen> {
   final TextEditingController messageController = TextEditingController();
   final ChatWithStoreController controller = Get.put(ChatWithStoreController());
+  final ScrollController scrollController = ScrollController(); // Added ScrollController
 
   @override
   void initState() {
     super.initState();
     controller.setChatDetails(widget.senderId, widget.receiverId);
-    controller.connectSocket();
+    controller.connectSocket(scrollToBottom);
     controller.getChatHistory(
       senderId: widget.senderId,
       receiverId: widget.receiverId,
       context: context,
     );
+  }
+
+  // Function to scroll to the bottom
+  void scrollToBottom() {
+    if (scrollController.hasClients) {
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent + 120,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   @override
@@ -47,7 +60,18 @@ class _ChatWithStoreScreenState extends State<ChatWithStoreScreen> {
           Expanded(
             child: Obx(() {
               final messages = controller.chatStore.value.messages;
+
+              // Ensure to scroll to the bottom when new messages are received
+              if (messages.isNotEmpty) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  Future.delayed(Duration(milliseconds: 100), () {
+                    scrollToBottom();  // Trigger scroll after a short delay
+                  });
+                });
+              }
+
               return ListView.builder(
+                controller: scrollController, // Attach the ScrollController
                 padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
@@ -73,10 +97,9 @@ class _ChatWithStoreScreenState extends State<ChatWithStoreScreen> {
                           ),
                           SizedBox(height: 4,),
                           AppText.caption(
-                            DateTime.parse(message.createdAt).toString(),
+                            DateFormat('MMM d, yyyy – h:mm a').format(DateTime.parse(message.createdAt)),
                             customStyle: const TextStyle(color: Colors.white),
                           ),
-
                         ],
                       ),
                     ),
@@ -88,7 +111,7 @@ class _ChatWithStoreScreenState extends State<ChatWithStoreScreen> {
           // Message input
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
               child: Row(
                 children: [
                   Expanded(
