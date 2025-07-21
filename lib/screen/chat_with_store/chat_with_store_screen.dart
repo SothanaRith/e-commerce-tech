@@ -109,13 +109,28 @@ class _ChatWithStoreScreenState extends State<ChatWithStoreScreen> {
   void sendMessageWithImageAndCaption() {
     final text = messageController.text.trim();
     if (text.isNotEmpty || imagePreviewPath.value != null) {
-      // Send the caption and the image
-      String base64Image = '';
+      // Validate the image size (100 KB = 102400 bytes)
       if (imagePreviewPath.value != null) {
-        final bytes = File(imagePreviewPath.value!).readAsBytesSync();
+        final file = File(imagePreviewPath.value!);
+        final fileSizeInBytes = file.lengthSync();
+        if (fileSizeInBytes > 102400) {
+          // Show an error message or handle the file size exceed case
+          print("File is too large. Maximum allowed size is 100 KB.");
+          return; // Exit the function if the file size exceeds the limit
+        }
+
+        // If the file size is valid, send the message with the image
+        String base64Image = '';
+        final bytes = file.readAsBytesSync();
         base64Image = base64Encode(bytes);
+
+        controller.sendMessageWithImage(text, base64Image);
+      } else {
+        // Send message without image if no image is selected
+        controller.sendMessageWithImage(text, '');
       }
-      controller.sendMessageWithImage(text, base64Image);
+
+      // Clear after sending
       messageController.clear();
       imagePreviewPath.value = null; // Clear preview after sending
     }
