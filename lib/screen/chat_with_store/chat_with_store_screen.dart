@@ -8,6 +8,7 @@ import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
+import 'package:e_commerce_tech/widgets/custom_dialog.dart';
 import 'package:e_commerce_tech/widgets/custom_text_field_widget.dart';
 import 'package:e_commerce_tech/widgets/flexible_image_preview_widget.dart';
 import 'package:e_commerce_tech/widgets/safe_network_image.dart';
@@ -113,10 +114,14 @@ class _ChatWithStoreScreenState extends State<ChatWithStoreScreen> {
       if (imagePreviewPath.value != null) {
         final file = File(imagePreviewPath.value!);
         final fileSizeInBytes = file.lengthSync();
-        if (fileSizeInBytes > 102400) {
-          // Show an error message or handle the file size exceed case
-          print("File is too large. Maximum allowed size is 100 KB.");
-          return; // Exit the function if the file size exceeds the limit
+        if (fileSizeInBytes > (102400 * 5)) {
+          showCustomDialog(
+            context: context,
+            type: CustomDialogType.error,
+            title: "File Size",
+            desc: "File is too large. Maximum allowed size is 500 KB.",
+          );
+          return;
         }
 
         // If the file size is valid, send the message with the image
@@ -168,7 +173,7 @@ class _ChatWithStoreScreenState extends State<ChatWithStoreScreen> {
                         .centerLeft,
                     child: Container(
                       margin: const EdgeInsets.symmetric(vertical: 4),
-                      padding: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(8),
                       constraints: BoxConstraints(maxWidth: MediaQuery
                           .of(context)
                           .size
@@ -186,14 +191,22 @@ class _ChatWithStoreScreenState extends State<ChatWithStoreScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if (message.fileUrl != null &&
-                              message.fileUrl!.isNotEmpty)
-                            Image.network(
-                              safeImageUrl(message.fileUrl!),
-                              width: 200,
-                              height: 200,
-                              fit: BoxFit.cover,
+                              message.fileUrl!.isNotEmpty) ...[
+                            GestureDetector(
+                              onTap: () {
+                                goTo(this, FlexibleImagePreview(image: safeImageUrl(message.fileUrl!)));
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadiusGeometry.circular(10),
+                                child: Image.network(
+                                  safeImageUrl(message.fileUrl!),
+                                  height: 80,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
                             ),
-                          SizedBox(height: 12),
+                            SizedBox(height: 12),
+                          ],
                           if (message.content.isNotEmpty)
                             AppText.body(
                               message.content,
