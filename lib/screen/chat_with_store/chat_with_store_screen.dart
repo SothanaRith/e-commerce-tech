@@ -153,7 +153,7 @@ class _ChatWithStoreScreenState extends State<ChatWithStoreScreen> {
               final messages = controller.chatStore.value.messages;
               if (messages.isNotEmpty) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
-                  Future.delayed(Duration(milliseconds: 100), () {
+                  Future.delayed(Duration(milliseconds: 200), () {
                     scrollToBottom();
                   });
                 });
