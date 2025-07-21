@@ -171,54 +171,64 @@ class _ChatWithStoreScreenState extends State<ChatWithStoreScreen> {
                   return Align(
                     alignment: isMe ? Alignment.centerRight : Alignment
                         .centerLeft,
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 4),
-                      padding: const EdgeInsets.all(8),
-                      constraints: BoxConstraints(maxWidth: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.7),
-                      decoration: BoxDecoration(
-                        color: isMe ? theme.primaryColor : Colors.grey.shade400,
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(10),
-                          topLeft: Radius.circular(10),
-                          bottomLeft: Radius.circular(isMe ? 10 : 0),
-                          bottomRight: Radius.circular(isMe ? 0 : 10),
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (message.fileUrl != null &&
-                              message.fileUrl!.isNotEmpty) ...[
-                            GestureDetector(
-                              onTap: () {
-                                goTo(this, FlexibleImagePreview(image: safeImageUrl(message.fileUrl!)));
-                              },
-                              child: ClipRRect(
-                                borderRadius: BorderRadiusGeometry.circular(10),
-                                child: Image.network(
-                                  safeImageUrl(message.fileUrl!),
-                                  height: 80,
-                                  fit: BoxFit.contain,
-                                ),
+                    child: Column(
+                      crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                      children: [
+                        if (message.fileUrl != null &&
+                            message.fileUrl!.isNotEmpty) ...[
+                          SizedBox(height: 8,)    ,
+                          GestureDetector(
+                            onTap: () {
+                              goTo(this, FlexibleImagePreview(image: safeImageUrl(message.fileUrl!)));
+                            },
+                            child: ClipRRect(
+                              borderRadius: BorderRadiusGeometry.only(
+                                topRight: Radius.circular(10),
+                                topLeft: Radius.circular(10),
+                                bottomLeft: Radius.circular(isMe ? 10 : 0),
+                                bottomRight: Radius.circular(isMe ? 0 : 10),
+                              ),
+                              child: Image.network(
+                                safeImageUrl(message.fileUrl!),
+                                height: 100,
+                                fit: BoxFit.contain,
                               ),
                             ),
-                            SizedBox(height: 12),
-                          ],
-                          if (message.content.isNotEmpty)
-                            AppText.body(
-                              message.content,
-                              customStyle: const TextStyle(color: Colors.white),
-                            ),
-                          SizedBox(height: 2),
-                          AppText.caption(
-                            formatDateString(message.createdAt),
-                            customStyle: const TextStyle(color: Colors.white),
                           ),
                         ],
-                      ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(vertical: 4),
+                          padding: const EdgeInsets.all(10),
+                          constraints: BoxConstraints(maxWidth: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.7),
+                          decoration: BoxDecoration(
+                            color: isMe ? theme.primaryColor : Colors.grey.shade400,
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(10),
+                              topLeft: Radius.circular(10),
+                              bottomLeft: Radius.circular(isMe ? 10 : 0),
+                              bottomRight: Radius.circular(isMe ? 0 : 10),
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (message.content.isNotEmpty)
+                                AppText.body1(
+                                  message.content,
+                                  customStyle: const TextStyle(color: Colors.white),
+                                ),
+                              SizedBox(height: 2),
+                              AppText.caption(
+                                formatDateString(message.createdAt),
+                                customStyle: const TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   );
                 },
