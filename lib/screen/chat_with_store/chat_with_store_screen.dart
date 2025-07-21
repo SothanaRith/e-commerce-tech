@@ -1,11 +1,21 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:e_commerce_tech/controllers/auth_controller.dart';
 import 'package:e_commerce_tech/controllers/chat_with_store_controller.dart';
+import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
+import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
 import 'package:e_commerce_tech/widgets/custom_text_field_widget.dart';
+import 'package:e_commerce_tech/widgets/flexible_image_preview_widget.dart';
+import 'package:e_commerce_tech/widgets/safe_network_image.dart';
+import 'package:e_commerce_tech/widgets/select_image_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class ChatWithStoreScreen extends StatefulWidget {
   final String senderId;
@@ -24,7 +34,9 @@ class ChatWithStoreScreen extends StatefulWidget {
 class _ChatWithStoreScreenState extends State<ChatWithStoreScreen> {
   final TextEditingController messageController = TextEditingController();
   final ChatWithStoreController controller = Get.put(ChatWithStoreController());
-  final ScrollController scrollController = ScrollController(); // Added ScrollController
+  final ScrollController scrollController = ScrollController();
+  Rx<String?> imagePreviewPath = Rx<String?>(
+      null); // To store the image path for preview
 
   @override
   void initState() {
@@ -38,7 +50,6 @@ class _ChatWithStoreScreenState extends State<ChatWithStoreScreen> {
     );
   }
 
-  // Function to scroll to the bottom
   void scrollToBottom() {
     if (scrollController.hasClients) {
       scrollController.animateTo(
@@ -49,55 +60,133 @@ class _ChatWithStoreScreenState extends State<ChatWithStoreScreen> {
     }
   }
 
+  void showOptionsSheet(BuildContext context) {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) =>
+          GetBuilder<AuthController>(builder: (logic) {
+            return Skeletonizer(
+              enabled: logic.isLoading,
+              child: CupertinoActionSheet(
+                cancelButton: CupertinoActionSheetAction(
+                  isDefaultAction: true,
+                  onPressed: () {
+                    Navigator.pop(context, 'Cancel');
+                  },
+                  child: Text(
+                    'cancel'.tr,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
+                actions: <Widget>[
+                  buildActionSheetAction('from_gallery'.tr, Colors.blue, () {
+                    cropGallery(context).then((image) {
+                      if (image != null) {
+                        imagePreviewPath.value = image
+                            .path; // Set image path for preview
+                        controller.image = image.path;
+                        popBack(this);
+                      }
+                    });
+                  }),
+                  buildActionSheetAction('from_camera'.tr, Colors.red, () {
+                    cropCamera(context).then((image) {
+                      if (image != null) {
+                        imagePreviewPath.value = image
+                            .path; // Set image path for preview
+                        controller.image = image.path;
+                        popBack(this);
+                      }
+                    });
+                  }),
+                ],
+              ),
+            );
+          }),
+    );
+  }
+
+  void sendMessageWithImageAndCaption() {
+    final text = messageController.text.trim();
+    if (text.isNotEmpty || imagePreviewPath.value != null) {
+      // Send the caption and the image
+      String base64Image = '';
+      if (imagePreviewPath.value != null) {
+        final bytes = File(imagePreviewPath.value!).readAsBytesSync();
+        base64Image = base64Encode(bytes);
+      }
+      controller.sendMessageWithImage(text, base64Image);
+      messageController.clear();
+      imagePreviewPath.value = null; // Clear preview after sending
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(title: "Chat with Snap pay", context: context, type: ""),
-
+      appBar: customAppBar(
+          title: "Chat with Store", context: context, type: ""),
       body: Column(
         children: [
-          // Chat messages list
           Expanded(
             child: Obx(() {
               final messages = controller.chatStore.value.messages;
-
-              // Ensure to scroll to the bottom when new messages are received
               if (messages.isNotEmpty) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   Future.delayed(Duration(milliseconds: 100), () {
-                    scrollToBottom();  // Trigger scroll after a short delay
+                    scrollToBottom();
                   });
                 });
               }
 
               return ListView.builder(
-                controller: scrollController, // Attach the ScrollController
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                controller: scrollController,
+                padding: const EdgeInsets.symmetric(
+                    vertical: 10, horizontal: 8),
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
                   final message = messages[index];
                   final isMe = message.senderId == widget.senderId;
 
                   return Align(
-                    alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                    alignment: isMe ? Alignment.centerRight : Alignment
+                        .centerLeft,
                     child: Container(
                       margin: const EdgeInsets.symmetric(vertical: 4),
                       padding: const EdgeInsets.all(10),
-                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
+                      constraints: BoxConstraints(maxWidth: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.7),
                       decoration: BoxDecoration(
                         color: isMe ? theme.primaryColor : Colors.grey.shade400,
-                        borderRadius: BorderRadius.only(topRight: Radius.circular(10), topLeft: Radius.circular(10), bottomLeft: Radius.circular(isMe ? 10 : 0), bottomRight: Radius.circular(isMe ? 0 : 10)),
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(10),
+                          topLeft: Radius.circular(10),
+                          bottomLeft: Radius.circular(isMe ? 10 : 0),
+                          bottomRight: Radius.circular(isMe ? 0 : 10),
+                        ),
                       ),
                       child: Column(
-                        crossAxisAlignment: isMe ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          AppText.body1(
-                            message.content,
-                            customStyle: const TextStyle(color: Colors.white),
-                          ),
-                          SizedBox(height: 4,),
+                          if (message.fileUrl != null &&
+                              message.fileUrl!.isNotEmpty)
+                            Image.network(
+                              safeImageUrl(message.fileUrl!),
+                              width: 200,
+                              height: 200,
+                              fit: BoxFit.cover,
+                            ),
+                          SizedBox(height: 12),
+                          if (message.content.isNotEmpty)
+                            AppText.body(
+                              message.content,
+                              customStyle: const TextStyle(color: Colors.white),
+                            ),
+                          SizedBox(height: 2),
                           AppText.caption(
-                            DateFormat('MMM d, yyyy – h:mm a').format(DateTime.parse(message.createdAt)),
+                            formatDateString(message.createdAt),
                             customStyle: const TextStyle(color: Colors.white),
                           ),
                         ],
@@ -108,34 +197,77 @@ class _ChatWithStoreScreenState extends State<ChatWithStoreScreen> {
               );
             }),
           ),
-          // Message input
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: CustomTextField(label: "Type a message...", controller: messageController,),
-                  ),
-                  SizedBox(width: 6,),
-                  GestureDetector(
-                    onTap: () {
-                      final text = messageController.text.trim();
-                      if (text.isNotEmpty) {
-                        controller.sendMessage(text);
-                        messageController.clear();
-                      }
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadiusGeometry.circular(100),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 12.0, vertical: 8),
+              child: Obx(() {
+                return Row(
+                  children: [
+                    Expanded(
+                      child: CustomTextField(
+                        label: "Type a message...",
+                        controller: messageController,
+                        leftIcon: GestureDetector(
+                          onTap: () {
+                            showOptionsSheet(context);
+                          },
+                          child: Icon(Icons.image, color: theme.primaryColor),
+                        ),
                       ),
-                      child: Icon(Icons.send_rounded, color: theme.primaryColor),
                     ),
-                  ),
-                ],
-              ),
+                    SizedBox(width: 6),
+                    if (imagePreviewPath.value != null)
+                      SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                goTo(
+                                    this,
+                                    FlexibleImagePreview(
+                                        image: File(imagePreviewPath.value!)));
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadiusGeometry.circular(4),
+                                child: Image.file(
+                                  File(imagePreviewPath.value!),
+                                  width: 35,
+                                  height: 35,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              right: 0,
+                              top: 0,
+                              child: GestureDetector(
+                                onTap: () {
+                                  imagePreviewPath.value = null;
+                                },
+                                child: Icon(CupertinoIcons.xmark_circle_fill, color: Colors.red.shade800, size: 20,),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    GestureDetector(
+                      onTap: sendMessageWithImageAndCaption,
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        child: Icon(Icons.send_rounded,
+                            color: theme.primaryColor),
+                      ),
+                    ),
+                  ],
+                );
+              }),
             ),
           ),
         ],

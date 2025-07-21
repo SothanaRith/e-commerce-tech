@@ -17,6 +17,7 @@ class ChatWithStoreController extends GetxController {
 
   String? currentUserId;
   String? currentReceiverId;
+  String? image;
 
   /// Set the chat details
   void setChatDetails(String senderId, String receiverId) {
@@ -27,6 +28,19 @@ class ChatWithStoreController extends GetxController {
       chat?.receiverId = receiverId;
       chat?.messages = [];
     });
+  }
+
+  void sendMessageWithImage(String text, String base64Image) {
+    if (socket != null && socket!.connected) {
+      socket!.emit('sendMessage', {
+        'sender_id': currentUserId,
+        'receiver_id': currentReceiverId,
+        'message': text,
+        'image_base64': base64Image, // Send base64 image
+      });
+    } else {
+      debugPrint('⚠️ Socket is not connected');
+    }
   }
 
   /// Connect to Socket.IO server and register current user
