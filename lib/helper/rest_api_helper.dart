@@ -20,15 +20,15 @@ class ApiRepository {
       {String method = "", String url = "", required BuildContext context, Map<String, String>? headers, dynamic body}) async {
     try {
       // ✅ Log Request Details
-      print("\n🔹 [DEBUG] HTTP Request - Method: $method, URL: $url");
-      print("🔹 Headers: ${headers ?? 'No Headers'}");
-      if (body != null) print("🔹 Body: $body");
+      debugPrint("\n🔹 [DEBUG] HTTP Request - Method: $method, URL: $url");
+      debugPrint("🔹 Headers: ${headers ?? 'No Headers'}");
+      if (body != null) debugPrint("🔹 Body: $body");
 
       // Make HTTP request
       final response = await request();
 
       // ✅ Log Response
-      print("🔹 [DEBUG] HTTP Response: ${response.statusCode} - ${response.body}");
+      debugPrint("🔹 [DEBUG] HTTP Response: ${response.statusCode} - ${response.body}");
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return ApiResponse(data: response.body); // Keep JSON as string
@@ -36,7 +36,7 @@ class ApiRepository {
         return ApiResponse(error: response.body);
       }
     } catch (e) {
-      print("❌ [ERROR] Exception: $e");
+      debugPrint("❌ [ERROR] Exception: $e");
       return ApiResponse(error: e.toString());
     }
 

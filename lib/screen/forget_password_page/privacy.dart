@@ -1,5 +1,6 @@
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class PrivacyScreen extends StatelessWidget {
   const PrivacyScreen({super.key});
@@ -7,7 +8,7 @@ class PrivacyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:customAppBar(type: dynamic, title: "Privacy and Policy", context: context),
+      appBar:customAppBar(type: dynamic, title: "privacy_policy".tr, context: context),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: const [

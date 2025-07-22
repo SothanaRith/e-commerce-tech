@@ -130,5 +130,20 @@
   "chat_bot": "chat bot",
   "payment_type": "Payment type",
   "hi_do_you_have_anything_that_i_can_help_you_today": "Hi, do you have anything that I can help you today?",
-  "please_select_variant_first": "Please select a variant and enter a quantity before proceeding."
+  "please_select_variant_first": "Please select a variant and enter a quantity before proceeding.",
+  "type_a_message": "Type a message...",
+  "chat_with_store": "Chat with Store",
+  "file_size": "File Size",
+  "file_is_too_large_maximum_allowed_size_is_500_KB": "File is too large. Maximum allowed size is 500 KB.",
+  "chatbot": "Chat bot",
+  "message_copied_to_clipboard": "Message copied to clipboard",
+  "copied": "Copied",
+  "please_add_your_addresses": "Please add your addresses",
+  "total": "Total",
+  "confirm": "Confirm",
+  "are_you_sure_you_want_to_delete": "Are you sure you want to delete",
+  "from_your_cart_?": "from your cart?",
+  "this_address_is_already_set_as_default": "This address is already set as default",
+  "contact_us": "Contact us",
+  "faq": "FAQ"
 }

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:e_commerce_tech/controllers/auth_controller.dart';
 import 'package:e_commerce_tech/controllers/chat_with_store_controller.dart';
 import 'package:e_commerce_tech/helper/global.dart';
@@ -118,8 +117,8 @@ class _ChatWithStoreScreenState extends State<ChatWithStoreScreen> {
           showCustomDialog(
             context: context,
             type: CustomDialogType.error,
-            title: "File Size",
-            desc: "File is too large. Maximum allowed size is 500 KB.",
+            title: "file_size".tr,
+            desc: "file_is_too_large_maximum_allowed_size_is_500_KB".tr,
           );
           return;
         }
@@ -145,7 +144,7 @@ class _ChatWithStoreScreenState extends State<ChatWithStoreScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBar(
-          title: "Chat with Store", context: context, type: ""),
+          title: "chat_with_store".tr, context: context, type: ""),
       body: Column(
         children: [
           Expanded(
@@ -244,7 +243,7 @@ class _ChatWithStoreScreenState extends State<ChatWithStoreScreen> {
                   children: [
                     Expanded(
                       child: CustomTextField(
-                        label: "Type a message...",
+                        label: "type_a_message".tr,
                         controller: messageController,
                         leftIcon: GestureDetector(
                           onTap: () {

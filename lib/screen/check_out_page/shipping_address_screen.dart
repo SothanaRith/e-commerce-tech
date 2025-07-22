@@ -113,7 +113,7 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                 ],
                 if (isDefault)
                   AppText.caption(
-                    "This address is already set as default.".tr,
+                    "this_address_is_already_set_as_default".tr,
                     customStyle: TextStyle(color: Colors.grey.shade600),
                   ),
               ],

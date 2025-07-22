@@ -159,8 +159,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                       ),
                                       const SizedBox(height: 8),
                                       Text(
-                                        'Are you sure you want to delete "${product
-                                            .name}" from your cart?',
+                                        '${"are_you_sure_you_want_to_delete".tr} "${product
+                                            .name}" ${"from your cart?".tr}',
                                         style: const TextStyle(color: Colors.black54),
                                         textAlign: TextAlign.center,
                                       ),
@@ -175,7 +175,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                               onPressed: () {
                                                 Navigator.of(context).pop(false);
                                               },
-                                              child: AppText.body2("Cancel", customStyle: TextStyle(color: theme.primaryColor),),
+                                              child: AppText.body2("cancel".tr, customStyle: TextStyle(color: theme.primaryColor),),
                                             ),
                                           ),
                                           const SizedBox(width: 12),
@@ -188,7 +188,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                               onPressed: () {
                                                 Navigator.of(context).pop(true);
                                               },
-                                              child: AppText.body2("Confirm", customStyle: TextStyle(color: theme.secondaryHeaderColor),),
+                                              child: AppText.body2("confirm".tr, customStyle: TextStyle(color: theme.secondaryHeaderColor),),
                                             ),
                                           ),
                                         ],
@@ -253,7 +253,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AppText.title1('Total: \$${totalPrice.toStringAsFixed(2)}'),
+                AppText.title1('${"total".tr}: \$${totalPrice.toStringAsFixed(2)}'),
                 GetBuilder<LocationController>(builder: (logicLocation) {
                   return logic.cartList.isNotEmpty ? ElevatedButton(
                     onPressed: () {
@@ -267,7 +267,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                       ) : showCustomDialog(
                         context: context,
                         type: CustomDialogType.info,
-                        title: "Please add your addresses",
+                        title: "please_add_your_addresses".tr,
                       );
                       // Proceed to payment or order confirmation
 

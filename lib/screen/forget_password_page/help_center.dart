@@ -1,5 +1,6 @@
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class HelpCenter extends StatefulWidget {
   const HelpCenter({super.key});
@@ -56,11 +57,11 @@ class _HelpCenterState extends State<HelpCenter> {
       length: 2, // Two tabs: FAQ and Contact Us
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Help Center'),
-          bottom: const TabBar(
+          title: Text('help_center'.tr),
+          bottom: TabBar(
             tabs: [
-              Tab(text: 'FAQ'),
-              Tab(text: 'Contact Us'),
+              Tab(text: 'faq'.tr),
+              Tab(text: 'contact_us'.tr),
             ],
           ),
         ),
@@ -95,10 +96,10 @@ class _HelpCenterState extends State<HelpCenter> {
             // Contact Us Tab
             ListView(
               padding: const EdgeInsets.all(16.0),
-              children: const [
+              children: [
                 ListTile(
                   title: Text(
-                    'Contact Us',
+                    'contact_us'.tr,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                   subtitle: Column(

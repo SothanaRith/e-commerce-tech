@@ -37,7 +37,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(type: dynamic, title: "Chatbot", context: context, action: [
+      appBar: customAppBar(type: dynamic, title: "chatbot".tr, context: context, action: [
         // Obx(() {
         //   return Container(
         //     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -131,8 +131,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                         onTap: () {
                                           Clipboard.setData(ClipboardData(text: message.content));
                                           Get.snackbar(
-                                            "Copied",
-                                            "Message copied to clipboard",
+                                            "copied".tr,
+                                            "message_copied_to_clipboard".tr,
                                             snackPosition: SnackPosition.BOTTOM,
                                             duration: Duration(seconds: 1),
                                           );
@@ -197,7 +197,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           controller.clear();
                         }
                       },
-                      label: 'Enter your message',
+                      label: 'type_a_message'.tr,
                     ),
                   ),
                   Obx(() {
