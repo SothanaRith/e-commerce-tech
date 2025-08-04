@@ -55,9 +55,9 @@ class _OrderTransactionDetailScreenState extends State<OrderTransactionDetailScr
               onTap: () {
                 goTo(this, ProductDetailsScreen(id: item.product?.id ?? ''));
               },
-              actionTitle: "review_this_product".tr,
+              actionTitle: widget.data.status == "completed" ? "review_this_product".tr : null,
               onAction: () {
-                if (item.product != null)
+                if (item.product != null && widget.data.status == "completed")
                 goTo(this, ReviewScreen(product: item.product!, variantId: int.parse(item.variantId ?? '0'),));
               },
               title: item.product?.name ?? '--',

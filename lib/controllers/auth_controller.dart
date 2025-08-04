@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/helper/global.dart';
@@ -14,6 +15,7 @@ import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -27,6 +29,139 @@ class AuthController extends GetxController {
     apiRepository = ApiRepository();
   }
 
+  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+  var googleUser = Rxn<GoogleSignInAccount>();
+
+  @override
+  void onInit() {
+    super.onInit();
+    _initializeGoogle();
+  }
+
+  Future<void> _initializeGoogle() async {
+    await _googleSignIn.initialize(
+      clientId: 'YOUR_WEB_OR_ANDROID_CLIENT_ID',
+      serverClientId: 'YOUR_SERVER_CLIENT_ID', // optional
+    );
+
+    _googleSignIn.authenticationEvents.listen((event) {
+      if (event is GoogleSignInAuthenticationEventSignIn) {
+        googleUser.value = event.user;
+      } else {
+        googleUser.value = null;
+      }
+    });
+  }
+
+  Future<void> signInWithGoogle({required BuildContext context}) async {
+    try {
+      isLoading = true;
+      update();
+
+      final GoogleSignIn signIn = GoogleSignIn.instance;
+
+      // Initialize with your client IDs
+      await signIn.initialize(
+        clientId: "332120979364-rfeudib1se50316hvbbdr69pjpc15eoq.apps.googleusercontent.com",
+        serverClientId: "332120979364-i0lkptmcep7ct6q0nncchks9l0k1praa.apps.googleusercontent.com",
+      );
+
+      // Listen for authentication events
+      final completer = Completer<GoogleSignInAccount?>();
+
+      final sub = signIn.authenticationEvents.listen((event) {
+        if (event is GoogleSignInAuthenticationEventSignIn && !completer.isCompleted) {
+
+          completer.complete(event.user);
+        }
+      });
+
+
+      // Attempt silent sign-in, otherwise start interactive sign-in
+      await signIn.attemptLightweightAuthentication();
+      if (GoogleSignIn.instance.supportsAuthenticate()) {
+        await GoogleSignIn.instance.authenticate();
+      }
+
+      final GoogleSignInAccount? account = await completer.future;
+      await sub.cancel();
+
+      if (account == null) {
+        showCustomDialog(
+          context: context,
+          type: CustomDialogType.error,
+          title: "Google sign-in failed or canceled",
+        );
+        return;
+      }
+
+      // Get ID token from Google account
+      final authHeaders = await account.authorizationClient
+          .authorizationHeaders(['email', 'profile']);
+
+      if (authHeaders == null) {
+        showCustomDialog(
+          context: context,
+          type: CustomDialogType.error,
+          title: "Failed to get Google auth headers",
+        );
+        return;
+      }
+
+      final auth = await account.authentication;
+      final idToken = auth.idToken;
+
+      // Send token to your backend for login
+      final res = await http.post(
+        Uri.parse('$mainPoint/api/auth/google-login'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'token': idToken}), // ✅ matches backend
+      );
+
+      final jsonData = jsonDecode(res.body);
+      if (res.statusCode == 200 && jsonData["success"] == true) {
+        await TokenStorage.saveRefreshToken(jsonData["refreshToken"]);
+        await TokenStorage.saveToken(jsonData["accessToken"]).then((value) async {
+          await getUser(context: context);
+          await UserStorage.loadUser();
+        },);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', true);
+        await TokenStorage.loadToken();
+        showCustomDialog(
+            context: context,
+            type: CustomDialogType.success,
+            title: "${jsonData["message"]}",
+            desc: UserStorage.currentUser?.name,
+            okOnPress: () {
+              jsonData["status"] == "register" ?
+              goOff(this, ResetPasswordScreen(isFromRegister: true,)) : goOff(this, MainScreen());
+            });
+
+      } else {
+        showCustomDialog(
+          context: context,
+          type: CustomDialogType.error,
+          title: "Google login failed",
+        );
+      }
+    } catch (e) {
+      print("Google sign-in error: $e");
+      showCustomDialog(
+        context: context,
+        type: CustomDialogType.error,
+        title: "Google sign-in error: ${e.toString()}",
+      );
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
+  Future<void> signOutGoogle() async {
+    await _googleSignIn.disconnect();
+    googleUser.value = null;
+  }
   Future<bool> getUser({required BuildContext context}) async {
     final response = await apiRepository.fetchData(
       '$mainPoint/api/users/getProfile',
@@ -388,7 +523,6 @@ class AuthController extends GetxController {
     update();
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
-      print(jsonData["refreshToken"]);
       await TokenStorage.saveRefreshToken(jsonData["refreshToken"]);
       TokenStorage.saveToken(jsonData["accessToken"]).then(
         (value) async {
@@ -461,6 +595,7 @@ class AuthController extends GetxController {
 
   Future<void> resetPassword(
       {required String newPassword,
+      required bool isFromRegister,
       required BuildContext context}) async {
     isLoading = true;
     update();
@@ -481,6 +616,9 @@ class AuthController extends GetxController {
           type: CustomDialogType.success,
           title: "${jsonData["message"]}",
           okOnPress: () {
+            isFromRegister ?
+            goOff(this, MainScreen())
+            :
             goOff(this, LoginScreen());
           });
     } else {

@@ -26,7 +26,7 @@ class _MyOrderScreenState extends State<MyOrderScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
 
     final userId = UserStorage.currentUser?.id.toString() ?? '';
 
@@ -41,7 +41,7 @@ class _MyOrderScreenState extends State<MyOrderScreen>
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) return;
 
-      final statuses = ['pending', 'delivery', 'completed', 'cancelled'];
+      final statuses = ['pending', 'delivery', 'delivered', 'completed', 'cancelled'];
       final status = statuses[_tabController.index];
 
       Future.delayed(Duration.zero, () {
@@ -70,6 +70,7 @@ class _MyOrderScreenState extends State<MyOrderScreen>
         tabs: [
           Tab(text: "pending".tr, icon: Icon(Icons.watch_later_outlined),),
           Tab(text: "delivery".tr, icon: Icon(Icons.delivery_dining),),
+          Tab(text: "delivered".tr, icon: Icon(Icons.local_shipping),),
           Tab(text: "complete".tr, icon: Icon(Icons.done),),
           Tab(text: "cancel".tr, icon: Icon(Icons.cancel),),
         ],
@@ -79,6 +80,7 @@ class _MyOrderScreenState extends State<MyOrderScreen>
         children: const [
           OrdersTab(status: 'pending'),
           OrdersTab(status: 'delivery'),
+          OrdersTab(status: 'delivered'),
           OrdersTab(status: 'completed'),
           OrdersTab(status: 'cancelled'),
         ],

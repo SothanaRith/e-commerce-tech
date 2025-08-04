@@ -414,83 +414,86 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           child: AppText.title("reviews".tr),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(12.0),
+                          padding: const EdgeInsets.all(0.0),
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               children: List.generate(product.reviews?.length ?? 0,
                                       (index) {
                                     final review = product.reviews![index];
-                                    return Container(
-                                      padding: const EdgeInsets.all(12),
-                                      width: 300,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(18),
-                                        color: theme.secondaryHeaderColor,
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment
-                                            .start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              AppText.title1(
-                                                  review.user?.name ?? "Anonymous"),
-                                              Row(
-                                                children: List.generate(
-                                                  int.tryParse(
-                                                      review.rating ?? '0') ??
-                                                      0,
-                                                      (index) =>
-                                                  const Icon(
-                                                    Icons.star_rounded,
-                                                    size: 18,
-                                                    color: Colors.amber,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 10),
-                                          if(review.comment != '')...[
-                                            AppText.caption(review.comment ?? ""),
-                                            const SizedBox(height: 10),
-                                          ],
-                                          if (review.images != null &&
-                                              review.images!.isNotEmpty)
-                                            ListViewHorizontalWidget(
-                                              horizontalPadding: 4,
-                                              items: List.generate(
-                                                  review.images!.length, (i) {
-                                                final imageUrl = "${review
-                                                    .images![i]}";
-                                                return GestureDetector(
-                                                  onTap: () {
-                                                    goTo(
-                                                        this,
-                                                        FlexibleImagePreview(
-                                                            image: imageUrl));
-                                                  },
-                                                  child: Container(
-                                                    width: 60,
-                                                    height: 60,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                      BorderRadius.circular(5),
-                                                      image: DecorationImage(
-                                                        image: NetworkImage(
-                                                            safeImageUrl(imageUrl)),
-                                                        fit: BoxFit.cover,
-                                                      ),
+                                    return Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(12),
+                                        width: 300,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(18),
+                                          color: theme.secondaryHeaderColor,
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment
+                                              .start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                AppText.title1(
+                                                    review.user?.name ?? "Anonymous"),
+                                                Row(
+                                                  children: List.generate(
+                                                    int.tryParse(
+                                                        review.rating ?? '0') ??
+                                                        0,
+                                                        (index) =>
+                                                    const Icon(
+                                                      Icons.star_rounded,
+                                                      size: 18,
+                                                      color: Colors.amber,
                                                     ),
                                                   ),
-                                                );
-                                              }),
-                                              height: 60,
+                                                ),
+                                              ],
                                             ),
-                                        ],
+                                            const SizedBox(height: 10),
+                                            if(review.comment != '')...[
+                                              AppText.caption(review.comment ?? ""),
+                                              const SizedBox(height: 10),
+                                            ],
+                                            if (review.images != null &&
+                                                review.images!.isNotEmpty)
+                                              ListViewHorizontalWidget(
+                                                horizontalPadding: 4,
+                                                items: List.generate(
+                                                    review.images!.length, (i) {
+                                                  final imageUrl = "${review
+                                                      .images![i]}";
+                                                  return GestureDetector(
+                                                    onTap: () {
+                                                      goTo(
+                                                          this,
+                                                          FlexibleImagePreview(
+                                                              image: imageUrl));
+                                                    },
+                                                    child: Container(
+                                                      width: 60,
+                                                      height: 60,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                        BorderRadius.circular(5),
+                                                        image: DecorationImage(
+                                                          image: NetworkImage(
+                                                              safeImageUrl(imageUrl)),
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }),
+                                                height: 60,
+                                              ),
+                                          ],
+                                        ),
                                       ),
                                     );
                                   }),
@@ -810,11 +813,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    if (logic.selectedVariant != null &&
-                                        int.parse(logic.selectedVariant?.stock ?? '0') > logic.dialogQuantity)
+                                    if (logic.selectedVariant != null)
                                     {
-                                      logic.dialogQuantity++;
-                                      logic.update();
+                                      if (int.parse(logic.selectedVariant?.stock ?? '0') > logic.dialogQuantity) {
+                                        logic.dialogQuantity++;
+                                        logic.update();
+                                      }
                                     } else {
                                       Get.snackbar(
                                         'Missing Information',
@@ -822,7 +826,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         snackPosition: SnackPosition.BOTTOM,
                                         backgroundColor: Colors.red.withOpacity(0.5),
                                         colorText: Colors.white,
-                                        duration: Duration(seconds: 2),
+                                        duration: Duration(seconds: 1),
                                       );
                                     }
                                   },

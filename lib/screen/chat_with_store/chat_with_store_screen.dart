@@ -41,13 +41,15 @@ class _ChatWithStoreScreenState extends State<ChatWithStoreScreen> {
   @override
   void initState() {
     super.initState();
-    controller.setChatDetails(widget.senderId, widget.receiverId);
-    controller.connectSocket(scrollToBottom);
-    controller.getChatHistory(
-      senderId: widget.senderId,
-      receiverId: widget.receiverId,
-      context: context,
-    );
+    Future.delayed(Duration.zero, () async {
+      await controller.setChatDetails(widget.senderId, widget.receiverId);
+      await controller.connectSocket(scrollToBottom);
+      controller.getChatHistory(
+        senderId: widget.senderId,
+        receiverId: widget.receiverId,
+        context: context,
+      );
+    });
   }
 
   void scrollToBottom() {

@@ -20,7 +20,7 @@ class ChatWithStoreController extends GetxController {
   String? image;
 
   /// Set the chat details
-  void setChatDetails(String senderId, String receiverId) {
+  Future<void> setChatDetails(String senderId, String receiverId) async {
     currentUserId = senderId;
     currentReceiverId = receiverId;
     chatStore.update((chat) {
@@ -44,7 +44,7 @@ class ChatWithStoreController extends GetxController {
   }
 
   /// Connect to Socket.IO server and register current user
-  void connectSocket(Function scrollToBottomCallback) {
+  Future<void> connectSocket(Function scrollToBottomCallback) async {
     if (socket != null && socket!.connected) return; // Avoid reconnecting
 
     socket = IO.io(

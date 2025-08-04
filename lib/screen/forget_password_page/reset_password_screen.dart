@@ -9,7 +9,8 @@ import 'package:get/get.dart';
 import '../../widgets/custom_button_widget.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key});
+  final bool isFromRegister;
+  const ResetPasswordScreen({super.key, this.isFromRegister = false});
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
@@ -83,7 +84,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                               type: CustomDialogType.error,
                               title: "error_confirm_password_is_wrong_!".tr);
                         } else {
-                          authController.resetPassword(newPassword: passwordTextField.text, context: context);
+                          authController.resetPassword(newPassword: passwordTextField.text, context: context, isFromRegister: widget.isFromRegister);
                         }
                       },
                       buttonStyle: BtnStyle.action,
