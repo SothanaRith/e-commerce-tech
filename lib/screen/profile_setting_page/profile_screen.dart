@@ -1,6 +1,7 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce_tech/controllers/auth_controller.dart';
+import 'package:e_commerce_tech/controllers/cart_controller.dart';
 import 'package:e_commerce_tech/controllers/order_contoller.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
@@ -104,6 +105,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   ];
   final AuthController authController = Get.put(AuthController());
   final OrderController orderController = Get.put(OrderController());
+  CartController cartController = Get.put(CartController());
 
   User? user = UserStorage.currentUser;
 
@@ -224,6 +226,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    cartController.fetchTotalItemsInCart(context: context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -238,7 +247,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Container(
                     width: double.infinity,
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 16.0, top: 16, bottom: 16),
+                      padding: const EdgeInsets.only(
+                          left: 16.0, top: 16, bottom: 16),
                       child: Stack(
                         alignment: Alignment.centerLeft,
                         children: [
@@ -247,21 +257,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: Row(
                               children: [
                                 Container(
-                                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 18),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12),
                                     color: theme.primaryColor.withAlpha(30),
                                   ),
                                   child: SizedBox(
-                                    width: MediaQuery.sizeOf(context).width,
+                                    width: MediaQuery
+                                        .sizeOf(context)
+                                        .width,
                                     child: Row(
                                       children: [
                                         SizedBox(width: 22),
                                         Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment
+                                              .start,
                                           children: [
-                                            AppText.title1(user?.name ?? 'Rose BanSon'),
-                                            AppText.caption(user?.phone ?? 'Rose BanSon'),
+                                            AppText.title1(user?.name ?? 'N/A'),
+                                            AppText.caption(
+                                                user?.phone ?? 'N/A'),
                                           ],
                                         ),
                                         SizedBox(width: 16),
@@ -364,7 +379,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                border: Border.all(color: theme.primaryColor, width: 3),
+                                border: Border.all(
+                                    color: theme.primaryColor, width: 3),
                                 borderRadius: BorderRadius.circular(100),
                               ),
                               child: Container(
@@ -378,7 +394,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   backgroundImage: NetworkImage(
                                     safeImageUrl(
                                       logic.userProfile != null
-                                          ? logic.userProfile ?? 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740'
+                                          ? logic.userProfile ??
+                                          'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740'
                                           : user?.coverImage != null
                                           ? "${user!.coverImage}"
                                           : 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740',
@@ -395,7 +412,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: menuItemsTop.map((item) {
                           return GestureDetector(
                             onTap: () {
@@ -410,23 +427,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               }
                             },
                             child: Container(
-                              width: MediaQuery.sizeOf(context).width / 4.8,
+                              width: MediaQuery
+                                  .sizeOf(context)
+                                  .width / 4.8,
                               padding: EdgeInsets.symmetric(vertical: 12),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadiusGeometry.circular(12),
-                                color: theme.primaryColor.withAlpha(60)
+                                  borderRadius: BorderRadiusGeometry.circular(
+                                      12),
+                                  color: theme.primaryColor.withAlpha(60)
                               ),
                               child: Column(
                                 children: [
-                                  SvgPicture.asset(
-                                    item.iconName,
-                                    color: theme.primaryColor,
-                                    height: 28,
+                                  Stack(
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.only(
+                                            top: 5, right: 5, left: 5),
+                                        child: SvgPicture.asset(
+                                          item.iconName,
+                                          color: theme.primaryColor,
+                                          height: 28,
+                                        ),
+                                      ),
+                                        GetBuilder<CartController>(
+                                            builder: (logic) {
+                                              return  cartController.totalItemsInCart != 0 &&
+                                                  item.title == "Check out" ? Positioned(
+                                                right: 0,
+                                                top: 0,
+                                                child: Container(
+                                                  padding: const EdgeInsets.all(
+                                                      7),
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: Colors.red,
+                                                  ),
+                                                  child: AppText.caption(
+                                                    logic
+                                                        .totalItemsInCart
+                                                        .toString(),
+                                                    customStyle: TextStyle(
+                                                        color: Colors.white),),
+                                                ),
+                                              ) : SizedBox();
+                                            }),
+                                    ],
                                   ),
                                   SizedBox(height: 8,),
                                   AppText.caption(
                                     item.title,
-                                    customStyle: const TextStyle(fontWeight: FontWeight.bold),
+                                    customStyle: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   )
                                 ],
                               ),
