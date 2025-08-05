@@ -22,6 +22,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   String confirmPasswordError = "";
   TextEditingController passwordTextField = TextEditingController();
   TextEditingController confirmPasswordTextField = TextEditingController();
+
+  bool isValidPassword(String password) {
+    final passwordRegex =
+    RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$');
+    return passwordRegex.hasMatch(password);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,6 +79,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           setState(() {
                             passwordError = "password_is_require_!";
                           });
+                        } else if (!isValidPassword(passwordTextField.text)) {
+                          showCustomDialog(
+                              context: context,
+                              type: CustomDialogType.error,
+                              title: "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.".tr);
                         } else if (confirmPasswordTextField.text == "") {
                           setState(() {
                             confirmPasswordError =

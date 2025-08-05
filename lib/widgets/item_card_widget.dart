@@ -84,7 +84,7 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(120),
                         color: widget.product.isInWishlist == 'true'
-                            ? theme.primaryColor
+                            ? Colors.red.shade700
                             : Colors.white.withAlpha(150),
                       ),
                       child: widget.product.isInWishlist == 'true'

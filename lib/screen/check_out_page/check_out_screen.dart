@@ -6,6 +6,8 @@ import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/screen/payment/payment_method_screen.dart';
 import 'package:e_commerce_tech/screen/check_out_page/shipping_address_screen.dart';
 import 'package:e_commerce_tech/screen/product_details_page/product_details_screen.dart';
+import 'package:e_commerce_tech/screen/profile_setting_page/profile_screen.dart';
+import 'package:e_commerce_tech/screen/profile_setting_page/user_profile_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
@@ -264,11 +266,18 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                             builder: (context) => PaymentMethodScreen(
                               cart: logic.cartList, addressId: logicLocation.addressesDefault?.id ?? '',)
                         ),
+                      ) : UserStorage.currentUser?.phone == null ? showCustomDialog(
+                      context: context,
+                      type: CustomDialogType.info,
+                      title: "please_add_your_phone_number_before_checkout".tr,
+                      okOnPress: () {
+                        goTo(this, UserProfileScreen());
+                      }
                       ) : showCustomDialog(
                         context: context,
                         type: CustomDialogType.info,
                         title: "please_add_your_addresses".tr,
-                      );
+                      ) ;
                       // Proceed to payment or order confirmation
 
                     },

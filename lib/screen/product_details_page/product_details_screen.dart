@@ -48,10 +48,25 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   final WishlistController wishlistController = Get.put(WishlistController());
 
   final CartController cartController = Get.put(CartController());
+  final ScrollController _scrollController = ScrollController();
+  bool _showAppBarBackground = false;
 
   @override
   void initState() {
     super.initState();
+
+    _scrollController.addListener(() {
+      if (_scrollController.offset > 100 && !_showAppBarBackground) {
+        setState(() {
+          _showAppBarBackground = true;
+        });
+      } else if (_scrollController.offset <= 100 && _showAppBarBackground) {
+        setState(() {
+          _showAppBarBackground = false;
+        });
+      }
+    });
+
     Future.delayed(Duration.zero, () async {
       await productController.getProductById(
         context: context,
@@ -75,6 +90,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             child: Stack(
               children: [
                 SingleChildScrollView(
+                  controller: _scrollController,
                   physics: const BouncingScrollPhysics(),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,72 +187,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 ),
                               ),
                             ),
-                            Positioned(
-                              top: 50,
-                              right: 25,
-                              child: GestureDetector(
-                                onTap: () {
-                                  if (product.isInWishlist == 'true') {
-                                    wishlistController
-                                        .deleteWishlist(
-                                        context: context,
-                                        userId: UserStorage.currentUser?.id
-                                            .toString() ??
-                                            '',
-                                        productId: product.id ?? '')
-                                        .then(
-                                          (value) {
-                                        productController.getProductById(
-                                            context: context,
-                                            id: widget.id,
-                                            userId:
-                                            UserStorage.currentUser?.id ??
-                                                "");
-                                      },
-                                    );
-                                  } else {
-                                    wishlistController
-                                        .createWishlist(
-                                        context: context,
-                                        userId: UserStorage.currentUser?.id
-                                            .toString() ??
-                                            '',
-                                        productId: product.id ?? '')
-                                        .then((value) {
-                                      productController.getProductById(
-                                          context: context,
-                                          id: widget.id,
-                                          userId: UserStorage.currentUser?.id ??
-                                              "");
-                                    });
-                                  }
-                                },
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: product.isInWishlist == 'true'
-                                            ? theme.primaryColor
-                                            : Colors.white.withAlpha(150),
-                                      ),
-                                      child: product.isInWishlist == 'true'
-                                          ? SvgPicture.asset(
-                                        "assets/images/icons/heart.svg",
-                                        width: 20,
-                                        color: Colors.white,
-                                      )
-                                          : SvgPicture.asset(
-                                        "assets/images/icons/heart.svg",
-                                        width: 20,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 6),
-                                  ],
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -255,6 +205,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     crossAxisAlignment:
                                     CrossAxisAlignment.start,
                                     children: [
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      AppText.h3(
+                                        product.name ?? "",
+                                        maxLines: 2,
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
                                       GestureDetector(
                                         onTap: () {
                                           goTo(
@@ -268,6 +228,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                                       ''));
                                         },
                                         child: Container(
+                                          width: MediaQuery.sizeOf(context).width / 2.1,
                                           decoration: BoxDecoration(
                                               color: theme.primaryColor,
                                               borderRadius:
@@ -281,7 +242,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                               Row(
                                                 children: [
                                                   Padding(
-                                                    padding: const EdgeInsets.all(4.0),
+                                                    padding: const EdgeInsets.all(5.0),
                                                     child: ClipRRect(
                                                       borderRadius: BorderRadiusGeometry.circular(100),
                                                       child: CachedNetworkImage(
@@ -298,7 +259,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                                         errorWidget: (context, url,
                                                             error) =>
                                                         const Icon(Icons.error),
-                                                        height: 40,
+                                                        height: 20,
                                                         fit: BoxFit.cover,
                                                       ),
                                                     ),
@@ -311,12 +272,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                                         '',
                                                     customStyle: TextStyle(
                                                         color: theme
-                                                            .secondaryHeaderColor),
+                                                            .secondaryHeaderColor, fontSize: 9),
                                                   ),
                                                 ],
                                               ),
                                               Padding(
-                                                padding: const EdgeInsets.only(right: 8.0),
+                                                padding: const EdgeInsets.only(right: 4.0),
                                                 child: Icon(
                                                   Icons.navigate_next_outlined,
                                                   color:
@@ -326,13 +287,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                             ],
                                           ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      AppText.h3(
-                                        product.name ?? "",
-                                        maxLines: 2,
                                       ),
                                       SizedBox(
                                         height: 10,
@@ -543,17 +497,155 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 ),
                 // Back Button
                 Positioned(
-                  top: 50,
-                  left: 25,
-                  child: InkWell(
-                    onTap: () => {widget.onBackAction?.call(), popBack(this)},
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: theme.secondaryHeaderColor.withAlpha(90),
+                  top: 0,
+                  child: Container(
+                    width: MediaQuery.sizeOf(context).width,
+                    decoration: BoxDecoration(
+                      color: _showAppBarBackground
+                          ? Colors.white.withAlpha(195)
+                          : Colors.transparent,
+                      boxShadow: _showAppBarBackground
+                          ? [BoxShadow(color: Colors.black12, blurRadius: 4)]
+                          : [],
+                    ),
+                    child: SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0, left: 12, right: 12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            InkWell(
+                              onTap: () => { widget.onBackAction?.call(), popBack(this)},
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: theme.secondaryHeaderColor.withAlpha(90),
+                                ),
+                                child: const Icon(Icons.arrow_back),
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                GestureDetector(
+                                    onTap: (){
+                                      goTo(this, ChatWithStoreScreen(senderId: UserStorage.currentUser?.id ?? '', receiverId: "3"));
+                                    },
+                                    child: Container(
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.white.withAlpha(150),),
+                                        padding: EdgeInsets.all(8),
+                                        child: Icon(CupertinoIcons.chat_bubble_fill,
+                                            color: theme.primaryColor))),
+                                SizedBox(width: 8,),
+                                GetBuilder<CartController>(builder: (cartLogic) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      goTo(this, CheckOutScreen());
+                                    },
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                              color: Colors.white.withAlpha(150),
+                                              shape: BoxShape.circle
+                                          ),
+                                          margin: EdgeInsets.only(left: 5),
+                                          padding:
+                                          EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                                          child: Icon(Icons.shopping_cart_rounded,
+                                              color: theme.primaryColor),
+                                        ),
+                                        Positioned(
+                                          top: -5,
+                                          left: 0,
+                                          child: Container(
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                      width: 1, color: Colors.transparent),
+                                                  color: Colors.red),
+                                              padding: EdgeInsets.all(6),
+                                              child: AppText.body1(
+                                                cartLogic.totalItemsInCart.toString(),
+                                                customStyle:
+                                                TextStyle(color: theme.secondaryHeaderColor),
+                                              )),
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                }),
+                                SizedBox(width: 8,),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (product.isInWishlist == 'true') {
+                                      wishlistController
+                                          .deleteWishlist(
+                                          context: context,
+                                          userId: UserStorage.currentUser?.id
+                                              .toString() ??
+                                              '',
+                                          productId: product.id ?? '')
+                                          .then(
+                                            (value) {
+                                          productController.getProductById(
+                                              context: context,
+                                              id: widget.id,
+                                              userId:
+                                              UserStorage.currentUser?.id ??
+                                                  "");
+                                        },
+                                      );
+                                    } else {
+                                      wishlistController
+                                          .createWishlist(
+                                          context: context,
+                                          userId: UserStorage.currentUser?.id
+                                              .toString() ??
+                                              '',
+                                          productId: product.id ?? '')
+                                          .then((value) {
+                                        productController.getProductById(
+                                            context: context,
+                                            id: widget.id,
+                                            userId: UserStorage.currentUser?.id ??
+                                                "");
+                                      });
+                                    }
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: product.isInWishlist == 'true'
+                                              ? Colors.red.shade700
+                                              : Colors.white.withAlpha(150),
+                                        ),
+                                        child: product.isInWishlist == 'true'
+                                            ? SvgPicture.asset(
+                                          "assets/images/icons/heart.svg",
+                                          width: 20,
+                                          color: Colors.white,
+                                        )
+                                            : SvgPicture.asset(
+                                          "assets/images/icons/heart.svg",
+                                          width: 20,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 6),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                      child: const Icon(Icons.arrow_back),
                     ),
                   ),
                 ),
@@ -576,65 +668,29 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               )
             ]),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          spacing: 8,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          spacing: 6,
           children: [
-            SizedBox(width: 6,),
-            GestureDetector(
-                onTap: (){
-                  goTo(this, ChatWithStoreScreen(senderId: UserStorage.currentUser?.id ?? '', receiverId: "3"));
+            Container(
+              child: CustomButtonWidget(
+                buttonStyle: BtnStyle.none,
+                title: "buy_now".tr,
+                action: () {
+                  cartController.selectedVariant = null;
+                  cartController.dialogQuantity = 0;
+                  cartController.update();
+                  showBottomBar(product: productController.product);
                 },
-                child: Container(
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border:
-                        Border.all(width: 1, color: theme.primaryColor)),
-                    padding: EdgeInsets.all(8),
-                    child: Icon(CupertinoIcons.chat_bubble_fill,
-                        color: theme.primaryColor))),
-            GetBuilder<CartController>(builder: (cartLogic) {
-              return GestureDetector(
-                onTap: () {
-                  goTo(this, CheckOutScreen());
-                },
-                child: Stack(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                          border:
-                          Border.all(width: 1, color: theme.highlightColor),
-                          shape: BoxShape.circle),
-                      margin: EdgeInsets.only(left: 5),
-                      padding:
-                      EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                      child: Icon(Icons.shopping_cart_rounded,
-                          color: theme.highlightColor),
-                    ),
-                    Positioned(
-                      top: -6,
-                      left: 0,
-                      child: Container(
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                  width: 1, color: theme.secondaryHeaderColor),
-                              color: Colors.red),
-                          padding: EdgeInsets.all(6),
-                          child: AppText.body1(
-                            cartLogic.totalItemsInCart.toString(),
-                            customStyle:
-                            TextStyle(color: theme.secondaryHeaderColor),
-                          )),
-                    )
-                  ],
-                ),
-              );
-            }),
-            Spacer(),
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width / 2.5,
+              ),
+            ),
             Container(
               child: CustomButtonWidget(
                 buttonStyle: BtnStyle.action,
-                title: "Add to cart",
+                title: "add_to_cart".tr,
                 action: () {
                   cartController.selectedVariant = null;
                   cartController.dialogQuantity = 0;
@@ -907,7 +963,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             return GestureDetector(
                               onTap: () {
                                 logic.selectedVariant = item;
-                                logic.dialogQuantity = 0;
+                                logic.dialogQuantity = 1;
                                 logic.update();
                               },
                               child: Padding(

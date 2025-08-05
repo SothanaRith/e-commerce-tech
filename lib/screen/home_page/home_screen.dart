@@ -241,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(120),
                                             color: product.isInWishlist == 'true'
-                                                ? theme.primaryColor
+                                                ? Colors.red.shade700
                                                 : Colors.white.withAlpha(180),
                                           ),
                                           child: product.isInWishlist == 'true'

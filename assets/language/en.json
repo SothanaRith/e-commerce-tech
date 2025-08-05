@@ -145,5 +145,8 @@
   "from_your_cart_?": "from your cart?",
   "this_address_is_already_set_as_default": "This address is already set as default",
   "contact_us": "Contact us",
-  "faq": "FAQ"
+  "faq": "FAQ",
+  "buy_now": "Buy Now",
+  "add_to_cart": "Add to cart",
+  "please_add_your_phone_number_before_checkout": "Please add your phone number before checkout"
 }
