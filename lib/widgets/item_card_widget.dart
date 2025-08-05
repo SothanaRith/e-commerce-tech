@@ -85,7 +85,7 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                         borderRadius: BorderRadius.circular(120),
                         color: widget.product.isInWishlist == 'true'
                             ? Colors.red.shade700
-                            : Colors.white.withAlpha(150),
+                            : theme.secondaryHeaderColor.withAlpha(450),
                       ),
                       child: widget.product.isInWishlist == 'true'
                           ? SvgPicture.asset(

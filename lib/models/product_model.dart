@@ -130,6 +130,7 @@ class Variants {
   String? sku;
   String? price;
   String? stock;
+  String? isActive;
   String? discountType;
   String? discountValue;
   String? isPromotion;
@@ -143,6 +144,7 @@ class Variants {
         this.sku,
         this.price,
         this.stock,
+        this.isActive,
         this.title,
         this.imageUrl,
         this.variantAttributes,
@@ -156,6 +158,7 @@ class Variants {
     sku = json['sku'].toString();
     price = json['price'].toString();
     stock = json['stock'].toString();
+    isActive = json['isActive'].toString();
     title = json['title'].toString();
     isPromotion = json['isPromotion'].toString();
     discountValue = json['discountValue'].toString();
@@ -176,6 +179,7 @@ class Variants {
     data['sku'] = sku;
     data['price'] = price;
     data['stock'] = stock;
+    data['isActive'] = isActive;
     data['title'] = title;
     data['isPromotion'] = isPromotion;
     data['discountValue'] = discountValue;

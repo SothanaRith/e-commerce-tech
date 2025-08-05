@@ -97,11 +97,11 @@ class _MainScreenState extends State<MainScreen> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(40),
                           child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 15),
+                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 15),
                             child: Container(
                               height: 60,
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.1), // translucent base color
+                                color: Colors.grey.withOpacity(0.7), // translucent base color
                                 borderRadius: BorderRadius.circular(40),
                                 boxShadow: [
                                   BoxShadow(color: theme.secondaryHeaderColor.withAlpha(30), blurRadius: 10),
@@ -162,7 +162,7 @@ class _MainScreenState extends State<MainScreen> {
             curve: Curves.easeOutBack,
             child: Icon(
               icon,
-              color: isActive ? theme.primaryColor : Colors.grey.shade800,
+              color: isActive ? theme.primaryColor : theme.secondaryHeaderColor,
               size: 26,
             ),
           ),
@@ -175,7 +175,7 @@ class _MainScreenState extends State<MainScreen> {
               label,
               key: ValueKey('active_$label'),
               customStyle: TextStyle(
-                color: Colors.grey.shade800,
+                color: theme.secondaryHeaderColor,
                 fontWeight: FontWeight.bold,
                 fontSize: 10,
               ),

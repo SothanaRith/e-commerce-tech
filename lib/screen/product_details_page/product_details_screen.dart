@@ -962,21 +962,50 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           children: product.variants!.map((item) {
                             return GestureDetector(
                               onTap: () {
+                                if (item.isActive == "false" || int.parse(item.stock ?? '0') <= 0) {
+                                  return;
+                                }
                                 logic.selectedVariant = item;
                                 logic.dialogQuantity = 1;
                                 logic.update();
                               },
                               child: Padding(
-                                padding: EdgeInsets.only(top: product
-                                    .variants?[0].title == item.title ? 10 : 0,
-                                    bottom: product.variants?.last.title !=
-                                        item.title ? 10 : 10, left: 12),
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadiusGeometry.circular(14),
-                                      border: Border.all(width: 2, color: logic.selectedVariant == item ? theme.primaryColor : Colors.transparent)
+                                padding: EdgeInsets.only(
+                                  top: product.variants?[0].title == item.title ? 10 : 0,
+                                  bottom: product.variants?.last.title != item.title ? 10 : 10,
+                                  left: 12,
+                                ),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(14),
+                                        border: Border.all(
+                                          width: 2,
+                                          color: logic.selectedVariant == item
+                                              ? theme.primaryColor
+                                              : Colors.transparent,
+                                        ),
+                                      ),
+                                      child: VariantWidget(
+                                        variants: item,
+                                        isSelected: logic.selectedVariant == item,
+                                      ),
                                     ),
-                                    child: VariantWidget(variants: item, isSelected: logic.selectedVariant == item)),
+                                    if (item.isActive == "false" || int.parse(item.stock ?? '0') <= 0)
+                                      Positioned.fill(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: theme.secondaryHeaderColor.withOpacity(0.5),
+                                            borderRadius: BorderRadius.circular(14),
+                                          ),
+                                          child: Center(
+                                            child: AppText.title1("not_available".tr),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
                               ),
                             );
                           }).toList(),
