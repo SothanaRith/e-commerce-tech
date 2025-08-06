@@ -212,7 +212,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                           child: ItemSelectWidget(
                             imageUrl: variant?.imageUrl ?? '',
                             title: "${product.name}",
-                            prices: calculateFinalPrice(double.parse(variant?.price ?? ''), variant?.discountType, double.parse(variant?.discountValue ?? ''), variant?.isPromotion ?? 'false'),
+                            prices: calculateFinalPrice(double.parse(variant?.price ?? '0'), variant?.discountType, double.parse(variant?.discountValue ?? '0'), variant?.isPromotion ?? 'false'),
                             onTap: () {
                               goTo(this, ProductDetailsScreen(id: product.id ?? ''));
                             },
