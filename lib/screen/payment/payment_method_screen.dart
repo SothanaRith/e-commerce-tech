@@ -52,7 +52,6 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      print("object is resumed");
       if (PaymentStorage.md5 != null) {
         if (PaymentStorage.md5 != '') {
           Future.delayed(Duration.zero, () {
@@ -94,7 +93,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
   double get totalPrice {
     double total = 0;
     for (var item in widget.cart) {
-      final price = double.tryParse(item.priceAtPurchase ?? '') ?? 0;
+      double price = double.tryParse(calculateFinalPrice(double.parse(item.variant?.price ?? '0'), item.variant?.discountType, double.parse(item.variant?.discountValue ?? '0'), item.variant?.isPromotion ?? 'false')) ?? 0.0;
       final quantity = int.tryParse(item.quantity ?? '') ?? 0;
       total += price * quantity;
     }

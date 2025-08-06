@@ -127,97 +127,112 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                       final variant = item.variant;
                       if (product != null) {
                         int quantity = int.tryParse(item.quantity ?? '') ?? 0;
-                        return Dismissible(
-                          key: Key(item.id.toString()),
-                          direction: DismissDirection.endToStart,
-                          background: Container(
-                            color: Colors.red,
-                            alignment: Alignment.centerRight,
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: const Icon(Icons.delete, color: Colors.white),
-                          ),
-                          confirmDismiss: (direction) async {
-                            // Show confirmation dialog
-                            return await showDialog<bool>(
-                              context: context,
-                              builder: (context) => Dialog(
-                                insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(24),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      CircleAvatar(
-                                        backgroundColor: Colors.orange.withOpacity(0.1),
-                                        radius: 28,
-                                        child: Icon(Icons.dangerous_rounded, color: Colors.orange, size: 32),
-                                      ),
-                                      const SizedBox(height: 16),
-                                      Text(
-                                        'confirm_delete'.tr,
-                                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        '${"are_you_sure_you_want_to_delete".tr} "${product
-                                            .name}" ${"from your cart?".tr}',
-                                        style: const TextStyle(color: Colors.black54),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                        const SizedBox(height: 24),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: OutlinedButton(
-                                              style: OutlinedButton.styleFrom(
-                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                              ),
-                                              onPressed: () {
-                                                Navigator.of(context).pop(false);
-                                              },
-                                              child: AppText.body2("cancel".tr, customStyle: TextStyle(color: theme.primaryColor),),
+                        return Row(
+                          children: [
+                            Checkbox(
+                              value: item.isSelected,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  item.isSelected = value ?? false;
+                                });
+                              },
+                              activeColor: theme.primaryColor,
+                            ),
+                            Expanded(
+                              child: Dismissible(
+                                key: Key(item.id.toString()),
+                                direction: DismissDirection.endToStart,
+                                background: Container(
+                                  color: Colors.red,
+                                  alignment: Alignment.centerRight,
+                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                  child: const Icon(Icons.delete, color: Colors.white),
+                                ),
+                                confirmDismiss: (direction) async {
+                                  // Show confirmation dialog
+                                  return await showDialog<bool>(
+                                    context: context,
+                                    builder: (context) => Dialog(
+                                      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+                                      backgroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(24),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            CircleAvatar(
+                                              backgroundColor: Colors.orange.withOpacity(0.1),
+                                              radius: 28,
+                                              child: Icon(Icons.dangerous_rounded, color: Colors.orange, size: 32),
                                             ),
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Expanded(
-                                            child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.orange,
-                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                              ),
-                                              onPressed: () {
-                                                Navigator.of(context).pop(true);
-                                              },
-                                              child: AppText.body2("confirm".tr, customStyle: TextStyle(color: theme.secondaryHeaderColor),),
+                                            const SizedBox(height: 16),
+                                            Text(
+                                              'confirm_delete'.tr,
+                                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                                             ),
-                                          ),
-                                        ],
-                                      ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              '${"are_you_sure_you_want_to_delete".tr} "${product
+                                                  .name}" ${"from your cart?".tr}',
+                                              style: const TextStyle(color: Colors.black54),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                              const SizedBox(height: 24),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: OutlinedButton(
+                                                    style: OutlinedButton.styleFrom(
+                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop(false);
+                                                    },
+                                                    child: AppText.body2("cancel".tr, customStyle: TextStyle(color: theme.primaryColor),),
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 12),
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor: Colors.orange,
+                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop(true);
+                                                    },
+                                                    child: AppText.body2("confirm".tr, customStyle: TextStyle(color: theme.secondaryHeaderColor),),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
 
-                                    ],
-                                  ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ) ??
+                                      false; // Return false if dialog dismissed by other means
+                                },
+                                onDismissed: (direction) {
+                                  cartController.removeItemToCart(context: context,
+                                      productId: product.id ?? '',
+                                      userId: UserStorage.currentUser?.id.toString() ??
+                                          '');
+                                },
+                                child: ItemSelectWidget(
+                                  imageUrl: variant?.imageUrl ?? '',
+                                  title: "${product.name}",
+                                  prices: calculateFinalPrice(double.parse(variant?.price ?? '0'), variant?.discountType, double.parse(variant?.discountValue ?? '0'), variant?.isPromotion ?? 'false'),
+                                  onTap: () {
+                                    goTo(this, ProductDetailsScreen(id: product.id ?? ''));
+                                  },
+                                  countNumber: quantity.toString(), variantTitle: variant?.title ?? '', discount: variant?.isPromotion == 'false' ? '' : "${variant?.discountValue} ${variant?.discountType == 'fixed' ? '\$' : '%'}",
                                 ),
                               ),
-                            ) ??
-                                false; // Return false if dialog dismissed by other means
-                          },
-                          onDismissed: (direction) {
-                            cartController.removeItemToCart(context: context,
-                                productId: product.id ?? '',
-                                userId: UserStorage.currentUser?.id.toString() ??
-                                    '');
-                          },
-                          child: ItemSelectWidget(
-                            imageUrl: variant?.imageUrl ?? '',
-                            title: "${product.name}",
-                            prices: calculateFinalPrice(double.parse(variant?.price ?? '0'), variant?.discountType, double.parse(variant?.discountValue ?? '0'), variant?.isPromotion ?? 'false'),
-                            onTap: () {
-                              goTo(this, ProductDetailsScreen(id: product.id ?? ''));
-                            },
-                            countNumber: quantity.toString(), variantTitle: variant?.title ?? '', discount: variant?.isPromotion == 'false' ? '' : "${variant?.discountValue} ${variant?.discountType == 'fixed' ? '\$' : '%'}",
-                          ),
+                            ),
+                          ],
                         );
                       } else {
                         return const SizedBox();
@@ -235,8 +250,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         builder: (logic) {
           double totalPrice = 0;
 
-          for (var item in logic.cartList) {
-            double price = double.tryParse(item.priceAtPurchase ?? '') ?? 0.0;
+          for (var item in logic.cartList.where((item) => item.isSelected ?? false)) {
+            double price = double.tryParse(calculateFinalPrice(double.parse(item.variant?.price ?? '0'), item.variant?.discountType, double.parse(item.variant?.discountValue ?? '0'), item.variant?.isPromotion ?? 'false')) ?? 0.0;
             int quantity = int.tryParse(item.quantity ?? '') ?? 0;
             totalPrice += price * quantity;
           }
@@ -259,12 +274,16 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                 GetBuilder<LocationController>(builder: (logicLocation) {
                   return logic.cartList.isNotEmpty ? ElevatedButton(
                     onPressed: () {
-                      print(logicLocation.addressesDefault?.id);
-                      logicLocation.addressesDefault?.id != null && logicLocation.addressesDefault?.id != '' ? Navigator.push(
+                      final selectedItems = logic.cartList.where((item) => item.isSelected ?? false).toList();
+                      logicLocation.addressesDefault?.id != null && logicLocation.addressesDefault?.id != '' ? selectedItems.isEmpty ? showCustomDialog(
+                        context: context,
+                        type: CustomDialogType.info,
+                        title: "please_select_items_to_checkout".tr,
+                      ) : Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => PaymentMethodScreen(
-                              cart: logic.cartList, addressId: logicLocation.addressesDefault?.id ?? '',)
+                              cart: logic.cartList.where((item) => item.isSelected ?? false).toList(), addressId: logicLocation.addressesDefault?.id ?? '',)
                         ),
                       ) : UserStorage.currentUser?.phone == null ? showCustomDialog(
                       context: context,
@@ -279,7 +298,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                         title: "please_add_your_addresses".tr,
                       ) ;
                       // Proceed to payment or order confirmation
-
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: theme.primaryColor,

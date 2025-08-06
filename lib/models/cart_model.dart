@@ -11,6 +11,7 @@ class CartModel {
   String? createdAt;
   String? updatedAt;
   Variants? variant;
+  bool? isSelected;
   ProductModel? product;
 
   CartModel({
@@ -22,6 +23,7 @@ class CartModel {
     this.quantity,
     this.createdAt,
     this.updatedAt,
+    this.isSelected = false,
     this.product,
     this.variant,
   });
@@ -36,6 +38,7 @@ class CartModel {
     quantity = json['quantity'].toString();
     createdAt = formatDateString(json['createdAt'].toString());
     updatedAt = formatDateString(json['updatedAt'].toString());
+    isSelected = false;
     product = json['Product'] != null ? ProductModel.fromJson(json['Product']) : null;
   }
 

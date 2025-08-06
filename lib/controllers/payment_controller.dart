@@ -266,6 +266,7 @@ class PaymentController extends GetxController {
     update();
     try {
       final expire = DateTime.now().millisecondsSinceEpoch + 3600000;
+      final rate = PaymentStorage.rate ?? 4000;
       final info = IndividualInfo(
           // bakongAccountId: 'un_virak3@aclb',
           bakongAccountId: 'sothanarith_heang1@aclb',
