@@ -668,25 +668,25 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               )
             ]),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.end,
           spacing: 6,
           children: [
-            Container(
-              child: CustomButtonWidget(
-                buttonStyle: BtnStyle.none,
-                title: "buy_now".tr,
-                action: () {
-                  cartController.selectedVariant = null;
-                  cartController.dialogQuantity = 0;
-                  cartController.update();
-                  showBottomBar(product: productController.product);
-                },
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width / 2.5,
-              ),
-            ),
+            // Container(
+            //   child: CustomButtonWidget(
+            //     buttonStyle: BtnStyle.none,
+            //     title: "buy_now".tr,
+            //     action: () {
+            //       cartController.selectedVariant = null;
+            //       cartController.dialogQuantity = 0;
+            //       cartController.update();
+            //       showBottomBar(product: productController.product);
+            //     },
+            //     width: MediaQuery
+            //         .of(context)
+            //         .size
+            //         .width / 2.5,
+            //   ),
+            // ),
             Container(
               child: CustomButtonWidget(
                 buttonStyle: BtnStyle.action,
