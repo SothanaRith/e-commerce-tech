@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_commerce_tech/controllers/cart_controller.dart';
 import 'package:e_commerce_tech/controllers/lacation_controller.dart';
@@ -224,6 +226,29 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                 child: ItemSelectWidget(
                                   imageUrl: variant?.imageUrl ?? '',
                                   title: "${product.name}",
+                                  count: (isCount) {
+                                    if (isCount) {
+                                      // Increment case
+                                      if (int.parse(variant?.stock ?? '0') < quantity) {
+                                        return; // Can't increase beyond stock
+                                      }
+                                      quantity++;
+                                    } else {
+                                      // Decrement case
+                                      if (quantity <= 1) {
+                                        return; // Can't go below 1
+                                      }
+                                      quantity--;
+                                    }
+                                    logic.addItemToCart(
+                                      context: context,
+                                      userId: UserStorage.currentUser?.id ?? '',
+                                      variant: variant!,
+                                      productId: variant.productId ?? '',
+                                      quantity: quantity.toString(),
+                                      haveBack: false,
+                                    );
+                                  },
                                   prices: calculateFinalPrice(double.parse(variant?.price ?? '0'), variant?.discountType, double.parse(variant?.discountValue ?? '0'), variant?.isPromotion ?? 'false'),
                                   onTap: () {
                                     goTo(this, ProductDetailsScreen(id: product.id ?? ''));
@@ -235,7 +260,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                           ],
                         );
                       } else {
-                        return const SizedBox();
+                        return const SizedBox();   
                       }
                     }).toList(),
                   ),

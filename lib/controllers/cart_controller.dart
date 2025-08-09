@@ -106,15 +106,17 @@ class CartController extends GetxController {
         required Variants variant,
         required String productId,
         required String quantity,
+        bool haveBack = true,
       }) async {
-
     if (int.parse(variant.stock ?? "0") < int.parse(quantity)) {
-      showCustomDialog(
-          context: context,
-          type: CustomDialogType.info,
-          title: "product is out of stock or have no enough",
-          okOnPress: () async {
-          });
+      if (haveBack) {
+        showCustomDialog(
+            context: context,
+            type: CustomDialogType.info,
+            title: "product is out of stock or have no enough",
+            okOnPress: () async {
+            });
+      }
       return;
     }
     final response = await apiRepository.postData(
@@ -129,14 +131,18 @@ class CartController extends GetxController {
     );
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
-      showCustomDialog(
-          context: context,
-          type: CustomDialogType.success,
-          title: "${jsonData["message"]}",
-          okOnPress: () async {
-            Navigator.pop(context);
-            await fetchAllCart(context: context, userId: UserStorage.currentUser?.id ?? '');
-          });
+      if (haveBack) {
+        showCustomDialog(
+            context: context,
+            type: CustomDialogType.success,
+            title: "${jsonData["message"]}",
+            okOnPress: () async {
+              Navigator.pop(context);
+              await fetchAllCart(context: context, userId: UserStorage.currentUser?.id ?? '');
+            });
+      } else {
+        await fetchAllCart(context: context, userId: UserStorage.currentUser?.id ?? '');
+      }
     } else {
       showCustomDialog(
           context: context,

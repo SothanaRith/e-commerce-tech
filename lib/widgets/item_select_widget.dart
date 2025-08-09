@@ -84,12 +84,11 @@ class ItemSelectWidget extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppText.title1(title),
+            AppText.title2(title),
             AppText.body2("( $variantTitle )"),
-            SizedBox(height: 4,),
           ],
         ),
-        SizedBox(height: 6,),
+        SizedBox(height: 4,),
         Row(
           children: [
             AppText.title1("\$ $prices", customStyle: TextStyle(color: theme.primaryColor)),
@@ -111,7 +110,7 @@ class ItemSelectWidget extends StatelessWidget {
               )
           ],
         ),
-        SizedBox(height: 8,),
+        SizedBox(height: 4,),
         if(actionTitle != null)
         InkWell(
           onTap: onAction ?? () {
@@ -136,15 +135,17 @@ class ItemSelectWidget extends StatelessWidget {
   }
 
   Widget _buildCounter() {
-    return Row(
-      children: [
-        _countButton("-", false, theme.highlightColor),
-        SizedBox(width: 12),
-        AppText.title(countNumber),
-        SizedBox(width: 12),
-        _countButton("+", true, theme.primaryColor,
-            textColor: theme.secondaryHeaderColor),
-      ],
+    return Flexible(
+      child: Row(
+        children: [
+          _countButton("-", false, theme.highlightColor),
+          SizedBox(width: 8),
+          AppText.title(countNumber),
+          SizedBox(width: 8),
+          _countButton("+", true, theme.primaryColor,
+              textColor: theme.secondaryHeaderColor),
+        ],
+      ),
     );
   }
 
@@ -153,14 +154,14 @@ class ItemSelectWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () => count?.call(isIncrement),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 0),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: bgColor,
+          borderRadius: BorderRadius.circular(100),
+          border: Border.all(color: bgColor, width: 1.5),
         ),
-        child: AppText.title(
+        child: AppText.title2(
           text,
-          customStyle: textColor != null ? TextStyle(color: textColor) : null,
+          customStyle: TextStyle(color: bgColor),
         ),
       ),
     );
@@ -187,8 +188,8 @@ class ItemSelectWidget extends StatelessWidget {
                 child: CachedNetworkImage(
                   imageUrl:
                   safeImageUrl( imageUrl.isEmpty ? '' : imageUrl),
-                  width: 90.w,
-                  height: 90.w,
+                  width: 70.w,
+                  height: 70.w,
                   fit: BoxFit.cover,
                   placeholder: (context, url) =>
                       Center(
@@ -200,18 +201,15 @@ class ItemSelectWidget extends StatelessWidget {
                 ),
               ),
             ],
-            SizedBox(
-              width: 12,
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
+            SizedBox(width: 10.w),
+            Flexible(
               child: Column(
                 children: [
                   Row(
                     children: [
-                      Expanded(child: _buildPriceSection()),
+                      Expanded(flex: 2,child: _buildPriceSection()),
                       if (count != null)
-                        Expanded(child: _buildCounter())
+                        Flexible(child: _buildCounter())
                       else
                         Container(
                           padding: EdgeInsets.all(8),
