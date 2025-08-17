@@ -112,10 +112,10 @@ class _MainScreenState extends State<MainScreen> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                                   children: [
-                                    _buildNavItem(CupertinoIcons.house_fill, "Home", 0),
-                                    _buildNavItem(CupertinoIcons.search_circle_fill, "Search", 1),
-                                    _buildNavItem(CupertinoIcons.square_favorites_alt_fill, "Wishlist", 2),
-                                    _buildNavItem(CupertinoIcons.person_alt_circle, "Profile", 3),
+                                    _buildNavItem(CupertinoIcons.house_fill, "home".tr, 0),
+                                    _buildNavItem(CupertinoIcons.search_circle_fill, "search".tr, 1),
+                                    _buildNavItem(CupertinoIcons.square_favorites_alt_fill, "wish_list".tr, 2),
+                                    _buildNavItem(CupertinoIcons.person_alt_circle, "profile".tr, 3),
                                   ],
                                 ),
                               ),

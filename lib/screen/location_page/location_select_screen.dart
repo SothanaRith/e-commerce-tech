@@ -77,7 +77,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
   Future<void> _setLocation(LatLng latLng) async {
     try {
       setState(() => _selectedLatLng = latLng);
-      _mapController?.animateCamera(CameraUpdate.newLatLngZoom(latLng, 15));
+      _mapController?.animateCamera(CameraUpdate.newLatLngZoom(latLng, 4));
       final placemarks = await placemarkFromCoordinates(
           latLng.latitude, latLng.longitude);
       final place = placemarks.first;
@@ -211,7 +211,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
             CustomTextField(
               label: "find_your_location".tr,
               controller: _searchController,
-              rightIcon: Icon(Icons.search, color: theme.primaryColor),
+              // rightIcon: Icon(Icons.search, color: theme.primaryColor),
             ),
             if (_suggestions.isNotEmpty)
               Material(
