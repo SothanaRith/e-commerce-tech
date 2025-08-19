@@ -77,7 +77,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
   Future<void> _setLocation(LatLng latLng) async {
     try {
       setState(() => _selectedLatLng = latLng);
-      _mapController?.animateCamera(CameraUpdate.newLatLngZoom(latLng, 4));
+      _mapController?.animateCamera(CameraUpdate.newLatLngZoom(latLng, 8));
       final placemarks = await placemarkFromCoordinates(
           latLng.latitude, latLng.longitude);
       final place = placemarks.first;
@@ -172,73 +172,90 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
   @override
   Widget build(BuildContext context) {
     final radius = BorderRadius.circular(20);
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
     return Scaffold(
-      appBar: customAppBar(
-          type: this, title: "select_location".tr, context: context),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+      // make sure the scaffold resizes when keyboard appears
+      resizeToAvoidBottomInset: true,
+      appBar: customAppBar(type: this, title: "select_location".tr, context: context),
+
+      body: SafeArea(
         child: Column(
           children: [
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: radius,
-                  child: SizedBox(
-                    height: MediaQuery
-                        .sizeOf(context)
-                        .height / 1.8,
-                    width: double.infinity,
+            // Map section can shrink when keyboard is open
+            Expanded(
+              child: Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: radius,
                     child: GoogleMap(
                       initialCameraPosition: CameraPosition(
-                        target: _selectedLatLng ??
-                            const LatLng(12.5657, 104.9910),
+                        target: _selectedLatLng ?? const LatLng(12.5657, 104.9910),
                         zoom: 15,
                       ),
                       onMapCreated: (controller) => _mapController = controller,
                       markers: _marker != null ? {_marker!} : {},
                       onTap: _onMapTapped,
+                      // OPTIONAL: dismiss keyboard when tapping map
+                      onCameraMoveStarted: () => FocusScope.of(context).unfocus(),
                     ),
                   ),
-                ),
-                if (_selectedLatLng == null)
-                  const Positioned.fill(
-                    child: Center(child: CircularProgressIndicator()),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            CustomTextField(
-              label: "find_your_location".tr,
-              controller: _searchController,
-              // rightIcon: Icon(Icons.search, color: theme.primaryColor),
-            ),
-            if (_suggestions.isNotEmpty)
-              Material(
-                elevation: 4,
-                borderRadius: radius,
-                child: Container(
-                  constraints: const BoxConstraints(maxHeight: 150),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: _suggestions.length,
-                    itemBuilder: (context, index) {
-                      final item = _suggestions[index];
-                      return ListTile(
-                        title: Text(item['description'] ?? ''),
-                        onTap: () => _selectSuggestion(item['place_id'] ?? ''),
-                      );
-                    },
-                  ),
-                ),
+                  if (_selectedLatLng == null)
+                    const Positioned.fill(child: Center(child: CircularProgressIndicator())),
+                ],
               ),
+            ),
+
+            // Input + suggestions; lift above keyboard using bottom padding
+            Padding(
+              padding: EdgeInsets.fromLTRB(16, 12, 16, 12),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CustomTextField(
+                    label: "find_your_location".tr,
+                    controller: _searchController,
+                  ),
+
+                  if (_suggestions.isNotEmpty)
+                    Material(
+                      elevation: 4,
+                      borderRadius: radius,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 200),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: _suggestions.length,
+                          itemBuilder: (context, index) {
+                            final item = _suggestions[index];
+                            return ListTile(
+                              title: Text(item['description'] ?? ''),
+                              onTap: () => _selectSuggestion(item['place_id'] ?? ''),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+
+            // Extra spacer so the input/suggestions aren't jammed against the button
+            SizedBox(height: 8),
           ],
         ),
       ),
-      bottomNavigationBar: GetBuilder<LocationController>(builder: (logic) {
-        return logic.isLoading ? CircularProgressIndicator(color: theme.primaryColor,) : Padding(
-          padding: const EdgeInsets.all(18.0),
-          child: SizedBox(
+
+      // Push the bottom button above the keyboard smoothly
+      bottomNavigationBar: AnimatedPadding(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+        padding: EdgeInsets.only(bottom: bottomInset > 0 ? bottomInset : 18, left: 18, right: 18, top: 18),
+        child: GetBuilder<LocationController>(builder: (logic) {
+          if (logic.isLoading) {
+            return Center(child: CircularProgressIndicator(color: theme.primaryColor));
+          }
+          return SizedBox(
             width: double.infinity,
             height: 50,
             child: CustomButtonWidget(
@@ -249,11 +266,9 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
                   final placemarks = await placemarkFromCoordinates(
                       _selectedLatLng!.latitude, _selectedLatLng!.longitude);
                   final place = placemarks.first;
-                  if (place.country?.toLowerCase() !=
-                      'Cambodia'.toLowerCase()) {
+                  if ((place.country ?? '').toLowerCase() != 'cambodia') {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(
-                          "your delivery location must be in cambodia".tr)),
+                      SnackBar(content: Text("your delivery location must be in cambodia".tr)),
                     );
                     return;
                   }
@@ -266,15 +281,14 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("please_select_a_valid_location"
-                        .tr)),
+                    SnackBar(content: Text("please_select_a_valid_location".tr)),
                   );
                 }
               },
             ),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 }
