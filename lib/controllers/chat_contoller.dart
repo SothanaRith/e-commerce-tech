@@ -43,7 +43,7 @@ class ChatController extends GetxController {
 
         String reply = data['reply'] ?? "No reply";
 
-        if (reply.trim().startsWith('<!DOCTYPE html') || reply.trim().startsWith('<html')) {
+        if (reply.trim().startsWith('<!DOCTYPE html') || reply.trim().startsWith('<html') || reply.trim().startsWith('Login to continue using')) {
           reply = '⚠️ សូមអធ្យាស្រ័យ, ពេលនេះដូចជាមានបញ្ហាអ្វីមួយខុស សូមអនុញ្ញាតសួរម្ដងទៀត';
         }
 
