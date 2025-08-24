@@ -373,7 +373,7 @@ class AuthController extends GetxController {
     isLoading = true;
     update();
     final response = await apiRepository.postData(
-      '$mainPoint/api/auth/login',
+      '$mainPoint/api/auth/login?type=mobile',
       body: {"email": email, "password": password},
       headers: {'Content-Type': 'application/json'}, context: context
     );
@@ -382,17 +382,18 @@ class AuthController extends GetxController {
     if (response.data != null) {
       var jsonData = jsonDecode(response.data!);
       TokenStorage.saveToken(jsonData["accessToken"]).then(
-        (value) {
+        (value) async {
+          await getUser(context: context);
+          await UserStorage.loadUser();
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('isLoggedIn', true);
+          await TokenStorage.loadToken();
           showCustomDialog(
               context: context,
               type: CustomDialogType.success,
               title: "${jsonData["message"]}",
               okOnPress: () {
-                goOff(
-                    this,
-                    OtpScreen(
-                      type: ScreenVerifyType.signinPhoneNumber,
-                    ));
+                goOff(this, MainScreen());
               });
         },
       );
