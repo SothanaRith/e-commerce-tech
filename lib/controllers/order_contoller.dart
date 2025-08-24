@@ -66,12 +66,14 @@ class OrderController extends GetxController {
     required BuildContext context,
     required String status,
     required String userId,
+    String? startDate,
+    String? endDate,
   }) async {
     isLoading = true;
     update();
 
     final response = await apiRepository.fetchData(
-      '$mainPoint/api/product/orders/processed-by-user/$userId?status=$status',
+      '$mainPoint/api/product/orders/processed-by-user/$userId?status=$status&startDate=$startDate&endDate=$endDate',
       headers: {
         'Authorization': TokenStorage.token ?? "",
         'Content-Type': 'application/json',

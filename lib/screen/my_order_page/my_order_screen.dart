@@ -23,6 +23,9 @@ class _MyOrderScreenState extends State<MyOrderScreen>
   late TabController _tabController;
   final OrderController orderController = Get.put(OrderController());
 
+  DateTime? startDate;
+  DateTime? endDate;
+
   @override
   void initState() {
     super.initState();
@@ -31,11 +34,7 @@ class _MyOrderScreenState extends State<MyOrderScreen>
     final userId = UserStorage.currentUser?.id.toString() ?? '';
 
     Future.delayed(Duration.zero, () {
-      orderController.getOrderById(
-        context: context,
-        status: 'pending',
-        userId: userId,
-      );
+      fetchOrder(status: 'pending', userId: userId);
     });
 
     _tabController.addListener(() {
@@ -49,9 +48,92 @@ class _MyOrderScreenState extends State<MyOrderScreen>
           context: context,
           status: status,
           userId: userId,
+          startDate: startDate != null ? startDate!.toIso8601String() : "",
+          endDate: endDate != null ? endDate!.toIso8601String() : "",
         );
       });
     });
+  }
+
+  void fetchOrder({required String status, required String userId}) {
+    orderController.getOrderById(
+      context: context,
+      status: status,
+      userId: userId,
+      startDate: startDate != null ? startDate!.toIso8601String() : "",
+      endDate: endDate != null ? endDate!.toIso8601String() : "",
+    );
+  }
+
+  Future<void> pickDateRange() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: Text("Select Date Range"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    title: Text("Start Date: ${startDate != null ? startDate!.toLocal().toString().split(' ')[0] : "Not selected"}"),
+                    onTap: () async {
+                      final picked = await showDatePicker(
+                        context: context,
+                        initialDate: startDate ?? DateTime.now(),
+                        firstDate: DateTime(2020),
+                        lastDate: DateTime.now().add(const Duration(days: 365)),
+                      );
+                      if (picked != null) {
+                        setDialogState(() {
+                          startDate = picked;
+                        });
+                      }
+                    },
+                  ),
+                  ListTile(
+                    title: Text("End Date: ${endDate != null ? endDate!.toLocal().toString().split(' ')[0] : "Not selected"}"),
+                    onTap: () async {
+                      final picked = await showDatePicker(
+                        context: context,
+                        initialDate: endDate ?? DateTime.now(),
+                        firstDate: startDate ?? DateTime(2020),
+                        lastDate: DateTime.now().add(const Duration(days: 365)),
+                      );
+                      if (picked != null) {
+                        setDialogState(() {
+                          endDate = picked;
+                        });
+                      }
+                    },
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    // Trigger the fetch again with updated dates
+                    final userId = UserStorage.currentUser?.id.toString() ?? '';
+                    final statuses = ['pending', 'delivery', 'delivered', 'completed', 'cancelled'];
+                    final status = statuses[_tabController.index];
+                    fetchOrder(status: status, userId: userId);
+                  },
+                  child: Text('Apply'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Cancel'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -63,7 +145,14 @@ class _MyOrderScreenState extends State<MyOrderScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(type: this, title: "my_order".tr, context: context, bottom: TabBar(
+      appBar: customAppBar(type: this, title: "my_order".tr, context: context,
+        action: [
+          IconButton(
+            icon: const Icon(Icons.date_range),
+            onPressed: pickDateRange,
+          ),
+        ],
+        bottom: TabBar(
         controller: _tabController,
         indicatorColor: theme.primaryColor,
         labelColor: theme.primaryColor,
