@@ -1,3 +1,4 @@
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:e_commerce_tech/controllers/order_contoller.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/Transaction_model.dart';
@@ -6,6 +7,7 @@ import 'package:e_commerce_tech/screen/track_order_page/order_transaction_detail
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_bar_widget.dart';
+import 'package:e_commerce_tech/widgets/custom_button_widget.dart';
 import 'package:e_commerce_tech/widgets/item_select_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,6 +27,7 @@ class _MyOrderScreenState extends State<MyOrderScreen>
 
   DateTime? startDate;
   DateTime? endDate;
+  dynamic _dates;
 
   @override
   void initState() {
@@ -65,75 +68,76 @@ class _MyOrderScreenState extends State<MyOrderScreen>
     );
   }
 
-  Future<void> pickDateRange() async {
-    showDialog(
+  Future<void> _selectDateRange(BuildContext context) async {
+    final selectedRange = await showDialog<List<DateTime?>>(
       context: context,
       builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            return AlertDialog(
-              title: Text("Select Date Range"),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ListTile(
-                    title: Text("Start Date: ${startDate != null ? startDate!.toLocal().toString().split(' ')[0] : "Not selected"}"),
-                    onTap: () async {
-                      final picked = await showDatePicker(
-                        context: context,
-                        initialDate: startDate ?? DateTime.now(),
-                        firstDate: DateTime(2020),
-                        lastDate: DateTime.now().add(const Duration(days: 365)),
-                      );
-                      if (picked != null) {
-                        setDialogState(() {
-                          startDate = picked;
-                        });
-                      }
+        return Material( // Ensure Material context
+          child: Scaffold(
+            appBar: AppBar(title: Text('Select Date Range')), // Optional AppBar
+            body: Column(
+              children: [
+                Expanded(
+                  child: CalendarDatePicker2(
+                    config: CalendarDatePicker2Config(
+                      firstDate: DateTime(2020),
+                      lastDate: DateTime(2026),
+                      calendarType: CalendarDatePicker2Type.range, // Set the calendar type to range
+                    ),
+                    value: [startDate, endDate], // Pass the selected start and end date
+                    onValueChanged: (List<DateTime?> selectedDates) {
+                      // Don't pop the dialog yet, just update state on selection
+                      setState(() {
+                        startDate = selectedDates[0];
+                        endDate = selectedDates.length > 1 ? selectedDates[1] : DateTime.now();
+                      });
                     },
                   ),
-                  ListTile(
-                    title: Text("End Date: ${endDate != null ? endDate!.toLocal().toString().split(' ')[0] : "Not selected"}"),
-                    onTap: () async {
-                      final picked = await showDatePicker(
-                        context: context,
-                        initialDate: endDate ?? DateTime.now(),
-                        firstDate: startDate ?? DateTime(2020),
-                        lastDate: DateTime.now().add(const Duration(days: 365)),
-                      );
-                      if (picked != null) {
-                        setDialogState(() {
-                          endDate = picked;
-                        });
-                      }
-                    },
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    // Trigger the fetch again with updated dates
-                    final userId = UserStorage.currentUser?.id.toString() ?? '';
-                    final statuses = ['pending', 'delivery', 'delivered', 'completed', 'cancelled'];
-                    final status = statuses[_tabController.index];
-                    fetchOrder(status: status, userId: userId);
-                  },
-                  child: Text('Apply'),
                 ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('Cancel'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CustomButtonWidget(title: "Cancel", action: () {
+                        endDate = null;
+                        startDate = null;
+                        Navigator.of(context).pop(); // Close the dialog without updating the dates
+                        final userId = UserStorage.currentUser?.id.toString() ?? '';
+                        final statuses = ['pending', 'delivery', 'delivered', 'completed', 'cancelled'];
+                        final status = statuses[_tabController.index];
+                        fetchOrder(status: status, userId: userId);
+
+                      }, width: MediaQuery.sizeOf(context).width / 3),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CustomButtonWidget(title: "Apply", action: () {
+                        Navigator.pop(context);
+                        // Trigger the fetch again with updated dates
+                        final userId = UserStorage.currentUser?.id.toString() ?? '';
+                        final statuses = ['pending', 'delivery', 'delivered', 'completed', 'cancelled'];
+                        final status = statuses[_tabController.index];
+                        fetchOrder(status: status, userId: userId);
+                      }, width: MediaQuery.sizeOf(context).width / 3, buttonStyle: BtnStyle.action,),
+                    )
+                    // Apply Button
+                  ],
                 ),
               ],
-            );
-          },
+            ),
+          ),
         );
       },
     );
+
+    // Update state with selected range if the user applied the dates
+    if (selectedRange != null && selectedRange.length == 2) {
+      setState(() {
+        startDate = selectedRange[0];
+        endDate = selectedRange[1];
+      });
+    }
   }
 
   @override
@@ -149,7 +153,9 @@ class _MyOrderScreenState extends State<MyOrderScreen>
         action: [
           IconButton(
             icon: const Icon(Icons.date_range),
-            onPressed: pickDateRange,
+            onPressed: () async {
+              await _selectDateRange(context);
+            },
           ),
         ],
         bottom: TabBar(
