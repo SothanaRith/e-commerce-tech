@@ -107,7 +107,6 @@ class _MyOrderScreenState extends State<MyOrderScreen>
                         final statuses = ['pending', 'delivery', 'delivered', 'completed', 'cancelled'];
                         final status = statuses[_tabController.index];
                         fetchOrder(status: status, userId: userId);
-
                       }, width: MediaQuery.sizeOf(context).width / 3),
                     ),
                     Padding(

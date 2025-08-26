@@ -1,17 +1,14 @@
-import 'dart:math';
 
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce_tech/controllers/cart_controller.dart';
+import 'package:e_commerce_tech/controllers/history_controller.dart';
 import 'package:e_commerce_tech/controllers/lacation_controller.dart';
 import 'package:e_commerce_tech/controllers/product_controller.dart';
 import 'package:e_commerce_tech/controllers/wishlist_contoller.dart';
-import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
 import 'package:e_commerce_tech/models/cart_model.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
 import 'package:e_commerce_tech/screen/category/product_by_category.dart';
-import 'package:e_commerce_tech/screen/chat_bot_page/chat_bot_screen.dart';
 import 'package:e_commerce_tech/screen/chat_with_store/chat_with_store_screen.dart';
 import 'package:e_commerce_tech/screen/check_out_page/check_out_screen.dart';
 import 'package:e_commerce_tech/screen/location_page/location_select_screen.dart';
@@ -32,10 +29,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-
 import '../../theme/shadow.dart';
 import '../../widgets/custom_button_widget.dart';
-import '../my_order_page/my_order_screen.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   const ProductDetailsScreen({super.key, required this.id, this.onBackAction});
@@ -50,6 +45,7 @@ class ProductDetailsScreen extends StatefulWidget {
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   final ProductController productController = Get.put(ProductController());
   final WishlistController wishlistController = Get.put(WishlistController());
+  final HistoryController historyController = Get.put(HistoryController());
 
   final CartController cartController = Get.put(CartController());
   final ScrollController _scrollController = ScrollController();
@@ -74,6 +70,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     });
 
     Future.delayed(Duration.zero, () async {
+      await historyController.postUserVisitProduct(context: context, productId: int.parse(widget.id));
       await cartController.fetchAllCart(context: context,
           userId: UserStorage.currentUser?.id.toString() ?? '');
       await locationController.getDefaultAddresses(context: context);
