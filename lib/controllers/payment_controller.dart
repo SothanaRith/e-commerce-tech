@@ -44,36 +44,62 @@ class PaymentController extends GetxController {
     update();
   }
 
-  Future<void> generateDeeplink(String appIconUrl, String appName, String appDeepLinkCallback, BuildContext context) async {
+  Future<void> generateDeeplinkViaBackend({
+    required String appIconUrl,
+    required String appName,
+    required String appDeepLinkCallback,
+    required BuildContext context,
+  }) async {
+    if (qrCode.isEmpty) {
+      showCustomDialog(
+        context: context,
+        type: CustomDialogType.error,
+        title: "No QR",
+        desc: "Please generate KHQR before creating a deeplink.",
+      );
+      return;
+    }
+
     isLoading = true;
     update();
+
     try {
-      final sourceInfo = SourceInfo(
-        appName: appName,
-        appIconUrl: appIconUrl,
-        appDeepLinkCallBack: appDeepLinkCallback,
+      final uri = Uri.parse('$apiUrl/generate-deeplink');
+      final resp = await http.post(
+        uri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'qrCode': qrCode, // RAW KHQR string
+          'appIconUrl': appIconUrl,
+          'appName': appName,
+          'appDeepLinkCallback': appDeepLinkCallback, // your HTTPS callback endpoint
+        }),
       );
 
-      final deeplinkInfo = DeeplinkInfo(
-        qr: qrCode,
-        url: 'https://api-bakong.nbc.gov.kh/v1/generate_deeplink_by_qr',
-        sourceInfo: sourceInfo,
-      );
+      if (resp.statusCode != 200) {
+        throw Exception('Backend error: ${resp.statusCode} ${resp.body}');
+      }
 
-      final deeplinkData = await _khqrSdk.generateDeepLink(deeplinkInfo);
+      final Map<String, dynamic> data = jsonDecode(resp.body);
 
-      deeplink = deeplinkData?.shortLink ?? 'No shortLink in response';
-      isLoading = false;
-      update();
+      // Bakong often returns both "shortLink" and "deeplink" — prefer shortLink if present.
+      final String? shortLink = data['data']['shortLink'] as String?;
+      final String? deepLink = data['deeplink'] as String?;
+      deeplink = (shortLink?.isNotEmpty ?? false) ? shortLink! : (deepLink ?? '');
+
+      if (deeplink.isEmpty) {
+        throw Exception('No deeplink/shortLink returned from backend.');
+      }
+
+      // Launch to bank app
       await launchInBrowser(Uri.parse(deeplink));
     } catch (e) {
-      print('❌ Error: $e');
       deeplink = '';
       showCustomDialog(
         context: context,
         type: CustomDialogType.error,
         title: "Failed Payment",
-        desc: "Something wrong. please do your payment again",
+        desc: "Could not create or open deeplink. Please try again.",
       );
     } finally {
       isLoading = false;
@@ -273,8 +299,8 @@ class PaymentController extends GetxController {
           merchantName: 'SnapBuy ($billingNumber)',
           billNumber: billingNumber,
           currency: currency,
-          amount: double.parse((amount * rate).toStringAsFixed(0)),
-          // amount: 100,
+          // amount: double.parse((amount * rate).toStringAsFixed(0)),
+          amount: 100,
           expirationTimestamp: expire
       );
       final khqrData = await _khqrSdk.generateIndividual(info);
