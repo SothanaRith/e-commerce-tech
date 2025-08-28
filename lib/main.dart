@@ -12,6 +12,7 @@ import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/app_route.dart';
 import 'package:e_commerce_tech/utils/messages.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uni_links/uni_links.dart';
 
 import 'helper/global.dart';
 // import 'package:uni_links3/uni_links.dart';
@@ -44,7 +45,7 @@ void main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {
     runApp(MyApp(languages: _languages)); // Start the app after initialization
   });
-  // handleIncomingLinks();
+  handleIncomingLinks();
 }
 
 Future<String?> getMainPointFromSettings() async {
@@ -52,17 +53,17 @@ Future<String?> getMainPointFromSettings() async {
   return prefs.getString('main_point');
 }
 
-// void handleIncomingLinks() {
-//   uriLinkStream.listen((Uri? uri) {
-//     if (uri != null && uri.host == 'payment-callback') {
-//       final txnId = uri.queryParameters['txn_id'];
-//       print('✅ Got txn_id from stream: $txnId');
-//       if (UserStorage.currentUser != null) {
-//         goOff("callback deeplink", PaymentVerifyScreen(cart: [], paymentMethod: {}));
-//       }
-//     }
-//   });
-// }
+void handleIncomingLinks() {
+  uriLinkStream.listen((Uri? uri) {
+    if (uri != null && uri.host == 'payment-callback') {
+      final txnId = uri.queryParameters['txn_id'];
+      print('✅ Got txn_id from stream: $txnId');
+      if (UserStorage.currentUser != null) {
+        goOff("callback deeplink", PaymentVerifyScreen(cart: [], paymentMethod: {}));
+      }
+    }
+  });
+}
 class MyApp extends StatelessWidget {
   const MyApp({super.key, required this.languages});
   final Map<String, Map<String, String>> languages;

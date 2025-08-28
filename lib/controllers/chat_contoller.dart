@@ -14,7 +14,7 @@ class ChatController extends GetxController {
   final String apiUrl = '${mainPoint.replaceAll(":3000", ":1337")}/backend-api/v2/auto/chat';
 
   // Send user message to backend and get assistant reply
-  Future<void> sendMessage(String text, ScrollController scrollController) async {
+  Future<void> sendMessage(String text, ScrollController scrollController, String type ) async {
     if (text.trim().isEmpty) return;
 
     final userMessage = text.trim();
@@ -24,7 +24,7 @@ class ChatController extends GetxController {
     try {
       // Send only the latest 20 messages (10 exchanges)
       final history = messages
-          .skip(messages.length > 3 ? messages.length - 3 : 0)
+          .skip(messages.length > 8 ? messages.length - 8 : 0)
           .map((msg) => {'role': msg.role, 'content': msg.content})
           .toList();
 
@@ -33,6 +33,7 @@ class ChatController extends GetxController {
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'message': userMessage,
+          'type': type,
           'model': selectedModel.value,
           'history': history,
         }),
@@ -61,9 +62,10 @@ class ChatController extends GetxController {
 
   // Typing animation effect (frontend only)
   Future<void> animateTyping(String reply, ScrollController scrollController) async {
+    print(reply);
     typingText.value = '';
     for (int i = 0; i < reply.length; i++) {
-      await Future.delayed(Duration(milliseconds: 30));
+      await Future.delayed(Duration(milliseconds: 20));
       typingText.value += reply[i];
 
       // 👇 Auto-scroll on each character

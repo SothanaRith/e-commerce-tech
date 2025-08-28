@@ -16,9 +16,21 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController controller = TextEditingController();
   final ChatController chatController = Get.put(ChatController());
   final ScrollController scrollController = ScrollController();
+
+  String selectedType = 'other_question';
+
+  // For dialog labels (use .tr for i18n)
+  final Map<String, String> typeLabels = {
+    'find_product': 'find_product',
+    'order_help': 'how_to_order',
+    'about_shop': 'who_is_this_shop',
+    'other_question': 'other_question',
+  };
+
   @override
   void initState() {
     super.initState();
+
     // Add a default message from the assistant if no messages exist
     if (chatController.messages.isEmpty) {
       chatController.messages.add(ResponseModel(
@@ -26,6 +38,11 @@ class _ChatScreenState extends State<ChatScreen> {
         content: 'hi_do_you_have_anything_that_i_can_help_you_today'.tr,
       ));
     }
+
+    // Open the type selection dialog on first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showTypeDialog(autoOpen: true);
+    });
   }
 
   @override
@@ -34,42 +51,113 @@ class _ChatScreenState extends State<ChatScreen> {
     super.dispose();
   }
 
+  Future<void> _showTypeDialog({bool autoOpen = false}) async {
+    String tempType = selectedType;
+
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: autoOpen ? false : true, // force pick on first open
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return AlertDialog(
+              title: Text('Please select a topic'.tr),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _typeTile(
+                      title: typeLabels['find_product']!,
+                      value: 'find_product'.tr,
+                      groupValue: tempType,
+                      onChanged: (v) => setStateDialog(() => tempType = v!),
+                      icon: Icons.search,
+                    ),
+                    _typeTile(
+                      title: typeLabels['order_help']!,
+                      value: 'order_help'.tr,
+                      groupValue: tempType,
+                      onChanged: (v) => setStateDialog(() => tempType = v!),
+                      icon: Icons.shopping_cart_checkout,
+                    ),
+                    _typeTile(
+                      title: typeLabels['about_shop']!,
+                      value: 'about_shop'.tr,
+                      groupValue: tempType,
+                      onChanged: (v) => setStateDialog(() => tempType = v!),
+                      icon: Icons.store_mall_directory,
+                    ),
+                    _typeTile(
+                      title: typeLabels['other_question']!,
+                      value: 'other_question'.tr,
+                      groupValue: tempType,
+                      onChanged: (v) => setStateDialog(() => tempType = v!),
+                      icon: Icons.help_outline,
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                if (!autoOpen)
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text('Cancel'.tr),
+                  ),
+                ElevatedButton(
+                  onPressed: () {
+                    print(tempType);
+                    print(selectedType);
+                    if (selectedType != tempType) {
+                      chatController.clearChat();
+                    }
+                    setState(() => selectedType = tempType);
+                    if (chatController.messages.isEmpty) {
+                      chatController.messages.add(ResponseModel(
+                        role: 'assistant',
+                        content: 'hi_do_you_have_anything_that_i_can_help_you_today'.tr,
+                      ));
+                    }
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Confirm'.tr),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _typeTile({
+    required String title,
+    required String value,
+    required String groupValue,
+    required ValueChanged<String?> onChanged,
+    required IconData icon,
+  }) {
+    return RadioListTile<String>(
+      value: value,
+      groupValue: groupValue,
+      onChanged: onChanged,
+      title: Row(
+        children: [
+          Icon(icon, size: 20),
+          const SizedBox(width: 8),
+          Expanded(child: Text(title)),
+        ],
+      ),
+      dense: true,
+      contentPadding: EdgeInsets.zero,
+      visualDensity: const VisualDensity(vertical: -2),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBar(type: dynamic, title: "chatbot".tr, context: context, action: [
-        // Obx(() {
-        //   return Container(
-        //     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        //     decoration: BoxDecoration(
-        //       color: Colors.transparent,
-        //     ),
-        //     child: DropdownButtonHideUnderline(
-        //       child: DropdownButton<String>(
-        //         value: chatController.selectedModel.value,
-        //         icon: Icon(Icons.arrow_drop_down, color: Colors.white),
-        //         dropdownColor: Colors.white,
-        //         style: const TextStyle(color: Colors.white, fontSize: 14),
-        //         alignment: Alignment.centerRight, // ✅ Text aligns to the end
-        //         onChanged: (newValue) {
-        //           if (newValue != null) {
-        //             chatController.selectedModel.value = newValue;
-        //             chatController.clearChat();
-        //           }
-        //         },
-        //         items: chatController.availableModels.map((model) {
-        //           return DropdownMenuItem<String>(
-        //             value: model,
-        //             child: Text(
-        //               model.toUpperCase(),
-        //               style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        //             ),
-        //           );
-        //         }).toList(),
-        //       ),
-        //     ),
-        //   );
-        // }),
+        // (model picker kept commented)
       ]),
       body: SafeArea(
         child: Column(
@@ -96,7 +184,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 backgroundImage: AssetImage('assets/images/img.png'),
                               ),
                             ),
-                          SizedBox(width: 6),
+                          const SizedBox(width: 6),
                           Flexible(
                             child: Column(
                               crossAxisAlignment:
@@ -115,9 +203,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                   ),
                                   child: MarkdownBody(
                                     data: message.content,
-                                    styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-                                      p: TextStyle(fontSize: 16),
-                                    ),
+                                    styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
+                                        .copyWith(p: const TextStyle(fontSize: 16)),
                                   ),
                                 ),
 
@@ -128,16 +215,17 @@ class _ChatScreenState extends State<ChatScreen> {
                                     alignment:
                                     isUser ? Alignment.centerRight : Alignment.centerLeft,
                                     child: GestureDetector(
-                                        onTap: () {
-                                          Clipboard.setData(ClipboardData(text: message.content));
-                                          Get.snackbar(
-                                            "copied".tr,
-                                            "message_copied_to_clipboard".tr,
-                                            snackPosition: SnackPosition.BOTTOM,
-                                            duration: Duration(seconds: 1),
-                                          );
-                                        },
-                                        child: Icon(Icons.copy, size: 16, color: theme.primaryColor,))
+                                      onTap: () {
+                                        Clipboard.setData(ClipboardData(text: message.content));
+                                        Get.snackbar(
+                                          "copied".tr,
+                                          "message_copied_to_clipboard".tr,
+                                          snackPosition: SnackPosition.BOTTOM,
+                                          duration: const Duration(seconds: 1),
+                                        );
+                                      },
+                                      child: Icon(Icons.copy, size: 16, color: theme.primaryColor),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -159,7 +247,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               backgroundImage: AssetImage('assets/images/img.png'),
                             ),
                           ),
-                          SizedBox(width: 6),
+                          const SizedBox(width: 6),
                           Flexible(
                             child: Container(
                               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
@@ -172,7 +260,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               ),
                               child: Text(
                                 chatController.typingText.value,
-                                style: TextStyle(fontSize: 16),
+                                style: const TextStyle(fontSize: 16),
                               ),
                             ),
                           ),
@@ -182,24 +270,47 @@ class _ChatScreenState extends State<ChatScreen> {
                 );
               }),
             ),
-            // 🔤 Text input + send button
+
+            // 🔤 Type selector + text input + send button
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
+                  // Type chip (tap to change)
+                  GestureDetector(
+                    onTap: () => _showTypeDialog(),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      margin: const EdgeInsets.only(right: 8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: theme.primaryColor.withOpacity(0.3)),
+                        color: theme.primaryColor.withOpacity(0.08),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.tune, size: 16),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // Text field
                   Expanded(
                     child: CustomTextField(
                       controller: controller,
                       onSubmitted: (text) {
                         if (text.isNotEmpty) {
                           FocusScope.of(context).unfocus();
-                          chatController.sendMessage(text, scrollController);
+                          chatController.sendMessage(text, scrollController, selectedType);
                           controller.clear();
                         }
                       },
                       label: 'type_a_message'.tr,
                     ),
                   ),
+
+                  // Send button / loader
                   Obx(() {
                     return chatController.isLoading.value
                         ? Padding(
@@ -211,7 +322,11 @@ class _ChatScreenState extends State<ChatScreen> {
                       onPressed: () {
                         if (controller.text.isNotEmpty) {
                           FocusScope.of(context).unfocus();
-                          chatController.sendMessage(controller.text, scrollController);
+                          chatController.sendMessage(
+                            controller.text,
+                            scrollController,
+                            selectedType,
+                          );
                           controller.clear();
                         }
                       },
@@ -226,4 +341,3 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 }
-

@@ -254,10 +254,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
                           ['bankName'] ??
                               ""),);
                         }
-                        controller.generateDeeplink(
-                            'https://bakong.nbc.gov.kh/images/logo.svg',
-                            'Snap Buy',
-                            '$mainPoint/api/payment/payment-callback', context
+                        controller.generateDeeplinkViaBackend(
+                            appIconUrl: 'https://bakong.nbc.gov.kh/images/logo.svg', appName: 'Snap Buy', appDeepLinkCallback: 'https://callback-pay-a.web.app', context: context
                         );
                       }
                     );
