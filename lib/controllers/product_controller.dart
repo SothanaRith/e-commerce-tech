@@ -55,39 +55,53 @@ class ProductController extends GetxController {
   Future<ProductModel> getProductById({
     required BuildContext context,
     required String id,
-    required String userId,
+    String? userId, // optional
   }) async {
     isLoading = true;
     update();
-    final response = await apiRepository.fetchData(
-      '$mainPoint/api/product/get-product/$id/$userId',
-      headers: {
-        'Authorization': TokenStorage.token ?? "",
-        'Content-Type': 'application/json',
-      },
-      context: context,
-    );
 
-    if (response.data != null) {
-      var jsonData = jsonDecode(response.data!);
+    // Resolve user id: real when logged in, else "1"
+    final loggedInUid = UserStorage.currentUser?.id?.toString();
+    final uid = (loggedInUid != null && loggedInUid.isNotEmpty)
+        ? (userId?.isNotEmpty == true ? userId! : loggedInUid)
+        : '1';
 
-      // Convert JSON to ProductModel
+    // Build headers (omit Authorization if no token)
+    final headers = <String, String>{'Content-Type': 'application/json'};
+    final token = TokenStorage.token;
+    if (token != null && token.isNotEmpty) {
+      headers['Authorization'] = token;
+    }
+
+    try {
+      final response = await apiRepository.fetchData(
+        '$mainPoint/api/product/get-product/$id/$uid',
+        headers: headers,
+        context: context,
+      );
+
+      if (response.data == null) {
+        showCustomDialog(
+          context: context,
+          type: CustomDialogType.error,
+          title: "Error: ${response.error}",
+        );
+        throw Exception('Failed to fetch product');
+      }
+
+      final jsonData = jsonDecode(response.data!);
       product = ProductModel.fromJson(jsonData);
+
       if (product.imageUrl != null && product.imageUrl!.isNotEmpty) {
+        selectedImageUrl = product.imageUrl!.first;
+      } else {
         selectedImageUrl = product.imageUrl!.first;
       }
 
+      return product;
+    } finally {
       isLoading = false;
       update();
-      return product;
-    } else {
-      showCustomDialog(
-        context: context,
-        type: CustomDialogType.error,
-        title: "Error: ${response.error}",
-      );
-      // Optionally throw or return a default
-      throw Exception('Failed to fetch product');
     }
   }
 

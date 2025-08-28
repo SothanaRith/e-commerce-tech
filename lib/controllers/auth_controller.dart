@@ -642,7 +642,8 @@ class AuthController extends GetxController {
         type: CustomDialogType.success,
         title: "logout successfully",
         okOnPress: () {
-          goOff(this, LoginScreen());
+          // goOff(this, LoginScreen());
+          Get.offAll(() => const MainScreen(currentPageIndex: 0));
         });
   }
 }

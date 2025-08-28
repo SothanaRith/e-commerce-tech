@@ -26,10 +26,12 @@ class _WishListScreenState extends State<WishListScreen> {
 
   void fetchWishlist() async {
     Future.delayed(Duration.zero, () async {
-      await wishlistController.getAllWishlist(
-        context: context,
-        userId: UserStorage.currentUser?.id.toString() ?? '',
-      );
+      if(UserStorage.currentUser?.id != null){
+        await wishlistController.getAllWishlist(
+          context: context,
+          userId: UserStorage.currentUser?.id.toString() ?? '',
+        );
+      }
     });
   }
 
@@ -41,9 +43,9 @@ class _WishListScreenState extends State<WishListScreen> {
             title: "wish_list".tr,
             context: context,
             haveArrowBack: false),
-        body: Skeletonizer(
+        body: UserStorage.currentUser?.id.toString() != null ? Skeletonizer(
           enabled: logic.isLoading,
-              child: SingleChildScrollView(
+              child: wishlistController.wishlistData.isEmpty ? Center(child: Text("No Product available."),) : SingleChildScrollView(
                         child: Column(
               children: [
                 SizedBox(height: 12),
@@ -72,7 +74,7 @@ class _WishListScreenState extends State<WishListScreen> {
               ],
                         ),
                       ),
-            ),
+            ) : Center(child: Text("No wishlist available."),),
       );
     });
   }

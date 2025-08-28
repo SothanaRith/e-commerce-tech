@@ -1,11 +1,7 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce_tech/controllers/auth_controller.dart';
 import 'package:e_commerce_tech/controllers/cart_controller.dart';
 import 'package:e_commerce_tech/controllers/order_contoller.dart';
-import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/main.dart';
-import 'package:e_commerce_tech/models/Transaction_model.dart';
 import 'package:e_commerce_tech/models/user_model.dart';
 import 'package:e_commerce_tech/screen/chat_bot_page/chat_bot_screen.dart';
 import 'package:e_commerce_tech/screen/check_out_page/check_out_screen.dart';
@@ -13,15 +9,13 @@ import 'package:e_commerce_tech/screen/check_out_page/shipping_address_screen.da
 import 'package:e_commerce_tech/screen/forget_password_page/forget_password_screen.dart';
 import 'package:e_commerce_tech/screen/forget_password_page/help_center.dart';
 import 'package:e_commerce_tech/screen/language_screen.dart';
+import 'package:e_commerce_tech/screen/login_page/login_screen.dart';
 import 'package:e_commerce_tech/screen/my_order_page/my_order_screen.dart';
-import 'package:e_commerce_tech/screen/product_details_page/product_details_screen.dart';
 import 'package:e_commerce_tech/screen/profile_setting_page/last_order_widget.dart';
 import 'package:e_commerce_tech/screen/profile_setting_page/user_profile_screen.dart';
-import 'package:e_commerce_tech/screen/track_order_page/order_transaction_detail_screen.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
 import 'package:e_commerce_tech/utils/tap_routes.dart';
 import 'package:e_commerce_tech/widgets/app_text_widget.dart';
-import 'package:e_commerce_tech/widgets/custom_button_widget.dart';
 import 'package:e_commerce_tech/widgets/safe_network_image.dart';
 import 'package:e_commerce_tech/widgets/select_image_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,6 +25,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../forget_password_page/privacy.dart';
+import '../nav_bar_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -46,35 +41,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
       iconName: "assets/images/icons/delivery.svg",
       screen: const ShippingAddressScreen(),
       hasSpecialAction: false,
+      requiresAuth: false,
     ),
     MenuItem(
       title: 'my_language'.tr,
       iconName: "assets/images/icons/language.svg",
       screen: const LanguageScreen(),
       hasSpecialAction: false,
+      requiresAuth: true,
     ),
     MenuItem(
       title: 'password_manager'.tr,
       iconName: 'assets/images/icons/key.svg',
       screen: const ForgetPasswordScreen(),
       hasSpecialAction: false,
+      requiresAuth: false,
     ),
     MenuItem(
       title: 'help_center'.tr,
       iconName: "assets/images/icons/warning.svg",
       screen: const HelpCenter(),
       hasSpecialAction: false,
+      requiresAuth: true,
     ),
     MenuItem(
       title: 'privacy_policy'.tr,
       iconName: "assets/images/icons/lock.svg",
       screen: const PrivacyScreen(),
       hasSpecialAction: false,
+      requiresAuth: true,
     ),
     MenuItem(
       title: 'log_out'.tr,
       iconName: "assets/images/icons/logout.svg",
       hasSpecialAction: true, // Flag for special action (bottom sheet)
+      requiresAuth: false,
     ),
   ];
   final List<MenuItem> menuItemsTop = [
@@ -103,6 +104,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       hasSpecialAction: false,
     ),
   ];
+
   final AuthController authController = Get.put(AuthController());
   final OrderController orderController = Get.put(OrderController());
   CartController cartController = Get.put(CartController());
@@ -235,8 +237,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text("Profile"), centerTitle: false,),
       body: SafeArea(
         child: GetBuilder<AuthController>(builder: (logic) {
+          final user = UserStorage.currentUser;                // 👈 fresh each rebuild
+          final isLoggedIn = user?.id != null;                 // 👈 auth flag
+          final visibleMenu = menuItems
+              .where((m) => (m.requiresAuth ?? true)  || isLoggedIn) // ✅ correct
+              .toList();
           return Skeletonizer(
             enabled: logic.isLoading,
             child: SingleChildScrollView(
@@ -244,7 +252,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Profile section
-                  Container(
+                  user?.id == null ? SizedBox() : Container(
                     width: double.infinity,
                     child: Padding(
                       padding: const EdgeInsets.only(
@@ -283,93 +291,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ],
                                     ),
                                   ),
-                                ),
-                                // SizedBox(width: 12,),
-                                // Stack(
-                                //   children: [
-                                //     GestureDetector(
-                                //       onTap: () {
-                                //         goTo(this, ChatScreen());
-                                //       },
-                                //       child: Padding(
-                                //         padding: const EdgeInsets.only(right: 120.0),
-                                //         child: Column(
-                                //           mainAxisAlignment: MainAxisAlignment.center,
-                                //           crossAxisAlignment: CrossAxisAlignment.center,
-                                //           children: [
-                                //             Stack(
-                                //               alignment: Alignment.center,
-                                //               children: [
-                                //                 Container(
-                                //                   width: 60,
-                                //                   height: 60,
-                                //                   padding: EdgeInsets.all(8),
-                                //                   decoration: BoxDecoration(
-                                //                     borderRadius: BorderRadiusGeometry.circular(40),
-                                //                     gradient: LinearGradient(
-                                //                       colors: [
-                                //                         theme.primaryColor.withAlpha(200),
-                                //                         theme.primaryColor.withAlpha(50)
-                                //                       ],
-                                //                     ),
-                                //                   ),
-                                //                   child: Image.asset(
-                                //                     "assets/icon/robot.png",
-                                //                     fit: BoxFit.cover,
-                                //                   ),
-                                //                 ),
-                                //               ],
-                                //             ),
-                                //           ],
-                                //         ),
-                                //       ),
-                                //     ),
-                                //     Positioned(
-                                //       top: 0,
-                                //       right: 5,
-                                //       child: Padding(
-                                //         padding: const EdgeInsets.only(left: 10.0),
-                                //         child: Container(
-                                //           padding:
-                                //           EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                //           decoration: BoxDecoration(
-                                //               color: theme.primaryColor.withAlpha(90),
-                                //               borderRadius: BorderRadiusGeometry.circular(12)),
-                                //           child: Align(
-                                //             alignment: Alignment.centerLeft,
-                                //             child: SizedBox(
-                                //               width: 100,
-                                //               child: DefaultTextStyle(
-                                //                 style: const TextStyle(
-                                //                   fontSize: 10,
-                                //                   fontWeight: FontWeight.bold,
-                                //                   color: Colors.white,
-                                //                 ),
-                                //                 child: AnimatedTextKit(
-                                //                   repeatForever: true,
-                                //                   isRepeatingAnimation: true,
-                                //                   animatedTexts: [
-                                //                     TyperAnimatedText('Hello, Ask me now !',
-                                //                         speed: Duration(milliseconds: 80)),
-                                //                     TyperAnimatedText('Do u need my help?',
-                                //                         speed: Duration(milliseconds: 80)),
-                                //                     TyperAnimatedText('how was your day ?',
-                                //                         speed: Duration(milliseconds: 80)),
-                                //                     TyperAnimatedText('Hi, Can I help u ?',
-                                //                         speed: Duration(milliseconds: 80)),
-                                //                   ],
-                                //                   onTap: () {},
-                                //                   displayFullTextOnTap: true,
-                                //                   pause: Duration(milliseconds: 1500),
-                                //                 ),
-                                //               ),
-                                //             ),
-                                //           ),
-                                //         ),
-                                //       ),
-                                //     ),
-                                //   ],
-                                // ),
+                                )
                               ],
                             ),
                           ),
@@ -409,6 +331,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                   ),
+                  user?.id == null ? Container(
+                    child: Column(
+                      spacing: 8,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text("Choose your perfect product \nand get it on the way today ✨🛍!!", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                goTo(this, LoginScreen());
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: theme.primaryColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              child: Text(
+                                'sign_up_or_login'.tr,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ) :
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: Row(
@@ -451,8 +406,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                         GetBuilder<CartController>(
                                             builder: (logic) {
-                                              return  cartController.totalItemsInCart != 0 &&
-                                                  item.title == "Check out" ? Positioned(
+                                              return  cartController.totalItemsInCart != 0 && item.title == "Check out" ? Positioned(
                                                 right: 0,
                                                 top: 0,
                                                 child: Container(
@@ -463,11 +417,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                     color: Colors.red,
                                                   ),
                                                   child: AppText.caption(
-                                                    logic
-                                                        .totalItemsInCart
-                                                        .toString(),
-                                                    customStyle: TextStyle(
-                                                        color: Colors.white),),
+                                                    logic.totalItemsInCart.toString(),
+                                                    customStyle: TextStyle(color: Colors.white),),
                                                 ),
                                               ) : SizedBox();
                                             }),
@@ -500,35 +451,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       // Allows ListView to take only the space it needs
                       physics: const NeverScrollableScrollPhysics(),
                       // Disables ListView's scrolling
-                      itemCount: menuItems.length,
+                      itemCount: visibleMenu.length,
                       itemBuilder: (context, index) {
                         return Column(
                           children: [
                             ListTile(
                               leading: SvgPicture.asset(
-                                menuItems[index].iconName,
+                                visibleMenu[index].iconName,
                                 color: theme.primaryColor,
                               ),
                               title: AppText.title2(
-                                menuItems[index].title,
+                                visibleMenu[index].title,
                                 customStyle: const TextStyle(fontSize: 16),
                               ),
                               trailing: SvgPicture.asset(
                                   "assets/images/icons/arrow-down.svg"
                               ),
                               onTap: () {
-                                if (menuItems[index].hasSpecialAction) {
+                                if (visibleMenu[index].hasSpecialAction) {
                                   // Handle special actions like showing a bottom sheet
-                                  if (menuItems[index].title == 'log_out'.tr) {
+                                  if (visibleMenu[index].title == 'log_out'.tr) {
                                     _showLogoutBottomSheet(context);
                                   }
-                                } else if (menuItems[index].screen != null) {
+                                } else if (visibleMenu[index].screen != null) {
                                   // Navigate to the screen if it exists
-                                  goTo(this, menuItems[index].screen!);
+                                  goTo(this, visibleMenu[index].screen!);
                                 }
                               },
                             ),
-                            if (index < menuItems.length - 1)
+                            if (index < visibleMenu.length - 1)
                               Divider(
                                 height: 1,
                                 thickness: 1,
@@ -565,11 +516,13 @@ class MenuItem {
   final String iconName;
   final dynamic screen;
   final bool hasSpecialAction; // Flag for special actions like bottom sheet
+  final bool? requiresAuth;
 
   MenuItem({
     required this.title,
     required this.iconName,
     this.screen,
     this.hasSpecialAction = false, // Default to false
+    this.requiresAuth,
   });
 }

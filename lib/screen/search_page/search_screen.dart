@@ -75,44 +75,85 @@ class _SearchScreenState extends State<SearchScreen> {
     super.dispose();
   }
 
+  // void _searchProducts({int page = 1, bool append = false}) {
+  //   print("object page $page");
+  //   if (page == 1) {
+  //     // New search — reset results
+  //     searchController.searchProduct(
+  //       context: context,
+  //       search: searchText.text.trim(),
+  //       categoryId:
+  //       selectedCategories.isNotEmpty ? selectedCategories.join(',') : null,
+  //       minPrice: priceRange.start,
+  //       maxPrice: priceRange.end,
+  //       minRating: selectedRating,
+  //       userId: UserStorage.currentUser?.id.toString() ?? '',
+  //       page: 1,
+  //       size: 10,
+  //       append: append,
+  //     );
+  //   } else {
+  //     // Load more — append results
+  //     if (!_isLoadingMore) {
+  //       print("object here");
+  //       _isLoadingMore = true;
+  //       searchController
+  //           .searchProduct(
+  //         context: context,
+  //         search: searchText.text.trim(),
+  //         categoryId: selectedCategories.isNotEmpty
+  //             ? selectedCategories.join(',')
+  //             : null,
+  //         minPrice: priceRange.start,
+  //         maxPrice: priceRange.end,
+  //         minRating: selectedRating,
+  //         userId: UserStorage.currentUser?.id.toString() ?? '',
+  //         page: page,
+  //         size: 10,
+  //         append: append,
+  //       )
+  //           .then((_) {
+  //         _isLoadingMore = false;
+  //       });
+  //     }
+  //   }
+  // }
   void _searchProducts({int page = 1, bool append = false}) {
-    print("object page $page");
+    // Resolve user id: real when logged in, else '1'
+    final resolvedUserId = (UserStorage.currentUser?.id?.toString().isNotEmpty ?? false)
+        ? UserStorage.currentUser!.id.toString()
+        : '1';
+
     if (page == 1) {
-      // New search — reset results
+      // New search — reset results (append should be false)
       searchController.searchProduct(
         context: context,
         search: searchText.text.trim(),
-        categoryId:
-        selectedCategories.isNotEmpty ? selectedCategories.join(',') : null,
+        categoryId: selectedCategories.isNotEmpty ? selectedCategories.join(',') : null,
         minPrice: priceRange.start,
         maxPrice: priceRange.end,
         minRating: selectedRating,
-        userId: UserStorage.currentUser?.id.toString() ?? '',
+        userId: resolvedUserId,        // 👈 fallback to '1' if guest
         page: 1,
         size: 10,
-        append: append,
+        append: false,                 // safer: reset list on first page
       );
     } else {
       // Load more — append results
       if (!_isLoadingMore) {
-        print("object here");
         _isLoadingMore = true;
-        searchController
-            .searchProduct(
+        searchController.searchProduct(
           context: context,
           search: searchText.text.trim(),
-          categoryId: selectedCategories.isNotEmpty
-              ? selectedCategories.join(',')
-              : null,
+          categoryId: selectedCategories.isNotEmpty ? selectedCategories.join(',') : null,
           minPrice: priceRange.start,
           maxPrice: priceRange.end,
           minRating: selectedRating,
-          userId: UserStorage.currentUser?.id.toString() ?? '',
+          userId: resolvedUserId,      // 👈 same fallback here
           page: page,
           size: 10,
-          append: append,
-        )
-            .then((_) {
+          append: true,
+        ).then((_) {
           _isLoadingMore = false;
         });
       }

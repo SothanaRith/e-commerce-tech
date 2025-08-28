@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 late final ApiRepository apiRepository;
 
-String mainPoint = "http://10.10.101.55:3000"; // Default value
+String mainPoint = "http://192.168.1.2:3000"; // Default value
 
 // late final String mainPoint = "https://c9f0-58-97-220-69.ngrok-free.app";
 

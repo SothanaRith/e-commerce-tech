@@ -35,13 +35,14 @@ class ItemSelectWidget extends StatelessWidget {
       return SizedBox();
 
     for (int i = 0; i < imageUrlList!.length && i < 3; i++) {
+      print("-=-=-=-${imageUrlList?[i] ?? ""}");
       imageStack.add(
         Positioned(
           left: i * 12.0,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(100),
             child: Image.network(
-              safeImageUrl("${imageUrlList![i]}"),
+              safeImageUrl("${imageUrlList?[i] ?? ""}"),
               width: 50.w,
               height: 50.w,
               fit: BoxFit.cover,

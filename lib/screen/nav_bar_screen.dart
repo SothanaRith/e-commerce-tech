@@ -36,7 +36,7 @@ class _MainScreenState extends State<MainScreen> {
   SearchingController searchController = Get.put(SearchingController());
   PaymentController paymentController = Get.put(PaymentController());
   OrderController orderController = Get.put(OrderController());
-
+  final uid = UserStorage.currentUser?.id?.toString() ?? '';
   final pagesList = [
     const HomeScreen(),
     const SearchScreen(),
@@ -148,10 +148,15 @@ class _MainScreenState extends State<MainScreen> {
         if (index == 0) {
           homeController.loadHome(page: 1, userId: userId, context: context);
         } else if (index == 1) {
-          searchController.searchProduct(context: context, userId: userId);
+          if(uid.isNotEmpty){
+            searchController.searchProduct(context: context, userId: userId);
+          }else{
+            searchController.searchProduct(context: context, userId: '1');
+          }
         } else if (index == 2) {
-          wishlistController.getAllWishlist(context: context, userId: userId);
-        }
+            if (uid.isNotEmpty) {
+              wishlistController.getAllWishlist(context: context, userId: uid);}
+          }
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

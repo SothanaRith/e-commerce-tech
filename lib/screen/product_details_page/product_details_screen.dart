@@ -12,6 +12,7 @@ import 'package:e_commerce_tech/screen/category/product_by_category.dart';
 import 'package:e_commerce_tech/screen/chat_with_store/chat_with_store_screen.dart';
 import 'package:e_commerce_tech/screen/check_out_page/check_out_screen.dart';
 import 'package:e_commerce_tech/screen/location_page/location_select_screen.dart';
+import 'package:e_commerce_tech/screen/login_page/login_screen.dart';
 import 'package:e_commerce_tech/screen/payment/payment_method_screen.dart';
 import 'package:e_commerce_tech/screen/product_details_page/variant_widget.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
@@ -46,13 +47,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   final ProductController productController = Get.put(ProductController());
   final WishlistController wishlistController = Get.put(WishlistController());
   final HistoryController historyController = Get.put(HistoryController());
-
   final CartController cartController = Get.put(CartController());
   final ScrollController _scrollController = ScrollController();
   bool _showAppBarBackground = false;
-
   final LocationController locationController = Get.put(LocationController());
-
+  final userId = UserStorage.currentUser?.id;
   @override
   void initState() {
     super.initState();
@@ -71,8 +70,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
     Future.delayed(Duration.zero, () async {
       await historyController.postUserVisitProduct(context: context, productId: int.parse(widget.id));
-      await cartController.fetchAllCart(context: context,
-          userId: UserStorage.currentUser?.id.toString() ?? '');
+      if(UserStorage.currentUser?.id != null){
+        await cartController.fetchAllCart(context: context,
+            userId: UserStorage.currentUser?.id.toString() ?? '');
+      }
       await locationController.getDefaultAddresses(context: context);
       await productController.getProductById(
         context: context,
@@ -84,7 +85,78 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       );
     });
   }
-
+  void _showLogoutBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Please Login or Signup'.tr,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Hey there, Don’t miss out! Log in or sign up to make your purchase and \nenjoy a smoother, smarter shopping experience.'.tr,
+                style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context); // Close the bottom sheet
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[300],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Text(
+                        'cancel'.tr,
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Get.to(()=>LoginScreen());
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Text(
+                        'ok'.tr,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ProductController>(builder: (controller) {
@@ -717,61 +789,68 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           buttonStyle: BtnStyle.none,
                           title: "buy_now".tr,
                           action: () {
-                            final addressId = logicLocation.addressesDefault?.id;
+                            if(UserStorage.currentUser?.id != null) {
+                              final addressId = logicLocation.addressesDefault
+                                  ?.id;
+                              if (addressId == null || addressId.isEmpty) {
+                                showCustomDialog(
+                                  context: context,
+                                  type: CustomDialogType.info,
+                                  title: "please_add_your_addresses".tr,
+                                  okOnPress: () =>
+                                      goTo(this, LocationSelectScreen()),
+                                );
+                                return;
+                              }
 
-                            if (addressId == null || addressId.isEmpty) {
-                              showCustomDialog(
-                                context: context,
-                                type: CustomDialogType.info,
-                                title: "please_add_your_addresses".tr,
-                                okOnPress: () => goTo(this, LocationSelectScreen()),
+                              if (product.variants == null ||
+                                  product.variants!.isEmpty) {
+                                showCustomDialog(
+                                  context: context,
+                                  type: CustomDialogType.info,
+                                  title: "variant is undefined".tr,
+                                  okOnPress: () =>
+                                      goTo(this, LocationSelectScreen()),
+                                );
+                                return;
+                              }
+
+                              final firstVariant = product.variants!.first;
+
+                              if (firstVariant.isActive != "true" ||
+                                  int.parse(firstVariant.stock ?? '0') <= 0) {
+                                showCustomDialog(
+                                  context: context,
+                                  type: CustomDialogType.info,
+                                  title: "product_are_not_available".tr,
+                                );
+                                return;
+                              }
+
+                              CartModel item = CartModel(
+                                  product: product,
+                                  priceAtPurchase: firstVariant.price,
+                                  variantId: firstVariant.id,
+                                  userId: UserStorage.currentUser?.id,
+                                  productId: product.id,
+                                  quantity: "1",
+                                  variant: firstVariant
                               );
-                              return;
-                            }
 
-                            if (product.variants == null || product.variants!.isEmpty) {
-                              showCustomDialog(
-                                context: context,
-                                type: CustomDialogType.info,
-                                title: "variant is undefined".tr,
-                                okOnPress: () => goTo(this, LocationSelectScreen()),
-                              );
-                              return;
-                            }
-
-                            final firstVariant = product.variants!.first;
-
-                            if (firstVariant.isActive != "true" || int.parse(firstVariant.stock ?? '0') <= 0) {
-                              showCustomDialog(
-                                context: context,
-                                type: CustomDialogType.info,
-                                title: "product_are_not_available".tr,
-                              );
-                              return;
-                            }
-
-                            CartModel item = CartModel(
-                              product: product,
-                              priceAtPurchase: firstVariant.price,
-                              variantId: firstVariant.id,
-                              userId: UserStorage.currentUser?.id,
-                              productId: product.id,
-                              quantity: "1",
-                              variant: firstVariant
-                            );
-
-                            List<CartModel> items = [];
-                            items.add(item);
-
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PaymentMethodScreen(
-                                  cart: items,
-                                  addressId: addressId,
+                              List<CartModel> items = [];
+                              items.add(item);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PaymentMethodScreen(
+                                    cart: items,
+                                    addressId: addressId,
+                                  ),
                                 ),
-                              ),
-                            );
+                              );
+                            }else{
+                              _showLogoutBottomSheet(context);
+                            }
                           },
                           width: MediaQuery
                               .of(context)
@@ -786,10 +865,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   buttonStyle: BtnStyle.action,
                   title: "add_to_cart".tr,
                   action: () {
-                    cartController.selectedVariant = null;
-                    cartController.dialogQuantity = 0;
-                    cartController.update();
-                    showBottomBar(product: productController.product);
+                    if(userId != null){
+                      cartController.selectedVariant = null;
+                      cartController.dialogQuantity = 0;
+                      cartController.update();
+                      showBottomBar(product: productController.product);
+                    }else{
+                      _showLogoutBottomSheet(context);
+                    }
                   },
                   width: MediaQuery
                       .of(context)

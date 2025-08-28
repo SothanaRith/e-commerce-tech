@@ -55,7 +55,7 @@ class ProductModel {
             : false {
     id = json['id'].toString();
     categoryId = json['categoryId'].toString();
-    reviewId = json['reviewId'].toString();
+    reviewId = json['reviewId'] ?? "";
     name = json['name'].toString();
     description = json['description'].toString();
     price = json['price'].toString();

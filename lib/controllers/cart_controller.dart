@@ -58,7 +58,7 @@ class CartController extends GetxController {
     }
   }
 
-  Future<List<CartModel>?> fetchAllCart({required BuildContext context, required String userId}) async {
+  Future<List<CartModel>?> fetchAllCart({required BuildContext context,  String? userId}) async {
     try {
       isLoadingProducts.value = true;
       update();
@@ -77,6 +77,7 @@ class CartController extends GetxController {
             .map((item) => CartModel.fromJson(item))
             .toList();
         cartList = carts;
+        print("------image${cartList[3].product?.variants?[0].imageUrl}");
         update();
         return carts;
       } else {
@@ -102,7 +103,7 @@ class CartController extends GetxController {
   }
   Future<void> addItemToCart(
       {required BuildContext context,
-        required String userId,
+         String? userId,
         required Variants variant,
         required String productId,
         required String quantity,
@@ -153,7 +154,7 @@ class CartController extends GetxController {
 
   Future<void> removeItemToCart(
       {required String productId,
-        required String userId,
+         String? userId,
         required BuildContext context }) async {
     final response = await apiRepository.postData(
         '$mainPoint/api/product/cart/$userId/$productId/delete',

@@ -133,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RefreshIndicator(
+      body: RefreshIndicator.adaptive(
         onRefresh: () async {
           homeController.currentPage = 1;
           homeController.hasMore = true;
@@ -273,7 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              AppText.title2(product.name ?? '', customStyle: TextStyle(color: theme.secondaryHeaderColor),),
+                                              AppText.title2(product.name ?? '', customStyle: TextStyle(color: theme.secondaryHeaderColor), maxLines: 1,),
                                               Flexible(child: AppText.caption(product.description ?? '', customStyle: TextStyle(color: theme.secondaryHeaderColor), maxLines: 1,)),
                                             ],
                                           ),

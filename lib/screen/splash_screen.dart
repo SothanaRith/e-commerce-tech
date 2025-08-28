@@ -39,22 +39,22 @@ class _SplashScreenState extends State<SplashScreen> {
       await prefs.setBool('isFirstTime', false);
       goOff(this, const LanguageScreen());
     } else {
-      if (isLoggedIn != null && isLoggedIn == true) {
-        goOff(this, const MainScreen());
-        // await authController.getUser(context: context).then((value) async {
-        //         if (value) {
-        //           goOff(this, const MainScreen());
-        //         } else {
-        //           print(TokenStorage.refreshToken);
-        //           print(UserStorage.currentUser?.email);
-        //           await authController.refreshToken(refreshToken: TokenStorage.refreshToken ?? '', email: UserStorage.currentUser?.email ?? '', context: context);
-        //         }
-        //       },);
-        // Already logged in
-      } else {
-        // Not logged in
-        goOff(this, const LoginScreen());
-      }
+      goOff(this, const MainScreen());
+      // if (isLoggedIn != null && isLoggedIn == true) {
+      //   // await authController.getUser(context: context).then((value) async {
+      //   //         if (value) {
+      //   //           goOff(this, const MainScreen());
+      //   //         } else {
+      //   //           print(TokenStorage.refreshToken);
+      //   //           print(UserStorage.currentUser?.email);
+      //   //           await authController.refreshToken(refreshToken: TokenStorage.refreshToken ?? '', email: UserStorage.currentUser?.email ?? '', context: context);
+      //   //         }
+      //   //       },);
+      //   // Already logged in
+      // } else {
+      //   // Not logged in
+      //   goOff(this, const LoginScreen());
+      // }
     }
   }
 
