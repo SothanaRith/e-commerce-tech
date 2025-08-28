@@ -46,9 +46,6 @@ class HomeController extends GetxController {
       var jsonData = jsonDecode(response.data!);
       final homeResponse = HomeModel.fromJson(jsonData['data']);
 
-      // Debugging: Check the response data structure
-      log('Home response: ${jsonData['data']}');
-
       totalUnReadNotification = jsonData['data']['unreadNotificationsCount'];
       if (page == 1) {
         products = homeResponse.products;

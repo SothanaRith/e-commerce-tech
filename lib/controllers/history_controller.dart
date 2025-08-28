@@ -21,6 +21,7 @@ class HistoryController extends GetxController {
 
   bool isLoading = false;
   final apiRepository = ApiRepository();
+  List<ProductModel> historyProducts = [];
 
   Future<void> postUserVisitProduct({required BuildContext context, required int productId}) async {
     try {
@@ -101,7 +102,16 @@ class HistoryController extends GetxController {
 
       if (response.data != null) {
         var jsonData = jsonDecode(response.data!);
-        print("Fetched Data: $jsonData");
+        print("Fetched Data: ${jsonData['history']}");
+
+        // Convert JSON list into ProductModel list
+        final history = (jsonData["history"] as List)
+            .map((item) => ProductModel.fromJson(item['product']))
+            .toList();
+
+        print("Fetched Data:2 ${history[0].name}");
+
+        historyProducts = history;
 
         update();
       } else {
