@@ -372,173 +372,175 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             const SizedBox(height: 8),
 
-                            Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: AppText.title2(
-                                "History".tr,
-                                customStyle: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                            ),
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: IntrinsicWidth(
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: historyController.historyProducts.map((
-                                      product) {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                ProductDetailsScreen(
-                                                    id: product.id.toString(),
-                                                    onBackAction: () {
-                                                      homeController.loadHome(
-                                                          page: 1,
-                                                          userId: UserStorage
-                                                              .currentUser?.id
-                                                              .toString() ?? '',
-                                                          context: context);
-                                                    }),
-                                          ),
-                                        );
-                                      },
-                                      child: Stack(
-                                        children: [
-                                          Container(
-                                            width: 200,
-                                            height: 140,
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 12),
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadiusGeometry
-                                                    .circular(12),
-                                                image: DecorationImage(
-                                                    image: NetworkImage(
-                                                      safeImageUrl(product
-                                                          .imageUrl?.first ??
-                                                          ''),),
-                                                    fit: BoxFit.cover)
-                                            ),
-                                          ),
-                                          Positioned(
-                                            top: 6,
-                                            right: 18,
-                                            child: product.isInWishlist !=
-                                                "null"
-                                                ? GestureDetector(
-                                              onTap: () {
-                                                if (product.isInWishlist ==
-                                                    'true') {
-                                                  wishlistController
-                                                      .deleteWishlist(
-                                                    context: context,
-                                                    userId: UserStorage
-                                                        .currentUser?.id
-                                                        .toString() ?? '',
-                                                    productId: product.id ?? '',
-                                                  ).then((_) =>
-                                                      homeController.loadHome(
-                                                          page: 1,
-                                                          userId: UserStorage
-                                                              .currentUser?.id
-                                                              .toString() ?? '',
-                                                          context: context));
-                                                } else {
-                                                  wishlistController
-                                                      .createWishlist(
-                                                    context: context,
-                                                    userId: UserStorage
-                                                        .currentUser?.id
-                                                        .toString() ?? '',
-                                                    productId: product.id ?? '',
-                                                  ).then((_) =>
-                                                      homeController.loadHome(
-                                                          page: 1,
-                                                          userId: UserStorage
-                                                              .currentUser?.id
-                                                              .toString() ?? '',
-                                                          context: context));
-                                                }
-                                              },
-                                              child: Container(
-                                                padding: const EdgeInsets.all(
-                                                    6),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius
-                                                      .circular(120),
-                                                  color: product.isInWishlist ==
-                                                      'true'
-                                                      ? Colors.red.shade700
-                                                      : Colors.white.withAlpha(
-                                                      180),
-                                                ),
-                                                child: product.isInWishlist ==
-                                                    'true'
-                                                    ? SvgPicture.asset(
-                                                  "assets/images/icons/heart.svg",
-                                                  width: 16,
-                                                  color: Colors.white,
-                                                )
-                                                    : SvgPicture.asset(
-                                                  "assets/images/icons/heart.svg",
-                                                  width: 16,
-                                                ),
-                                              ),
-                                            )
-                                                : SizedBox(),
-                                          ),
-                                          Positioned(
-                                            bottom: -12,
-                                            child: Container(
-                                              width: 200,
-                                              height: 50,
-                                              margin: EdgeInsets.all(12),
-                                              decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius
-                                                      .only(bottomLeft: Radius
-                                                      .circular(12),
-                                                      bottomRight: Radius
-                                                          .circular(12)),
-                                                  color: theme.primaryColor
-                                                      .withAlpha(100)
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(
-                                                    6.0),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment
-                                                      .start,
-                                                  children: [
-                                                    AppText.title2(
-                                                      product.name ?? '',
-                                                      customStyle: TextStyle(
-                                                          color: theme
-                                                              .secondaryHeaderColor),
-                                                      maxLines: 1,),
-                                                    Flexible(
-                                                        child: AppText.caption(
-                                                          product.description ??
-                                                              '',
-                                                          customStyle: TextStyle(
-                                                              color: theme
-                                                                  .secondaryHeaderColor),
-                                                          maxLines: 1,)),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  }).toList(),
+                            if (UserStorage.currentUser != null) ...[
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: AppText.title2(
+                                  "History".tr,
+                                  customStyle: TextStyle(
+                                      fontWeight: FontWeight.bold, fontSize: 18),
                                 ),
                               ),
-                            ),
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: IntrinsicWidth(
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: historyController.historyProducts.map((
+                                        product) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProductDetailsScreen(
+                                                      id: product.id.toString(),
+                                                      onBackAction: () {
+                                                        homeController.loadHome(
+                                                            page: 1,
+                                                            userId: UserStorage
+                                                                .currentUser?.id
+                                                                .toString() ?? '',
+                                                            context: context);
+                                                      }),
+                                            ),
+                                          );
+                                        },
+                                        child: Stack(
+                                          children: [
+                                            Container(
+                                              width: 200,
+                                              height: 140,
+                                              margin: EdgeInsets.symmetric(
+                                                  horizontal: 12),
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadiusGeometry
+                                                      .circular(12),
+                                                  image: DecorationImage(
+                                                      image: NetworkImage(
+                                                        safeImageUrl(product
+                                                            .imageUrl?.first ??
+                                                            ''),),
+                                                      fit: BoxFit.cover)
+                                              ),
+                                            ),
+                                            Positioned(
+                                              top: 6,
+                                              right: 18,
+                                              child: product.isInWishlist !=
+                                                  "null"
+                                                  ? GestureDetector(
+                                                onTap: () {
+                                                  if (product.isInWishlist ==
+                                                      'true') {
+                                                    wishlistController
+                                                        .deleteWishlist(
+                                                      context: context,
+                                                      userId: UserStorage
+                                                          .currentUser?.id
+                                                          .toString() ?? '',
+                                                      productId: product.id ?? '',
+                                                    ).then((_) =>
+                                                        homeController.loadHome(
+                                                            page: 1,
+                                                            userId: UserStorage
+                                                                .currentUser?.id
+                                                                .toString() ?? '',
+                                                            context: context));
+                                                  } else {
+                                                    wishlistController
+                                                        .createWishlist(
+                                                      context: context,
+                                                      userId: UserStorage
+                                                          .currentUser?.id
+                                                          .toString() ?? '',
+                                                      productId: product.id ?? '',
+                                                    ).then((_) =>
+                                                        homeController.loadHome(
+                                                            page: 1,
+                                                            userId: UserStorage
+                                                                .currentUser?.id
+                                                                .toString() ?? '',
+                                                            context: context));
+                                                  }
+                                                },
+                                                child: Container(
+                                                  padding: const EdgeInsets.all(
+                                                      6),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius
+                                                        .circular(120),
+                                                    color: product.isInWishlist ==
+                                                        'true'
+                                                        ? Colors.red.shade700
+                                                        : Colors.white.withAlpha(
+                                                        180),
+                                                  ),
+                                                  child: product.isInWishlist ==
+                                                      'true'
+                                                      ? SvgPicture.asset(
+                                                    "assets/images/icons/heart.svg",
+                                                    width: 16,
+                                                    color: Colors.white,
+                                                  )
+                                                      : SvgPicture.asset(
+                                                    "assets/images/icons/heart.svg",
+                                                    width: 16,
+                                                  ),
+                                                ),
+                                              )
+                                                  : SizedBox(),
+                                            ),
+                                            Positioned(
+                                              bottom: -12,
+                                              child: Container(
+                                                width: 200,
+                                                height: 50,
+                                                margin: EdgeInsets.all(12),
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius
+                                                        .only(bottomLeft: Radius
+                                                        .circular(12),
+                                                        bottomRight: Radius
+                                                            .circular(12)),
+                                                    color: theme.primaryColor
+                                                        .withAlpha(100)
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      6.0),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment
+                                                        .start,
+                                                    children: [
+                                                      AppText.title2(
+                                                        product.name ?? '',
+                                                        customStyle: TextStyle(
+                                                            color: theme
+                                                                .secondaryHeaderColor),
+                                                        maxLines: 1,),
+                                                      Flexible(
+                                                          child: AppText.caption(
+                                                            product.description ??
+                                                                '',
+                                                            customStyle: TextStyle(
+                                                                color: theme
+                                                                    .secondaryHeaderColor),
+                                                            maxLines: 1,)),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ),
+                            ],
                             const SizedBox(height: 8),
                             const CategoryHomeScreenWidget(),
                             const SizedBox(height: 8),
