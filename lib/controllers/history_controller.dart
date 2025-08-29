@@ -56,7 +56,7 @@ class HistoryController extends GetxController {
     }
   }
 
-  Future<void> postUserSearchHistory({required BuildContext context, required int query}) async {
+  Future<void> postUserSearchHistory({required BuildContext context, required String query}) async {
     try {
       isLoading = true;
       update();

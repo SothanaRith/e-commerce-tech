@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:e_commerce_tech/controllers/history_controller.dart';
 import 'package:e_commerce_tech/helper/global.dart';
 import 'package:e_commerce_tech/helper/rest_api_helper.dart';
 import 'package:e_commerce_tech/models/product_model.dart';
@@ -10,7 +11,7 @@ import 'package:get/get.dart';
 
 class SearchingController extends GetxController {
   late final ApiRepository apiRepository;
-
+  final HistoryController historyController = Get.put(HistoryController());
   List<ProductModel> searchResults = [];
   int currentPage = 1;
   int pageSize = 10;
@@ -83,7 +84,7 @@ class SearchingController extends GetxController {
       currentPage = page;
       pageSize = size;
       totalPages = jsonData["pagination"]?["totalPages"] ?? 1;
-
+      await historyController.postUserSearchHistory(context: context, query: queryString);
       isLoading = false;
       update();
     } else {
