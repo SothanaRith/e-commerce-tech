@@ -77,7 +77,6 @@ class CartController extends GetxController {
             .map((item) => CartModel.fromJson(item))
             .toList();
         cartList = carts;
-        print("------image${cartList[3].product?.variants?[0].imageUrl}");
         update();
         return carts;
       } else {
