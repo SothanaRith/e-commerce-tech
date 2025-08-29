@@ -4,7 +4,6 @@ import 'package:e_commerce_tech/controllers/history_controller.dart';
 import 'package:e_commerce_tech/controllers/poster_controller.dart';
 import 'package:e_commerce_tech/controllers/wishlist_contoller.dart';
 import 'package:e_commerce_tech/main.dart';
-import 'package:e_commerce_tech/screen/chat_with_store/chat_with_store_screen.dart';
 import 'package:e_commerce_tech/screen/product_details_page/product_details_screen.dart';
 import 'package:e_commerce_tech/screen/profile_setting_page/last_order_widget.dart';
 import 'package:e_commerce_tech/utils/app_constants.dart';
@@ -53,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     });
 
-    scrollController.addListener(() {
+    scrollController.addListener(() async {
       if (scrollController.position.pixels >=
           scrollController.position.maxScrollExtent - 200) {
         if (!homeController.isLoading && homeController.hasMore) {
@@ -64,6 +63,9 @@ class _HomeScreenState extends State<HomeScreen> {
             context: context,
             userId: UserStorage.currentUser?.id.toString() ?? '',
           );
+          if (UserStorage.currentUser != null) {
+            await historyController.fetchVisitHistoryByUser(context: context);
+          }
         } else {}
       }
     });
@@ -156,6 +158,9 @@ class _HomeScreenState extends State<HomeScreen> {
             context: context,
             userId: UserStorage.currentUser?.id.toString() ?? '',
           );
+          if (UserStorage.currentUser != null) {
+            await historyController.fetchVisitHistoryByUser(context: context);
+          }
         },
         child: GetBuilder<HomeController>(
           builder: (controller) =>
@@ -371,7 +376,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             const SizedBox(height: 8),
-
                             if (UserStorage.currentUser != null) ...[
                               Padding(
                                 padding: const EdgeInsets.all(12.0),
